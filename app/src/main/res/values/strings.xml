@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">EchoTrail</string>
+    <string name="note">Note</string>
+    <string name="impostazioni">Impostazioni</string>
+    <string name="mappa">Mappa</string>
+    <string name="placeholder">Hello I\'m placeholder</string>
 </resources>
