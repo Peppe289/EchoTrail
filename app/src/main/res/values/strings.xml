@@ -4,4 +4,7 @@
     <string name="impostazioni">Impostazioni</string>
     <string name="mappa">Mappa</string>
     <string name="placeholder">Hello I\'m placeholder</string>
+    <string name="accedi_come_ospite">Accedi come ospite</string>
+    <string name="accedi">Accedi</string>
+    <string name="registrati">registrati</string>
 </resources>

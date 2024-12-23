@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EchoTrail"
         tools:targetApi="31">
+        <activity android:name=".DispatcherActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
