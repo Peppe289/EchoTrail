@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.MyApp.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusBottomStart">16dp</item>
+        <item name="boxCornerRadiusBottomEnd">16dp</item>
+        <item name="boxBackgroundMode">outline</item>
+        <item name="android:layout_margin">15dp</item>
+    </style>
+
+    <style name="Widget.MyApp.Button" parent="Widget.Material3.Button">
+        <item name="cornerRadius">15dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">15dp</item>
+    </style>
+</resources>

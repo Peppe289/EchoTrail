@@ -2,7 +2,6 @@ package com.peppe289.echotrail;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.FirebaseApp;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -21,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FirebaseApp.initializeApp(getApplicationContext());
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -40,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         binding.guestAccessBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, DispatcherActivity.class);
             startActivity(intent);
+        });
+
+        binding.registrazioneBtn.setOnClickListener(view -> {
+            MoveActivity.addActivity(MainActivity.this, RegistrazioneActivity.class);
         });
     }
 }

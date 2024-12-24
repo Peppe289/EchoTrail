@@ -37,10 +37,11 @@ public class UserController {
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @return {@code true} if the registration was successful, {@code false} otherwise.
+     * @param username The user's username.
+     * @param callback The callback to be invoked upon completion.
      */
-    public static boolean register(String email, String password) {
-        return UserDAO.signUp(email, password);
+    public static void register(String email, String password, String username, UserDAO.SignUpCallback callback) {
+        UserDAO.signUp(email, password, username, callback);
     }
 
     /**

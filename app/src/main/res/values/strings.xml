@@ -6,7 +6,10 @@
     <string name="placeholder">Hello I\'m placeholder</string>
     <string name="accedi_come_ospite">Accedi come ospite</string>
     <string name="accedi">Accedi</string>
-    <string name="registrati">registrati</string>
+    <string name="registrati">Registrati</string>
     <string name="account">Account</string>
     <string name="logout">Logout</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
 </resources>

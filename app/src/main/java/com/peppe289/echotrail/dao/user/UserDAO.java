@@ -1,7 +1,9 @@
 package com.peppe289.echotrail.dao.user;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
@@ -16,10 +18,18 @@ import java.util.concurrent.CountDownLatch;
 @SuppressWarnings("unused")
 public class UserDAO {
 
+    public interface SignUpCallback {
+        void onComplete(boolean success);
+    }
+
     /**
      * The Firebase Authentication instance.
      */
     static private final FirebaseAuth auth = FirebaseAuth.getInstance();
+    /**
+     * The Firestore database instance.
+     */
+    static private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     /**
      * Signs in the user anonymously using Firebase Authentication.
@@ -72,23 +82,17 @@ public class UserDAO {
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @return {@code true} if the registration operation was successful, {@code false} otherwise.
+     * @param username The user's username.
+     * @param callback The callback to be invoked upon completion.
      */
-    public static boolean signUp(String email, String password) {
-        final boolean[] result = {false};
-        CountDownLatch latch = new CountDownLatch(1);
-
+    public static void signUp(String email, String password, String username, SignUpCallback callback) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            result[0] = task.isSuccessful();
-            latch.countDown();
+            db.collection("users").document(getUid()).set(new HashMap<String, Object>() {{
+                put("username", username);
+            }}).addOnCompleteListener(task1 -> {
+                callback.onComplete(task.isSuccessful() && task1.isSuccessful());
+            });
         });
-
-        try {
-            latch.await();
-        } catch (InterruptedException ignored) {
-        }
-
-        return result[0];
     }
 
     /**
