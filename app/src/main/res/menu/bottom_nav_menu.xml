@@ -12,5 +12,5 @@
     <item
         android:id="@+id/settingsMenu"
         android:icon="@drawable/baseline_android_24"
-        android:title="@string/impostazioni" />
+        android:title="@string/account" />
 </menu>

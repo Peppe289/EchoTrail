@@ -10,7 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.peppe289.echotrail.databinding.ActivityDispatcherBinding;
-import com.peppe289.echotrail.model.BottomBar;
+import com.peppe289.echotrail.utils.BottomBar;
 
 public class DispatcherActivity extends AppCompatActivity {
     protected ActivityDispatcherBinding binding;

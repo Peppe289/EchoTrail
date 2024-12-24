@@ -2,6 +2,7 @@ package com.peppe289.echotrail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +10,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
+import com.peppe289.echotrail.utils.MoveActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -20,6 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // if the user is already logged (from android sdk) skipp this first page.
+        if (UserController.isLoggedIn()) {
+            MoveActivity.rebaseActivity(MainActivity.this, DispatcherActivity.class);
+        }
 
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {

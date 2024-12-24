@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.model;
+package com.peppe289.echotrail.utils;
 
 import android.view.MenuItem;
 
@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.peppe289.echotrail.MapFragment;
 import com.peppe289.echotrail.NotesFragment;
 import com.peppe289.echotrail.R;
-import com.peppe289.echotrail.SettingsFragment;
+import com.peppe289.echotrail.AccountFragment;
 
 /**
  * The {@code BottomBar} class provides utility methods for managing the bottom navigation bar
@@ -101,7 +101,7 @@ public class BottomBar {
      * <p>Supported menu items:</p>
      * <ul>
      *     <li>{@code getNotesBtnId()}: Loads {@link NotesFragment}</li>
-     *     <li>{@code getSettingsBtnId()}: Loads {@link SettingsFragment}</li>
+     *     <li>{@code getSettingsBtnId()}: Loads {@link AccountFragment}</li>
      *     <li>{@code getMapBtnId()}: Loads {@link MapFragment}</li>
      * </ul>
      *
@@ -114,7 +114,7 @@ public class BottomBar {
         if (triggerBtn == getNotesBtnId()) {
             selectedFragment = new NotesFragment();
         } else if (triggerBtn == getSettingsBtnId()) {
-            selectedFragment = new SettingsFragment();
+            selectedFragment = new AccountFragment();
         } else if (triggerBtn == getMapBtnId()) {
             selectedFragment = new MapFragment();
         } else {

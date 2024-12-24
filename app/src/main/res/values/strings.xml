@@ -7,4 +7,6 @@
     <string name="accedi_come_ospite">Accedi come ospite</string>
     <string name="accedi">Accedi</string>
     <string name="registrati">registrati</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
 </resources>
