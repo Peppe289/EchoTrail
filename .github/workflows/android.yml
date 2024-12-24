@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-
+    environment: firebase
     runs-on: ubuntu-latest
 
     steps:
@@ -20,9 +20,48 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Create private config file
+      run: |
+        cat <<EOF > ./app/google-services.json
+        {
+          "project_info": {
+            "project_number": "${{ secrets.PROJECT_NUMBER }}",
+            "project_id": "echotrail-6ae24",
+            "storage_bucket": "echotrail-6ae24.firebasestorage.app"
+          },
+          "client": [
+            {
+              "client_info": {
+                "mobilesdk_app_id": "${{ secrets.MOBILESDK_APP_ID }}",
+                "android_client_info": {
+                  "package_name": "com.peppe289.echotrail"
+                }
+              },
+              "oauth_client": [],
+              "api_key": [
+                {
+                  "current_key": "${{ secrets.CURRENT_KEY }}"
+                }
+              ],
+              "services": {
+                "appinvite_service": {
+                  "other_platform_oauth_client": []
+                }
+              }
+            }
+          ],
+          "configuration_version": "1"
+        }
+        EOF
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
     - name: Run Unit Tests
       run: ./gradlew test
+
+    - name: Run Lint
+      run: ./gradlew lint
+
     - name: Build with Gradle
       run: ./gradlew build
