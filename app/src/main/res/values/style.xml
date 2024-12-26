@@ -14,4 +14,22 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:layout_margin">15dp</item>
     </style>
+
+    <style name="Widget.MyApp.Row" parent="Widget.Material3.TabLayout.Secondary">
+        <item name="android:gravity">center</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="Widget.MyApp.RowLeftItem" parent="Widget.Material3.TabLayout.Secondary">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Widget.MyApp.RowRightItem" parent="Widget.Material3.TabLayout.Secondary">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end</item>
+    </style>
 </resources>

@@ -1,61 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AccountFragment">
 
-    <!-- TableLayout as the parent container -->
-    <TableLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <!-- First row with option 1 -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="Option 1" />
-
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="Select" />
-        </TableRow>
-
-        <!-- Second row with option 2 -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="Option 2" />
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="Select" />
-        </TableRow>
-
-        <Button
-            android:id="@+id/logoutBtn"
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/logout" />
-    </TableLayout>
+            android:layout_marginTop="20sp"
+            android:padding="16dp">
 
-</FrameLayout>
+            <!-- start row -->
+            <TableRow
+                android:id="@+id/mynotes"
+                style="@style/Widget.MyApp.Row"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/left_text"
+                    style="@style/Widget.MyApp.RowLeftItem"
+                    android:background="#00000000"
+                    android:text="@string/le_mie_note" />
+
+                <ImageView
+                    android:id="@+id/right_arrow"
+                    style="@style/Widget.MyApp.RowRightItem"
+                    android:background="#00000000"
+                    android:contentDescription="@string/right_arrow"
+                    android:src="@drawable/baseline_arrow_forward_ios_24" />
+            </TableRow>
+            <!-- end row -->
+
+            <Button
+                android:id="@+id/logoutBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:text="@string/logout" />
+        </TableLayout>
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
