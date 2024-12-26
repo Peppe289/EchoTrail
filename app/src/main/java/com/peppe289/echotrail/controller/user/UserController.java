@@ -63,8 +63,10 @@ public class UserController {
     /**
      * Logs out the currently authenticated user.
      */
-    public static void logout() {
+    public static void logout(Context context) {
         UserDAO.signOut();
+        // clear user headers from shared preferences
+        PreferencesHelper.clearUserHeaders(context);
     }
 
     /**

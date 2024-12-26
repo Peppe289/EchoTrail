@@ -13,6 +13,7 @@ import java.util.HashMap;
  * such as username and email, using shared preferences or Firebase as a fallback mechanism.
  * This class handles loading the user data from the local shared preferences and, if unavailable,
  * retrieves the data from Firebase and saves it to the shared preferences for future use.
+ * Additionally, it provides a method to clear the stored user data from shared preferences.
  */
 public class PreferencesHelper {
 
@@ -75,5 +76,19 @@ public class PreferencesHelper {
                 put("email", email);
             }});
         }
+    }
+
+    /**
+     * Clears the user headers (username and email) from shared preferences.
+     * This method removes the stored username and email from the shared preferences.
+     *
+     * @param context The application context used to access shared preferences.
+     */
+    public static void clearUserHeaders(Context context) {
+        context.getSharedPreferences("user", MODE_PRIVATE)
+                .edit()
+                .remove("username")
+                .remove("email")
+                .apply();
     }
 }
