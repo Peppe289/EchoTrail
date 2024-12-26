@@ -5,12 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.textview.MaterialTextView;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -21,12 +21,17 @@ import com.peppe289.echotrail.utils.MoveActivity;
  */
 public class AccountFragment extends Fragment {
     private FragmentAccountBinding binding;
+    private MaterialTextView username;
+    private MaterialTextView email;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAccountBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
+
+        username = binding.usernameTextView;
+        email = binding.emailTextView;
 
         // TODO: implements the button function (should be open personal notes list)
         binding.mynotes.setOnClickListener(view -> Log.i("AccountFragment", "My notes button clicked"));
@@ -45,7 +50,6 @@ public class AccountFragment extends Fragment {
 
         AppBarLayout appBarLayout = binding.appBarLayout;
 
-
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -56,9 +60,21 @@ public class AccountFragment extends Fragment {
 
                 binding.userIcon.setAlpha(1 - percentage);
             }
-        });;
+        });
 
+        loadUserHeaders();
 
         return rootView;
+    }
+
+    private void loadUserHeaders() {
+        // TODO: this should be cached
+        UserController.getUsername(name -> {
+            username.setText(name);
+        });
+
+        UserController.getEmail(emailStr -> {
+            email.setText(emailStr);
+        });
     }
 }

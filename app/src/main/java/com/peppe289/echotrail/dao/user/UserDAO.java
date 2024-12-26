@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The {@code UserDAO} class provides methods to handle user authentication and management
@@ -24,6 +25,14 @@ public class UserDAO {
 
     public interface SignInCallback {
         void onComplete(boolean success);
+    }
+
+    public interface UpdateUsernameViewCallback {
+        void onComplete(String name);
+    }
+
+    public interface UpdateEmailViewCallback {
+        void onComplete(String email);
     }
 
     /**
@@ -128,5 +137,28 @@ public class UserDAO {
      */
     public static void sendPasswordResetEmail(String email) {
         auth.sendPasswordResetEmail(email);
+    }
+
+    /**
+     * Retrieves the username of the currently authenticated user.
+     *
+     * @param callback The callback to be invoked upon completion.
+     */
+    public static void getUsername(UpdateUsernameViewCallback callback) {
+        db.collection("users").document(getUid()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+               callback.onComplete(Objects.requireNonNull(task.getResult()).getString("username"));
+            }
+        });
+    }
+
+    /**
+     * Retrieves the username of the currently authenticated user.
+     *
+     * @param callback The callback to be invoked upon completion.
+     */
+    public static void getUsername(UpdateEmailViewCallback callback) {
+        String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
+        callback.onComplete(email);
     }
 }

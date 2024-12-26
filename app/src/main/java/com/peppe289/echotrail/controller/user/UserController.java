@@ -58,4 +58,22 @@ public class UserController {
     public static void logout() {
         UserDAO.signOut();
     }
+
+    /**
+     * Retrieves the username of the currently authenticated user.
+     *
+     * @param callback The callback to be invoked upon completion.
+     */
+    public static void getUsername(UserDAO.UpdateUsernameViewCallback callback) {
+        UserDAO.getUsername(callback);
+    }
+
+    /**
+     * Retrieves the email of the currently authenticated user.
+     *
+     * @param callback The callback to be invoked upon completion.
+     */
+    public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
+        UserDAO.getUsername(callback);
+    }
 }
