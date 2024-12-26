@@ -62,19 +62,12 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        loadUserHeaders();
+        // load user headers (name and email) from cache if possible.
+        UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
+            username.setText(headers.get("username"));
+            email.setText(headers.get("email"));
+        });
 
         return rootView;
-    }
-
-    private void loadUserHeaders() {
-        // TODO: this should be cached
-        UserController.getUsername(name -> {
-            username.setText(name);
-        });
-
-        UserController.getEmail(emailStr -> {
-            email.setText(emailStr);
-        });
     }
 }

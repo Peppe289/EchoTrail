@@ -1,6 +1,10 @@
 package com.peppe289.echotrail.controller.user;
 
+import android.content.Context;
+
 import com.peppe289.echotrail.dao.user.UserDAO;
+
+import java.util.HashMap;
 
 /**
  * The {@code UserController} class serves as an intermediary between the application logic
@@ -11,6 +15,10 @@ import com.peppe289.echotrail.dao.user.UserDAO;
  * </p>
  */
 public class UserController {
+
+    public interface UserHeadersCallback {
+        void onComplete(HashMap<String, String> headers);
+    }
 
     /**
      * Logs in the user as a guest (anonymous authentication).
@@ -75,5 +83,12 @@ public class UserController {
      */
     public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
         UserDAO.getUsername(callback);
+    }
+
+    /**
+     * Retrieves the user headers from the shared preferences.
+     */
+    public static void getUserHeadersFromPreferences(Context context, UserHeadersCallback callback) {
+        PreferencesHelper.checkOnPreferences(context, callback);
     }
 }
