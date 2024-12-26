@@ -6,34 +6,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The {@code UserDAO} class provides methods to handle user authentication and management
- * using Firebase Authentication. It supports anonymous sign-in, email/password authentication,
- * user registration, password reset, and user session management.
+ * The {@code UserDAO} class provides methods for user authentication and management using Firebase Authentication and Firestore.
+ * It supports anonymous sign-in, email/password authentication, user registration, password reset, and user session management.
  *
  * <p><b>Note:</b> This implementation uses synchronous behavior with {@code CountDownLatch},
  * which may block the current thread. Ensure it is not used on the main UI thread to avoid freezing the application.</p>
  */
 @SuppressWarnings("unused")
 public class UserDAO {
-
-    public interface SignUpCallback {
-        void onComplete(boolean success);
-    }
-
-    public interface SignInCallback {
-        void onComplete(boolean success);
-    }
-
-    public interface UpdateUsernameViewCallback {
-        void onComplete(String name);
-    }
-
-    public interface UpdateEmailViewCallback {
-        void onComplete(String email);
-    }
 
     /**
      * The Firebase Authentication instance.
@@ -67,23 +49,24 @@ public class UserDAO {
     }
 
     /**
-     * Signs in the user using email and password.
+     * Signs in the user using email and password authentication.
      *
      * @param email    The user's email address.
      * @param password The user's password.
+     * @param callback The callback to be invoked upon completion.
      */
     public static void signIn(String email, String password, SignInCallback callback) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-          callback.onComplete(task.isSuccessful());
+            callback.onComplete(task.isSuccessful());
         });
     }
 
     /**
-     * Registers a new user with the provided email and password.
+     * Registers a new user with the provided email, password, and username.
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @param username The user's username.
+     * @param username The user's desired username.
      * @param callback The callback to be invoked upon completion.
      */
     public static void signUp(String email, String password, String username, SignUpCallback callback) {
@@ -140,25 +123,73 @@ public class UserDAO {
     }
 
     /**
-     * Retrieves the username of the currently authenticated user.
+     * Retrieves the username of the currently authenticated user from Firestore.
      *
-     * @param callback The callback to be invoked upon completion.
+     * @param callback The callback to be invoked with the retrieved username.
      */
     public static void getUsername(UpdateUsernameViewCallback callback) {
         db.collection("users").document(getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-               callback.onComplete(Objects.requireNonNull(task.getResult()).getString("username"));
+                callback.onComplete(Objects.requireNonNull(task.getResult()).getString("username"));
             }
         });
     }
 
     /**
-     * Retrieves the username of the currently authenticated user.
+     * Retrieves the email address of the currently authenticated user.
      *
-     * @param callback The callback to be invoked upon completion.
+     * @param callback The callback to be invoked with the retrieved email address.
      */
     public static void getUsername(UpdateEmailViewCallback callback) {
         String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
         callback.onComplete(email);
+    }
+
+    /**
+     * Callback interface to handle the result of the sign-up process.
+     */
+    public interface SignUpCallback {
+        /**
+         * Called upon completion of the sign-up process.
+         *
+         * @param success {@code true} if sign-up was successful, {@code false} otherwise.
+         */
+        void onComplete(boolean success);
+    }
+
+    /**
+     * Callback interface to handle the result of the sign-in process.
+     */
+    public interface SignInCallback {
+        /**
+         * Called upon completion of the sign-in process.
+         *
+         * @param success {@code true} if sign-in was successful, {@code false} otherwise.
+         */
+        void onComplete(boolean success);
+    }
+
+    /**
+     * Callback interface to handle the result of username retrieval.
+     */
+    public interface UpdateUsernameViewCallback {
+        /**
+         * Called upon completion of the username retrieval process.
+         *
+         * @param name The username of the currently authenticated user.
+         */
+        void onComplete(String name);
+    }
+
+    /**
+     * Callback interface to handle the result of email retrieval.
+     */
+    public interface UpdateEmailViewCallback {
+        /**
+         * Called upon completion of the email retrieval process.
+         *
+         * @param email The email address of the currently authenticated user.
+         */
+        void onComplete(String email);
     }
 }
