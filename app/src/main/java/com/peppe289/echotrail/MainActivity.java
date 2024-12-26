@@ -46,5 +46,9 @@ public class MainActivity extends AppCompatActivity {
         binding.registrazioneBtn.setOnClickListener(view -> {
             MoveActivity.addActivity(MainActivity.this, RegistrazioneActivity.class);
         });
+
+        binding.loginBtn.setOnClickListener(view -> {
+            MoveActivity.addActivity(MainActivity.this, LoginActivity.class);
+        });
     }
 }

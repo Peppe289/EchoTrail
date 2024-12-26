@@ -26,10 +26,9 @@ public class UserController {
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @return {@code true} if the login was successful, {@code false} otherwise.
      */
-    public static boolean login(String email, String password) {
-        return UserDAO.signIn(email, password);
+    public static void login(String email, String password, UserDAO.SignInCallback callback) {
+        UserDAO.signIn(email, password, callback);
     }
 
     /**

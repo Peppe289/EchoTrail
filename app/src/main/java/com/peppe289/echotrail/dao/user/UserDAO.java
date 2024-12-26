@@ -22,6 +22,10 @@ public class UserDAO {
         void onComplete(boolean success);
     }
 
+    public interface SignInCallback {
+        void onComplete(boolean success);
+    }
+
     /**
      * The Firebase Authentication instance.
      */
@@ -58,23 +62,11 @@ public class UserDAO {
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @return {@code true} if the sign-in operation was successful, {@code false} otherwise.
      */
-    public static boolean signIn(String email, String password) {
-        final boolean[] result = {false};
-        CountDownLatch latch = new CountDownLatch(1);
-
+    public static void signIn(String email, String password, SignInCallback callback) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            result[0] = task.isSuccessful();
-            latch.countDown();
+          callback.onComplete(task.isSuccessful());
         });
-
-        try {
-            latch.await();
-        } catch (InterruptedException ignored) {
-        }
-
-        return result[0];
     }
 
     /**
