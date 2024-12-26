@@ -5,10 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -29,11 +31,33 @@ public class AccountFragment extends Fragment {
         // TODO: implements the button function (should be open personal notes list)
         binding.mynotes.setOnClickListener(view -> Log.i("AccountFragment", "My notes button clicked"));
 
+        // TODO: implements the button function (should be open personal information for editing)
+        binding.personalData.setOnClickListener(view -> Log.i("AccountFragment", "Edit profile button clicked"));
+
+        // TODO: implements the button function (should be open notify settings)
+        binding.notify.setOnClickListener(view -> Log.i("AccountFragment", "Notify settings button clicked"));
+
         binding.logoutBtn.setOnClickListener(view -> {
             UserController.logout();
             MoveActivity.rebaseActivity(getActivity(), MainActivity.class);
             Log.i("AccountFragment", "User logged out");
         });
+
+        AppBarLayout appBarLayout = binding.appBarLayout;
+
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                float percentage = Math.abs(verticalOffset) / (float) appBarLayout.getTotalScrollRange();
+
+                binding.userIcon.setScaleX(1 - percentage);
+                binding.userIcon.setScaleY(1 - percentage);
+
+                binding.userIcon.setAlpha(1 - percentage);
+            }
+        });;
+
 
         return rootView;
     }
