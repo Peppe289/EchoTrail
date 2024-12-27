@@ -5,14 +5,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".AddNotesActivity">
-    
+
+    <!-- Material Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
+        app:navigationIcon="@drawable/arrow_back_24px"
+        app:menu="@menu/add_notes_menu"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary">
-    </com.google.android.material.appbar.MaterialToolbar>
+        style="@style/Widget.MaterialComponents.Toolbar.Primary" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
