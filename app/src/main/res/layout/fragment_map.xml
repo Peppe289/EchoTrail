@@ -13,4 +13,13 @@
         android:text="@string/placeholder"
         android:textColor="@color/white" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="30dp"
+        android:contentDescription="@string/aggiungi_una_nuova_nota"
+        android:src="@drawable/add_24pm">
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
 </FrameLayout>

@@ -16,4 +16,7 @@
     <string name="le_mie_note">Le mie note</string>
     <string name="notifiche">Notifiche</string>
     <string name="gestisci_i_tuoi_dati">Gestisci i tuoi dati</string>
+    <string name="aggiungi_una_nuova_nota">Aggiungi una nuova nota</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
