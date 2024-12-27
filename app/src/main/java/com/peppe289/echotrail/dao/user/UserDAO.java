@@ -82,15 +82,6 @@ public class UserDAO {
     }
 
     /**
-     * Retrieves the email address of the currently authenticated user.
-     *
-     * @return The email address of the current user, or {@code null} if no user is signed in.
-     */
-    public static String getEmail() {
-        return Objects.requireNonNull(auth.getCurrentUser()).getEmail();
-    }
-
-    /**
      * Sends a password reset email to the specified email address.
      *
      * @param email The email address to send the password reset link to.
@@ -117,7 +108,7 @@ public class UserDAO {
      *
      * @param callback The callback to be invoked with the retrieved email address.
      */
-    public static void getUsername(UpdateEmailViewCallback callback) {
+    public static void getEmail(UpdateEmailViewCallback callback) {
         String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
         callback.onComplete(email);
     }

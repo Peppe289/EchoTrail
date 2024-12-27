@@ -75,7 +75,7 @@ public class UserController {
      * @param callback The callback to be invoked upon completion.
      */
     public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
-        UserDAO.getUsername(callback);
+        UserDAO.getEmail(callback);
     }
 
     /**
