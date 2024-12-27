@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityDispatcherBinding;
 import com.peppe289.echotrail.utils.BottomBar;
 
@@ -38,5 +39,8 @@ public class DispatcherActivity extends AppCompatActivity {
 
         // create a listener for the bottom navigation bar
         binding.bottomNavigationView.setOnItemSelectedListener(BottomBar::onNavigationItemSelected);
+
+        // this will save or update the user headers to preferences
+        UserController.updateUserHeadersToPreferences(binding.getRoot().getContext());
     }
 }

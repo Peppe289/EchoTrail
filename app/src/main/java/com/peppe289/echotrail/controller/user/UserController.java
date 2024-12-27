@@ -5,6 +5,7 @@ import android.content.Context;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * The {@code UserController} class serves as an intermediary between the application logic
@@ -84,8 +85,6 @@ public class UserController {
      * @throws UserStateException if the user is not signed in.
      */
     public static void getUsername(UserDAO.UpdateUsernameViewCallback callback) {
-        validateCallback(callback);
-
         if (isLoggedIn()) {
             UserDAO.getUsername(callback);
         } else {
@@ -100,8 +99,6 @@ public class UserController {
      * @throws UserStateException if the user is not signed in.
      */
     public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
-        validateCallback(callback);
-
         if (isLoggedIn()) {
             UserDAO.getEmail(callback);
         } else {
@@ -117,13 +114,46 @@ public class UserController {
      * @throws UserStateException if the user is not signed in.
      */
     public static void getUserHeadersFromPreferences(Context context, UserHeadersCallback callback) {
-        validateCallback(callback);
-
         if (isLoggedIn()) {
             PreferencesHelper.checkOnPreferences(context, callback);
         } else {
             throw new UserStateException("User is not signed in.");
         }
+    }
+
+    /**
+     * Updates the user headers (e.g., username and email) stored in shared preferences.
+     * <p>
+     * This method synchronizes the shared preferences with the latest user data
+     * retrieved from the server, if there are discrepancies.
+     * </p>
+     *
+     * @param context The application context used to access shared preferences.
+     * @throws UserStateException if no user is logged in.
+     */
+    public static void updateUserHeadersToPreferences(Context context) {
+        String username;
+        String email;
+
+        if (!isLoggedIn()) {
+            throw new UserStateException("User is not signed in.");
+        }
+
+        username = PreferencesHelper.retrieveName(context);
+        getUsername(usernameDB -> {
+            if (Objects.equals(usernameDB, username)) {
+                PreferencesHelper.updateName(context, usernameDB);
+            }
+        });
+
+        email = PreferencesHelper.retrieveEmail(context);
+        getEmail(emailDB -> {
+            if (Objects.equals(email, emailDB)) {
+                PreferencesHelper.updateEmail(context, emailDB);
+            }
+        });
+
+        PreferencesHelper.checkOnPreferences(context, null);
     }
 
     /**
