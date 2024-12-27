@@ -50,16 +50,11 @@ public class AccountFragment extends Fragment {
 
         AppBarLayout appBarLayout = binding.appBarLayout;
 
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                float percentage = Math.abs(verticalOffset) / (float) appBarLayout.getTotalScrollRange();
-
-                binding.userIcon.setScaleX(1 - percentage);
-                binding.userIcon.setScaleY(1 - percentage);
-
-                binding.userIcon.setAlpha(1 - percentage);
-            }
+        appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
+            float percentage = Math.abs(verticalOffset) / (float) appBarLayout1.getTotalScrollRange();
+            binding.userIcon.setScaleX(1 - percentage);
+            binding.userIcon.setScaleY(1 - percentage);
+            binding.userIcon.setAlpha(1 - percentage);
         });
 
         // load user headers (name and email) from cache if possible.
