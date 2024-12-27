@@ -14,7 +14,6 @@ import java.util.concurrent.CountDownLatch;
  * <p><b>Note:</b> This implementation uses synchronous behavior with {@code CountDownLatch},
  * which may block the current thread. Ensure it is not used on the main UI thread to avoid freezing the application.</p>
  */
-@SuppressWarnings("unused")
 public class UserDAO {
 
     /**
@@ -25,28 +24,6 @@ public class UserDAO {
      * The Firestore database instance.
      */
     static private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    /**
-     * Signs in the user anonymously using Firebase Authentication.
-     *
-     * @return {@code true} if the sign-in operation was successful, {@code false} otherwise.
-     */
-    public static boolean signIn() {
-        final boolean[] result = {false};
-        CountDownLatch latch = new CountDownLatch(1);
-
-        auth.signInAnonymously().addOnCompleteListener(task -> {
-            result[0] = task.isSuccessful();
-            latch.countDown();
-        });
-
-        try {
-            latch.await();
-        } catch (InterruptedException ignored) {
-        }
-
-        return result[0];
-    }
 
     /**
      * Signs in the user using email and password authentication.

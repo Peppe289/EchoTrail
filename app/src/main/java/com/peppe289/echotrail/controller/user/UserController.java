@@ -21,15 +21,6 @@ public class UserController {
     }
 
     /**
-     * Logs in the user as a guest (anonymous authentication).
-     *
-     * @return {@code true} if the guest login was successful, {@code false} otherwise.
-     */
-    public static boolean loginAsGuest() {
-        return UserDAO.signIn();
-    }
-
-    /**
      * Logs in the user using an email and password.
      *
      * @param email    The user's email address.

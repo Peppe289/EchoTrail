@@ -38,11 +38,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        binding.guestAccessBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, DispatcherActivity.class);
-            startActivity(intent);
-        });
-
         binding.registrazioneBtn.setOnClickListener(view -> {
             MoveActivity.addActivity(MainActivity.this, RegistrazioneActivity.class);
         });
