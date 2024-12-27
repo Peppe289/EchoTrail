@@ -8,22 +8,33 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * The {@code UserController} class serves as an intermediary between the application logic
- * and the data access layer for user authentication and management.
+ * The {@code UserController} class serves as a bridge between the application logic
+ * and the data access layer for user-related operations, such as authentication,
+ * user data management, and session handling.
  * <p>
- * It provides high-level methods for logging in, registering, checking user status,
- * and logging out, delegating the actual implementation to the {@code UserDAO}.
- * </p>
+ * This class provides high-level methods for:
+ * <ul>
+ *     <li>User login and logout</li>
+ *     <li>User registration</li>
+ *     <li>Retrieving user information (e.g., username, email)</li>
+ *     <li>Managing user session data through shared preferences</li>
+ * </ul>
+ * Each operation delegates implementation details to {@code UserDAO} and manages application-level validation.
  */
 public class UserController {
 
     /**
-     * Logs in the user using an email and password.
+     * Logs in the user with the provided email and password.
+     * <p>
+     * This method ensures that no user is already logged in before initiating the login process.
+     * If the login is successful, the provided {@link UserDAO.SignInCallback} is invoked.
+     * </p>
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @param callback The callback to be invoked upon completion.
-     * @throws UserStateException if the user is already signed in.
+     * @param callback A callback to handle the login response.
+     * @throws UserStateException       if a user is already logged in.
+     * @throws IllegalArgumentException if the callback is {@code null}.
      */
     public static void login(String email, String password, UserDAO.SignInCallback callback) {
         validateCallback(callback);
@@ -37,12 +48,17 @@ public class UserController {
 
     /**
      * Registers a new user with the specified email, password, and username.
+     * <p>
+     * The method ensures that no user is already logged in before attempting to register a new account.
+     * Upon successful registration, the provided {@link UserDAO.SignUpCallback} is invoked.
+     * </p>
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @param username The user's username.
-     * @param callback The callback to be invoked upon completion.
-     * @throws UserStateException if the user is already signed in.
+     * @param username The user's desired username.
+     * @param callback A callback to handle the registration response.
+     * @throws UserStateException       if a user is already logged in.
+     * @throws IllegalArgumentException if the callback is {@code null}.
      */
     public static void register(String email, String password, String username, UserDAO.SignUpCallback callback) {
         validateCallback(callback);
@@ -55,7 +71,7 @@ public class UserController {
     }
 
     /**
-     * Checks if a user is currently logged in.
+     * Checks whether a user is currently logged in.
      *
      * @return {@code true} if a user is logged in, {@code false} otherwise.
      */
@@ -64,10 +80,14 @@ public class UserController {
     }
 
     /**
-     * Logs out the currently authenticated user.
+     * Logs out the currently authenticated user and clears associated session data.
+     * <p>
+     * This method ensures that a user is logged in before attempting to log out.
+     * It also clears user-related data stored in shared preferences.
+     * </p>
      *
-     * @param context The context to access shared preferences.
-     * @throws UserStateException if the user is not signed in.
+     * @param context The application context used to access shared preferences.
+     * @throws UserStateException if no user is currently logged in.
      */
     public static void logout(Context context) {
         if (isLoggedIn()) {
@@ -79,10 +99,10 @@ public class UserController {
     }
 
     /**
-     * Retrieves the username of the currently authenticated user.
+     * Retrieves the username of the currently logged-in user.
      *
-     * @param callback The callback to be invoked upon completion.
-     * @throws UserStateException if the user is not signed in.
+     * @param callback A callback to receive the username data.
+     * @throws UserStateException if no user is logged in.
      */
     public static void getUsername(UserDAO.UpdateUsernameViewCallback callback) {
         if (isLoggedIn()) {
@@ -93,10 +113,10 @@ public class UserController {
     }
 
     /**
-     * Retrieves the email of the currently authenticated user.
+     * Retrieves the email of the currently logged-in user.
      *
-     * @param callback The callback to be invoked upon completion.
-     * @throws UserStateException if the user is not signed in.
+     * @param callback A callback to receive the email data.
+     * @throws UserStateException if no user is logged in.
      */
     public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
         if (isLoggedIn()) {
@@ -107,11 +127,12 @@ public class UserController {
     }
 
     /**
-     * Retrieves the user headers from shared preferences.
+     * Retrieves user headers (e.g., username and email) from shared preferences.
+     * If the data is not present locally, it attempts to fetch it from the server.
      *
-     * @param context  The context to access shared preferences.
-     * @param callback The callback to be invoked with the user headers.
-     * @throws UserStateException if the user is not signed in.
+     * @param context  The application context used to access shared preferences.
+     * @param callback A callback to receive the user headers as a map.
+     * @throws UserStateException if no user is logged in.
      */
     public static void getUserHeadersFromPreferences(Context context, UserHeadersCallback callback) {
         if (isLoggedIn()) {
@@ -157,10 +178,10 @@ public class UserController {
     }
 
     /**
-     * Validates that the provided callback is not null.
+     * Validates the provided callback to ensure it is not null.
      *
      * @param callback The callback to validate.
-     * @throws IllegalArgumentException if the callback is null.
+     * @throws IllegalArgumentException if the callback is {@code null}.
      */
     private static void validateCallback(Object callback) {
         if (callback == null) {
@@ -169,14 +190,14 @@ public class UserController {
     }
 
     /**
-     * Callback interface for retrieving user headers.
+     * A callback interface for receiving user headers.
      */
     public interface UserHeadersCallback {
         void onComplete(HashMap<String, String> headers);
     }
 
     /**
-     * Custom exception class for handling user state-related errors.
+     * A custom exception class for handling errors related to user state.
      */
     public static class UserStateException extends RuntimeException {
         public UserStateException(String message) {
