@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/accedi"
-        app:layout_constraintBottom_toTopOf="@id/guestAccessBtn"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
