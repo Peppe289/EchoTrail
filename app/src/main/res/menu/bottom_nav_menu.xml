@@ -11,6 +11,6 @@
         android:title="@string/note" />
     <item
         android:id="@+id/settingsMenu"
-        android:icon="@drawable/baseline_android_24"
+        android:icon="@drawable/account_circle_24px"
         android:title="@string/account" />
 </menu>
