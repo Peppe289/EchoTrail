@@ -3,6 +3,7 @@ package com.peppe289.echotrail;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -12,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
 
 public class AddNotesActivity extends AppCompatActivity {
@@ -33,7 +35,22 @@ public class AddNotesActivity extends AppCompatActivity {
         });
 
         setUpToolBar();
+        setupFocusOnTextArea();
     }
+
+    private void setupFocusOnTextArea() {
+        TextInputEditText editText = binding.inputTextNote;
+        editText.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                // consider this just for focus input text. the keyboard will be shown automatically using
+                // android:windowSoftInputMode="stateVisible" in AndroidManifest.
+                editText.requestFocus();
+            }
+        });
+    }
+
 
     private void setUpToolBar() {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);

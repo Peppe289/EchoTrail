@@ -28,8 +28,12 @@
         app:boxStrokeWidthFocused="0dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputTextNote"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="start" />
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
