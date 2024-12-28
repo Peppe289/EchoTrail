@@ -14,7 +14,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
+import com.peppe289.echotrail.utils.LocationHelper;
+
+import org.osmdroid.util.GeoPoint;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddNotesActivity extends AppCompatActivity {
 
@@ -79,6 +86,38 @@ public class AddNotesActivity extends AppCompatActivity {
     }
 
     private void saveNote() {
-        Toast.makeText(this, "Nota salvata!", Toast.LENGTH_SHORT).show();
+        TextInputEditText editText = binding.inputTextNote;
+
+        if (editText.getText() == null && editText.getText().toString().isEmpty()) {
+            return;
+        }
+
+        String note = editText.getText().toString();
+
+        Map<String, Object> data = new HashMap<>();
+
+        data.put("content", note);
+
+        LocationHelper locationHelper = new LocationHelper(this);
+        locationHelper.requestLocationPermission(this);
+
+        locationHelper.getCurrentLocation(this, this, new LocationHelper.LocationCallback() {
+            @Override
+            public void onLocationUpdated(GeoPoint location) {
+                data.put("latitude", location.getLatitude());
+                data.put("longitude", location.getLongitude());
+                data.put("city", LocationHelper.getCityName(AddNotesActivity.this, location.getLatitude(),
+                        location.getLongitude()));
+                NotesController.saveNote(data, () -> {
+                    Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+            }
+
+            @Override
+            public void onLocationError(String error) {
+                Toast.makeText(AddNotesActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

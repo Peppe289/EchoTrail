@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -12,6 +15,10 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import org.osmdroid.util.GeoPoint;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class LocationHelper {
     private final FusedLocationProviderClient fusedLocationClient;
@@ -46,6 +53,19 @@ public class LocationHelper {
         }).addOnFailureListener(e -> {
             locationCallback.onLocationError("Failed to get location: " + e.getMessage());
         });
+    }
+
+    public static String getCityName(Context context, double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                return addresses.get(0).getLocality();
+            }
+        } catch (IOException e) {
+            Log.e("LocationHelper", "Error getting city name: " + e.getMessage());
+        }
+        return null;
     }
 
     public interface LocationCallback {
