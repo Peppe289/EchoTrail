@@ -55,4 +55,5 @@ dependencies {
     implementation(libs.play.services.maps)
     // Import OpenStreetMap dependencies
     implementation(libs.osmdroid.android)
+    implementation(libs.play.services.location)
 }
