@@ -50,4 +50,9 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+
+    // Import the Google Maps dependencies
+    implementation(libs.play.services.maps)
+    // Import OpenStreetMap dependencies
+    implementation(libs.osmdroid.android)
 }
