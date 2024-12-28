@@ -21,4 +21,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="lascia_il_tuo_ricordo_qui">Lascia il tuo ricordo qui!</string>
     <string name="salva">Salva</string>
+    <string name="le_note_trovate">le note trovate</string>
 </resources>
