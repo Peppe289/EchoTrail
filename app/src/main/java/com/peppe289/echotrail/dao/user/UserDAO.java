@@ -1,6 +1,7 @@
 package com.peppe289.echotrail.dao.user;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -54,6 +55,12 @@ public class UserDAO {
                 callback.onComplete(task.isSuccessful() && task1.isSuccessful());
             });
         });
+    }
+
+    public static void updateNotesList(String noteId) {
+        db.collection("users")
+                .document(getUid())
+                .update("notes", FieldValue.arrayUnion(noteId));
     }
 
     /**

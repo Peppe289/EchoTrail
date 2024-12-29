@@ -3,6 +3,7 @@ package com.peppe289.echotrail.dao.notes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.Map;
 
@@ -20,7 +21,10 @@ public class NotesDAO {
                                 NotesController.SaveNoteCallback callback) {
         db.collection("notes")
                 .add(noteData)
-                .addOnSuccessListener(documentReference ->
-                        callback.onSavedNote());
+                .addOnSuccessListener(documentReference -> {
+                    String noteId = documentReference.getId();
+                    callback.onSavedNote();
+                    UserDAO.updateNotesList(noteId);
+                });
     }
 }
