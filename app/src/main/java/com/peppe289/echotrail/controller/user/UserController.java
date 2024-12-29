@@ -197,6 +197,10 @@ public class UserController {
         }
     }
 
+    public static String getUid() {
+        return UserDAO.getUid();
+    }
+
     /**
      * A callback interface for receiving user headers.
      */

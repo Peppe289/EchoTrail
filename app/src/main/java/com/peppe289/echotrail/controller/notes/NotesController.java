@@ -29,4 +29,7 @@ public class NotesController {
         NotesDAO.saveNote(noteData, callback);
     }
 
+    public static void getAllNotes(UserDAO.NotesListCallback callback) {
+        NotesDAO.getAllNotes(callback);
+    }
 }

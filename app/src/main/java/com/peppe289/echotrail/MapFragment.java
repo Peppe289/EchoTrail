@@ -10,6 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.auth.User;
+import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.utils.LocationHelper;
 import com.peppe289.echotrail.utils.MapHelper;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -53,6 +56,19 @@ public class MapFragment extends Fragment {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
                 mapHelper.setDefaultCenter(); // Set default position.
             }
+        });
+
+        NotesController.getAllNotes(documentSnapshot -> {
+            com.google.firebase.firestore.GeoPoint coordinates = documentSnapshot.getGeoPoint("coordinates");
+            String userID = UserController.getUid();
+            String noteUserID = documentSnapshot.getString("userId");
+
+            if (coordinates == null || userID.equals(noteUserID)) {
+                return;
+            }
+
+            String title = documentSnapshot.getString("city");
+            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()), title);
         });
 
         return view;

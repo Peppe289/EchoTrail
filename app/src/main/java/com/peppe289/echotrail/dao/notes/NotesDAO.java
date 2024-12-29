@@ -45,4 +45,16 @@ public class NotesDAO {
                 })
                 .addOnFailureListener(e -> Log.e("Notes", "Error getting notes: " + e.getMessage()));
     }
+
+    public static void getAllNotes(UserDAO.NotesListCallback callback) {
+        db.collection("notes")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    // Call here callback function
+                    for (DocumentSnapshot noteDoc : querySnapshot) {
+                        callback.onComplete(noteDoc);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Notes", "Error getting notes: " + e.getMessage()));
+    }
 }
