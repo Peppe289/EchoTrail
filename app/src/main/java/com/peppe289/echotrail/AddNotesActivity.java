@@ -26,6 +26,7 @@ import java.util.Map;
 public class AddNotesActivity extends AppCompatActivity {
 
     private ActivityAddNotesBinding binding;
+    private boolean canPush = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +80,12 @@ public class AddNotesActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_save) saveNote();
-        else return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_save) {
+            if (canPush) {
+                canPush = false;
+                saveNote();
+            }
+        } else return super.onOptionsItemSelected(item);
 
         return true;
     }
@@ -89,6 +94,7 @@ public class AddNotesActivity extends AppCompatActivity {
         TextInputEditText editText = binding.inputTextNote;
 
         if (editText.getText() == null && editText.getText().toString().isEmpty()) {
+            canPush = true;
             return;
         }
 
@@ -110,6 +116,8 @@ public class AddNotesActivity extends AppCompatActivity {
                         location.getLongitude()));
                 NotesController.saveNote(data, () -> {
                     Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+                    // like mutex to avoid multiple click on save button.
+                    canPush = true;
                     finish();
                 });
             }
