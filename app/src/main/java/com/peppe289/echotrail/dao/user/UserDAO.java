@@ -123,15 +123,23 @@ public class UserDAO {
     }
 
     public static void getUserNotesList(NotesListCallback callback) {
-        db.collection("users")
-                .document(getUid())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> notesID = (List<String>) documentSnapshot.get("notes");
-                        NotesDAO.getNotes(notesID, callback);
-                    }
-                });
+        try {
+            db.collection("users")
+                    .document(getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            try {
+                                List<String> notesID = (List<String>) documentSnapshot.get("notes");
+                                NotesDAO.getNotes(notesID, callback);
+                            } catch (Exception ignored) {
+                                callback.onComplete(null);
+                            }
+                        }
+                    });
+        } catch (Exception ignored) {
+            callback.onComplete(null);
+        }
     }
 
     /**

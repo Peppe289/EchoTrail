@@ -1,8 +1,10 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,6 +46,21 @@ public class MyNotesActivity extends AppCompatActivity {
 
 
         UserController.getUserNotesList(document -> {
+            if (document == null) {
+                TextView text = new TextView(binding.getRoot().getContext());
+                text.setText("Nessuna nota presente");
+                text.setGravity(Gravity.CENTER);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                );
+                layoutParams.gravity = Gravity.CENTER;
+                text.setLayoutParams(layoutParams);
+
+                cardContainer.addView(text);
+                return;
+            }
+
             String city = document.getString("city");
             String description = document.getString("content");
             Timestamp timestamp = (Timestamp) document.get("timestamp");
