@@ -57,6 +57,8 @@ public class AccountFragment extends Fragment {
             binding.userIcon.setAlpha(1 - percentage);
         });
 
+        binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), MyNotesActivity.class));
+
         // load user headers (name and email) from cache if possible.
         UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
             username.setText(headers.get("username"));

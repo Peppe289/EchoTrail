@@ -25,7 +25,6 @@
             android:id="@+id/authors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Autore"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
             android:layout_marginBottom="5dp"/>
@@ -34,7 +33,7 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Content"
+            android:text=""
             android:textColor="?attr/colorOnSurface"
             android:layout_marginBottom="5dp"/>
 
@@ -45,17 +44,19 @@
             android:layout_marginBottom="5dp">
 
             <TextView
+                android:id="@+id/city"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Luogo"
+                android:text=""
                 android:textColor="?attr/colorOnSurface"
                 android:layout_marginEnd="10dp"/>
 
             <TextView
+                android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Data"
+                android:text=""
                 android:textColor="?attr/colorOnSurface"/>
         </LinearLayout>
     </LinearLayout>

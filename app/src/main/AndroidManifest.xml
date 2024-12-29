@@ -21,6 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EchoTrail"
         tools:targetApi="31">
+        <activity android:name=".MyNotesActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".AddNotesActivity" android:windowSoftInputMode="stateVisible" />
         <activity android:name=".DispatcherActivity" />
         <activity android:name=".RegistrazioneActivity" android:windowSoftInputMode="adjustResize" />

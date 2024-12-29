@@ -1,12 +1,14 @@
 package com.peppe289.echotrail.dao.user;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.peppe289.echotrail.dao.notes.NotesDAO;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * The {@code UserDAO} class provides methods for user authentication and management using Firebase Authentication and Firestore.
@@ -120,6 +122,18 @@ public class UserDAO {
         callback.onComplete(email);
     }
 
+    public static void getUserNotesList(NotesListCallback callback) {
+        db.collection("users")
+                .document(getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> notesID = (List<String>) documentSnapshot.get("notes");
+                        NotesDAO.getNotes(notesID, callback);
+                    }
+                });
+    }
+
     /**
      * Callback interface to handle the result of the sign-up process.
      */
@@ -166,5 +180,9 @@ public class UserDAO {
          * @param email The email address of the currently authenticated user.
          */
         void onComplete(String email);
+    }
+
+    public interface NotesListCallback {
+        void onComplete(DocumentSnapshot notes);
     }
 }

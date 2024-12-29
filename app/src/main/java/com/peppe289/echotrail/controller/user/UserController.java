@@ -189,6 +189,14 @@ public class UserController {
         }
     }
 
+    public static void getUserNotesList(UserDAO.NotesListCallback callback) {
+        if (isLoggedIn()) {
+            UserDAO.getUserNotesList(callback);
+        } else {
+            throw new UserStateException("User is not signed in.");
+        }
+    }
+
     /**
      * A callback interface for receiving user headers.
      */
