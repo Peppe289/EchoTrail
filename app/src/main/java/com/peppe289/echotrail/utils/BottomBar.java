@@ -43,6 +43,8 @@ public class BottomBar {
     @Nullable
     private static FragmentActivity activity = null;
 
+    private static MapFragment mapFragment = null;
+
     /**
      * Returns the resource ID of the bottom navigation view.
      *
@@ -116,7 +118,10 @@ public class BottomBar {
         } else if (triggerBtn == getSettingsBtnId()) {
             selectedFragment = new AccountFragment();
         } else if (triggerBtn == getMapBtnId()) {
-            selectedFragment = new MapFragment();
+            if (mapFragment == null)
+                mapFragment = new MapFragment();
+
+            selectedFragment = mapFragment;
         } else {
             return false;
         }
