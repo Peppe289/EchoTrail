@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.peppe289.echotrail"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.peppe289.echotrail"
         minSdk = 31
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
