@@ -1,6 +1,7 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -50,6 +51,8 @@ public class MapFragment extends Fragment {
     com.google.android.material.search.SearchBar searchBar;
     private RecyclerView suggestionsList;
     private SuggestionsAdapter adapter;
+    private final Handler searchHandler = new Handler();
+    private Runnable searchRunnable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,7 +97,14 @@ public class MapFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                fetchSuggestions(s.toString());
+                String query = s.toString();
+
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+
+                searchRunnable = () -> fetchSuggestions(query);
+                searchHandler.postDelayed(searchRunnable, 300);
             }
         });
 
