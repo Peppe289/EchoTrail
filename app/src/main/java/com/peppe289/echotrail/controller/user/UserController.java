@@ -8,33 +8,39 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * The {@code UserController} class serves as a bridge between the application logic
- * and the data access layer for user-related operations, such as authentication,
- * user data management, and session handling.
+ * The {@code UserController} class acts as an intermediary between the application logic
+ * and the {@link UserDAO}, providing high-level user-related operations such as login,
+ * registration, session management, and data retrieval.
  * <p>
- * This class provides high-level methods for:
+ * This class abstracts the complexities of interacting with Firebase Authentication,
+ * Shared Preferences, and other backend services, ensuring consistency and maintaining
+ * the application's state integrity.
+ * </p>
+ * <p>
+ * Core functionalities include:
  * <ul>
- *     <li>User login and logout</li>
- *     <li>User registration</li>
- *     <li>Retrieving user information (e.g., username, email)</li>
- *     <li>Managing user session data through shared preferences</li>
+ *     <li>Login and registration for users.</li>
+ *     <li>Checking if a user is logged in.</li>
+ *     <li>Session handling, including logout and user data management.</li>
+ *     <li>Fetching and updating user information like username and email.</li>
+ *     <li>Managing shared preferences for user headers.</li>
  * </ul>
- * Each operation delegates implementation details to {@code UserDAO} and manages application-level validation.
+ * </p>
  */
 public class UserController {
 
     /**
-     * Logs in the user with the provided email and password.
+     * Logs in a user using their email and password.
      * <p>
-     * This method ensures that no user is already logged in before initiating the login process.
-     * If the login is successful, the provided {@link UserDAO.SignInCallback} is invoked.
+     * This method ensures no user is already logged in before initiating the login process.
+     * On successful login, it invokes the provided {@link UserDAO.SignInCallback}.
      * </p>
      *
      * @param email    The user's email address.
      * @param password The user's password.
-     * @param callback A callback to handle the login response.
+     * @param callback A callback for handling the login result.
      * @throws UserStateException       if a user is already logged in.
-     * @throws IllegalArgumentException if the callback is {@code null}.
+     * @throws IllegalArgumentException if the provided callback is {@code null}.
      */
     public static void login(String email, String password, UserDAO.SignInCallback callback) {
         validateCallback(callback);
@@ -47,18 +53,18 @@ public class UserController {
     }
 
     /**
-     * Registers a new user with the specified email, password, and username.
+     * Registers a new user with the provided credentials and username.
      * <p>
-     * The method ensures that no user is already logged in before attempting to register a new account.
-     * Upon successful registration, the provided {@link UserDAO.SignUpCallback} is invoked.
+     * Ensures no user is logged in before attempting to register a new account.
+     * On successful registration, invokes the provided {@link UserDAO.SignUpCallback}.
      * </p>
      *
      * @param email    The user's email address.
      * @param password The user's password.
      * @param username The user's desired username.
-     * @param callback A callback to handle the registration response.
+     * @param callback A callback for handling the registration result.
      * @throws UserStateException       if a user is already logged in.
-     * @throws IllegalArgumentException if the callback is {@code null}.
+     * @throws IllegalArgumentException if the provided callback is {@code null}.
      */
     public static void register(String email, String password, String username, UserDAO.SignUpCallback callback) {
         validateCallback(callback);
@@ -71,7 +77,7 @@ public class UserController {
     }
 
     /**
-     * Checks whether a user is currently logged in.
+     * Checks if a user is currently authenticated and logged in.
      *
      * @return {@code true} if a user is logged in, {@code false} otherwise.
      */
@@ -80,28 +86,27 @@ public class UserController {
     }
 
     /**
-     * Logs out the currently authenticated user and clears associated session data.
+     * Logs out the currently authenticated user.
      * <p>
-     * This method ensures that a user is logged in before attempting to log out.
-     * It also clears user-related data stored in shared preferences.
+     * Clears associated session data from shared preferences.
      * </p>
      *
-     * @param context The application context used to access shared preferences.
+     * @param context The application context used to clear shared preferences.
      * @throws UserStateException if no user is currently logged in.
      */
     public static void logout(Context context) {
         if (isLoggedIn()) {
             UserDAO.signOut();
-            PreferencesHelper.clearUserHeaders(context); // Clear user headers from shared preferences
+            PreferencesHelper.clearUserHeaders(context);
         } else {
             throw new UserStateException("User is not signed in.");
         }
     }
 
     /**
-     * Retrieves the username of the currently logged-in user.
+     * Retrieves the username of the authenticated user.
      *
-     * @param callback A callback to receive the username data.
+     * @param callback A callback to handle the retrieved username.
      * @throws UserStateException if no user is logged in.
      */
     public static void getUsername(UserDAO.UpdateUsernameViewCallback callback) {
@@ -113,9 +118,9 @@ public class UserController {
     }
 
     /**
-     * Retrieves the email of the currently logged-in user.
+     * Retrieves the email of the authenticated user.
      *
-     * @param callback A callback to receive the email data.
+     * @param callback A callback to handle the retrieved email.
      * @throws UserStateException if no user is logged in.
      */
     public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
@@ -127,11 +132,11 @@ public class UserController {
     }
 
     /**
-     * Retrieves user headers (e.g., username and email) from shared preferences.
-     * If the data is not present locally, it attempts to fetch it from the server.
+     * Retrieves user headers (username and email) from shared preferences.
+     * If not locally available, fetches data from the backend.
      *
-     * @param context  The application context used to access shared preferences.
-     * @param callback A callback to receive the user headers as a map.
+     * @param context  The application context to access shared preferences.
+     * @param callback A callback to handle the retrieved headers.
      * @throws UserStateException if no user is logged in.
      */
     public static void getUserHeadersFromPreferences(Context context, UserHeadersCallback callback) {
@@ -143,13 +148,12 @@ public class UserController {
     }
 
     /**
-     * Updates the user headers (e.g., username and email) stored in shared preferences.
+     * Updates the user headers in shared preferences to reflect the latest data.
      * <p>
-     * This method synchronizes the shared preferences with the latest user data
-     * retrieved from the server, if there are discrepancies.
+     * Synchronizes preferences with the latest server-side data.
      * </p>
      *
-     * @param context The application context used to access shared preferences.
+     * @param context The application context to access shared preferences.
      * @throws UserStateException if no user is logged in.
      */
     public static void updateUserHeadersToPreferences(Context context) {
@@ -162,14 +166,14 @@ public class UserController {
 
         username = PreferencesHelper.retrieveName(context);
         getUsername(usernameDB -> {
-            if (Objects.equals(usernameDB, username)) {
+            if (!Objects.equals(usernameDB, username)) {
                 PreferencesHelper.updateName(context, usernameDB);
             }
         });
 
         email = PreferencesHelper.retrieveEmail(context);
         getEmail(emailDB -> {
-            if (Objects.equals(email, emailDB)) {
+            if (!Objects.equals(email, emailDB)) {
                 PreferencesHelper.updateEmail(context, emailDB);
             }
         });
@@ -178,7 +182,30 @@ public class UserController {
     }
 
     /**
-     * Validates the provided callback to ensure it is not null.
+     * Fetches the list of user notes from the backend.
+     *
+     * @param callback A callback to handle the retrieved notes list.
+     * @throws UserStateException if no user is logged in.
+     */
+    public static void getUserNotesList(UserDAO.NotesListCallback callback) {
+        if (isLoggedIn()) {
+            UserDAO.getUserNotesList(callback);
+        } else {
+            throw new UserStateException("User is not signed in.");
+        }
+    }
+
+    /**
+     * Retrieves the unique user ID of the authenticated user.
+     *
+     * @return The UID of the authenticated user.
+     */
+    public static String getUid() {
+        return UserDAO.getUid();
+    }
+
+    /**
+     * Validates a callback to ensure it is not null.
      *
      * @param callback The callback to validate.
      * @throws IllegalArgumentException if the callback is {@code null}.
@@ -189,27 +216,15 @@ public class UserController {
         }
     }
 
-    public static void getUserNotesList(UserDAO.NotesListCallback callback) {
-        if (isLoggedIn()) {
-            UserDAO.getUserNotesList(callback);
-        } else {
-            throw new UserStateException("User is not signed in.");
-        }
-    }
-
-    public static String getUid() {
-        return UserDAO.getUid();
-    }
-
     /**
-     * A callback interface for receiving user headers.
+     * Callback interface for receiving user header data.
      */
     public interface UserHeadersCallback {
         void onComplete(HashMap<String, String> headers);
     }
 
     /**
-     * A custom exception class for handling errors related to user state.
+     * Exception class for handling user state-related errors.
      */
     public static class UserStateException extends RuntimeException {
         public UserStateException(String message) {
