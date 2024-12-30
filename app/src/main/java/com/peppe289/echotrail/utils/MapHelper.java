@@ -62,6 +62,12 @@ public class MapHelper {
         }
     }
 
+    public void setMapView(GeoPoint point) {
+        if (mapView != null) {
+            mapView.getController().setCenter(point);
+        }
+    }
+
     public void addMarker(GeoPoint point, String title) {
         if (mapView != null) {
             GeoPoint matchedPoint = null;

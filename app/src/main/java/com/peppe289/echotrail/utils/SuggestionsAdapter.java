@@ -12,10 +12,22 @@ import java.util.List;
 
 public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.SuggestionViewHolder> {
 
-    private List<String> suggestions;
+    public static class CityProprieties {
+        public double latitude;
+        public double longitude;
+        public String name;
+
+        public CityProprieties(String name, double latitude, double longitude) {
+            this.name = name;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
+
+    private List<CityProprieties> suggestions;
     private OnSuggestionSelectedListener listener;
 
-    public SuggestionsAdapter(List<String> suggestions, OnSuggestionSelectedListener listener) {
+    public SuggestionsAdapter(List<CityProprieties> suggestions, OnSuggestionSelectedListener listener) {
         this.suggestions = suggestions;
         this.listener = listener;
     }
@@ -29,9 +41,11 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SuggestionViewHolder holder, int position) {
-        String suggestion = suggestions.get(position);
+        String suggestion = suggestions.get(position).name;
+        double latitude = suggestions.get(position).latitude;
+        double longitude = suggestions.get(position).longitude;
         holder.textView.setText(suggestion);
-        holder.itemView.setOnClickListener(v -> listener.onSuggestionSelected(suggestion));
+        holder.itemView.setOnClickListener(v -> listener.onSuggestionSelected(suggestion, latitude, longitude));
     }
 
     @Override
@@ -49,6 +63,6 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
     }
 
     public interface OnSuggestionSelectedListener {
-        void onSuggestionSelected(String suggestion);
+        void onSuggestionSelected(String suggestion, double latitude, double longitude);
     }
 }

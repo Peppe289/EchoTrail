@@ -45,7 +45,7 @@ import okhttp3.Response;
  */
 public class MapFragment extends Fragment {
 
-    private final List<String> suggestions = new ArrayList<>();
+    private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
     private final OkHttpClient client = new OkHttpClient();
     com.google.android.material.search.SearchView searchView;
     com.google.android.material.search.SearchBar searchBar;
@@ -53,6 +53,7 @@ public class MapFragment extends Fragment {
     private SuggestionsAdapter adapter;
     private final Handler searchHandler = new Handler();
     private Runnable searchRunnable;
+    private MapHelper mapHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class MapFragment extends Fragment {
         floatingActionButton.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class));
 
         MapView mapView = view.findViewById(R.id.map);
-        MapHelper mapHelper = new MapHelper(mapView);
+        mapHelper = new MapHelper(mapView);
         mapHelper.initializeMap(requireContext());
 
         adapter = new SuggestionsAdapter(suggestions, this::onSuggestionSelected);
@@ -163,7 +164,11 @@ public class MapFragment extends Fragment {
                         for (int i = 0; i < results.length(); i++) {
                             JSONObject result = results.getJSONObject(i);
                             String displayName = result.getString("display_name");
-                            suggestions.add(displayName);
+                            suggestions.add(new SuggestionsAdapter.CityProprieties(
+                                    displayName,
+                                    result.getDouble("lat"),
+                                    result.getDouble("lon")
+                            ));
                         }
 
                         requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
@@ -177,11 +182,10 @@ public class MapFragment extends Fragment {
         });
     }
 
-    private void onSuggestionSelected(String cityName) {
+    private void onSuggestionSelected(String cityName, double latitude, double longitude) {
         searchBar.setText(cityName);
         searchView.hide();
         suggestionsList.setVisibility(View.GONE);
-        // TODO: change map view when select options.
-        Log.d("MapFragment", "Selected: " + cityName);
+        mapHelper.setMapView(new GeoPoint(latitude, longitude));
     }
 }
