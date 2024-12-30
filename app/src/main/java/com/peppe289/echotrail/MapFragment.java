@@ -1,6 +1,9 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,23 +11,45 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.auth.User;
+import com.google.android.material.search.SearchView;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.utils.LocationHelper;
 import com.peppe289.echotrail.utils.MapHelper;
 import com.peppe289.echotrail.utils.MoveActivity;
+import com.peppe289.echotrail.utils.SuggestionsAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
 public class MapFragment extends Fragment {
+
+    private final List<String> suggestions = new ArrayList<>();
+    private final OkHttpClient client = new OkHttpClient();
+    com.google.android.material.search.SearchView searchView;
+    com.google.android.material.search.SearchBar searchBar;
+    private RecyclerView suggestionsList;
+    private SuggestionsAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +66,37 @@ public class MapFragment extends Fragment {
         MapView mapView = view.findViewById(R.id.map);
         MapHelper mapHelper = new MapHelper(mapView);
         mapHelper.initializeMap(requireContext());
+
+        adapter = new SuggestionsAdapter(suggestions, this::onSuggestionSelected);
+        suggestionsList = view.findViewById(R.id.suggestions_list);
+        suggestionsList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        suggestionsList.setAdapter(adapter);
+
+        searchView = view.findViewById(R.id.search_view);
+        searchBar = view.findViewById(R.id.search_bar);
+
+        searchView.addTransitionListener((sView, oldState, newState) -> {
+            if (newState == SearchView.TransitionState.SHOWN) {
+                suggestionsList.setVisibility(View.VISIBLE);
+            } else if (newState == SearchView.TransitionState.HIDDEN) {
+                suggestionsList.setVisibility(View.GONE);
+            }
+        });
+
+        searchView.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                fetchSuggestions(s.toString());
+            }
+        });
 
         LocationHelper locationHelper = new LocationHelper(requireContext());
         locationHelper.requestLocationPermission(getActivity());
@@ -72,5 +128,50 @@ public class MapFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void fetchSuggestions(String query) {
+        String url = "https://nominatim.openstreetmap.org/search?q=" + query + "&format=json&addressdetails=1";
+
+        Request request = new Request.Builder().url(url).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(), "Errore nella richiesta", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    try {
+                        JSONArray results = new JSONArray(responseBody);
+                        suggestions.clear();
+                        for (int i = 0; i < results.length(); i++) {
+                            JSONObject result = results.getJSONObject(i);
+                            String displayName = result.getString("display_name");
+                            suggestions.add(displayName);
+                        }
+
+                        requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+                    } catch (Exception e) {
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(requireContext(), "Errore nel parsing della risposta", Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                }
+            }
+        });
+    }
+
+    private void onSuggestionSelected(String cityName) {
+        searchBar.setText(cityName);
+        searchView.hide();
+        suggestionsList.setVisibility(View.GONE);
+        // TODO: change map view when select options.
+        Log.d("MapFragment", "Selected: " + cityName);
     }
 }
