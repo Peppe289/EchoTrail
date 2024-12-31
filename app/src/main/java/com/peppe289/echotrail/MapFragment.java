@@ -1,5 +1,6 @@
 package com.peppe289.echotrail;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -10,7 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultCaller;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.ActivityResultRegistry;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,6 +62,8 @@ public class MapFragment extends Fragment {
     private final Handler searchHandler = new Handler();
     private Runnable searchRunnable;
     private MapHelper mapHelper;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
+    private LocationHelper locationHelper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +97,16 @@ public class MapFragment extends Fragment {
             }
         });
 
+        requestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        setDefatulLocation();
+                    } else {
+                        Toast.makeText(requireContext(), "Permesso alla posizione negato!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
         searchView.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -109,21 +129,8 @@ public class MapFragment extends Fragment {
             }
         });
 
-        LocationHelper locationHelper = new LocationHelper(requireContext());
-        locationHelper.requestLocationPermission(getActivity());
-
-        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
-            @Override
-            public void onLocationUpdated(GeoPoint location) {
-                mapHelper.setMapCenter(location);
-            }
-
-            @Override
-            public void onLocationError(String error) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
-                mapHelper.setDefaultCenter(); // Set default position.
-            }
-        });
+        locationHelper = new LocationHelper(requireContext());
+        locationHelper.requestLocationPermission(requestPermissionLauncher);
 
         NotesController.getAllNotes(documentSnapshot -> {
             com.google.firebase.firestore.GeoPoint coordinates = documentSnapshot.getGeoPoint("coordinates");
@@ -139,6 +146,21 @@ public class MapFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setDefatulLocation() {
+        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
+            @Override
+            public void onLocationUpdated(GeoPoint location) {
+                mapHelper.setMapCenter(location);
+            }
+
+            @Override
+            public void onLocationError(String error) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                mapHelper.setDefaultCenter(); // Set default position.
+            }
+        });
     }
 
     private void fetchSuggestions(String query) {
