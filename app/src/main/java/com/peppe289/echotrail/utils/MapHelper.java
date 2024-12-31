@@ -18,7 +18,10 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A utility class for managing and customizing a {@link MapView} instance using the OSMdroid library.
@@ -42,7 +45,7 @@ import java.util.HashMap;
  */
 public class MapHelper {
     private final MapView mapView;
-    private final HashMap<GeoPoint, Integer> markerCounts;
+    private final HashMap<GeoPoint, List<String>> markerCounts;
     private Marker marker;
     private Context context;
 
@@ -105,15 +108,25 @@ public class MapHelper {
         }
     }
 
+    /***
+     * This call back should be have list of all notes and GeoPoint for actual note.
+     * This can be usefully used to show all notes in default range.
+     */
+    public interface OnMarkerClickListener {
+        boolean onMarkerClick(HashMap<GeoPoint, List<String>> markerCounts, GeoPoint point);
+    }
+
     /**
      * Adds a marker at the specified geographic point with the given title. If a marker already
      * exists near the specified point, it increments a counter on the existing marker instead of
      * adding a new one.
      *
      * @param point the {@link GeoPoint} where the marker should be added
-     * @param title the title of the marker
+     * @param noteID the ID of the note associated with the marker
+     * @param callback the callback to be invoked when the marker is clicked.
+     *                 This should be open new activity for show all details of notes.
      */
-    public void addMarker(GeoPoint point, String title) {
+    public void addMarker(GeoPoint point, String noteID, OnMarkerClickListener callback) {
         if (mapView != null) {
             GeoPoint matchedPoint = null;
             for (GeoPoint existingPoint : markerCounts.keySet()) {
@@ -124,17 +137,21 @@ public class MapHelper {
             }
 
             if (matchedPoint != null) {
-                int count = markerCounts.get(matchedPoint) + 1;
-                markerCounts.put(matchedPoint, count);
+                // here should not be never null
+                List<String> notesID = markerCounts.get(matchedPoint);
+                int count = Objects.requireNonNull(notesID).size() + 1;
+                notesID.add(noteID);
+                markerCounts.put(matchedPoint, notesID);
 
                 updateMarkerIcon(matchedPoint, count);
             } else {
                 Marker newMarker = new Marker(mapView);
-                newMarker.setTitle(title);
                 newMarker.setPosition(point);
+                newMarker.setOnMarkerClickListener((marker, mapView) -> callback.onMarkerClick(markerCounts, point));
                 mapView.getOverlays().add(newMarker);
-
-                markerCounts.put(point, 1);
+                List<String> notesID = new ArrayList<>();
+                notesID.add(noteID);
+                markerCounts.put(point, notesID);
             }
             mapView.invalidate();
         }

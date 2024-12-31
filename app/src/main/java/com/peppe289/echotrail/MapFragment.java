@@ -40,6 +40,7 @@ import org.osmdroid.views.MapView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -141,11 +142,32 @@ public class MapFragment extends Fragment {
                 return;
             }
 
-            String title = documentSnapshot.getString("city");
-            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()), title);
+            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()), documentSnapshot.getId(), (markerCounter, point) -> {
+                GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
+                Log.d("MapFragment", "onMarkerClick: " + clickedPoint.toString());
+
+                // if this event is triggered, it means that the user has clicked on a marker, so, this hashmap can't be null
+                List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
+                for (GeoPoint geoPoint : points) {
+                    for (String id : markerCounter.get(geoPoint)) {
+                        if (arePointsClose(geoPoint, clickedPoint)) {
+                            Log.i("MapFragment", "Note ID: " + id);
+                        }
+                    }
+                }
+
+                return true;
+            });
         });
 
         return view;
+    }
+
+    /**
+     * Check if two points are close to each other (range of 10mt).
+     */
+    private boolean arePointsClose(GeoPoint first, GeoPoint second) {
+        return first.distanceToAsDouble(second) < 10.0;
     }
 
     private void setDefatulLocation() {
