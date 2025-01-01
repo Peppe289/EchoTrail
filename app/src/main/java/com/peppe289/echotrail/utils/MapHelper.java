@@ -8,9 +8,13 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.peppe289.echotrail.R;
 
+import org.json.JSONException;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -18,10 +22,17 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A utility class for managing and customizing a {@link MapView} instance using the OSMdroid library.
@@ -48,6 +59,7 @@ public class MapHelper {
     private final HashMap<GeoPoint, List<String>> markerCounts;
     private Marker marker;
     private Context context;
+    private static final OkHttpClient client = new OkHttpClient();
 
     /**
      * Constructs a new instance of the {@link MapHelper} class.
@@ -173,6 +185,36 @@ public class MapHelper {
                 }
             }
         }
+    }
+
+    public static void fetchSuggestions(String query, OnFetchSuggestions callback) {
+        String url = "https://nominatim.openstreetmap.org/search?q=" + query + "&format=json&addressdetails=1";
+
+        Request request = new Request.Builder().url(url).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                callback.onErrorMessage("Errore nella richiesta");
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseBody = response.body().string();
+                    try {
+                        callback.onFetchSuggestions(responseBody);
+                    } catch (Exception e) {
+                        callback.onErrorMessage("Errore nel parsing della risposta");
+                    }
+                }
+            }
+        });
+    }
+
+    public interface OnFetchSuggestions {
+        void onFetchSuggestions(String responseBody) throws JSONException;
+        void onErrorMessage(String error);
     }
 
     /**

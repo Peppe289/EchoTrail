@@ -33,6 +33,7 @@ import com.peppe289.echotrail.utils.MoveActivity;
 import com.peppe289.echotrail.utils.SuggestionsAdapter;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -55,7 +56,6 @@ import okhttp3.Response;
 public class MapFragment extends Fragment {
 
     private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
-    private final OkHttpClient client = new OkHttpClient();
     com.google.android.material.search.SearchView searchView;
     com.google.android.material.search.SearchBar searchBar;
     private RecyclerView suggestionsList;
@@ -125,7 +125,31 @@ public class MapFragment extends Fragment {
                     searchHandler.removeCallbacks(searchRunnable);
                 }
 
-                searchRunnable = () -> fetchSuggestions(query);
+                searchRunnable = () -> MapHelper.fetchSuggestions(query, new MapHelper.OnFetchSuggestions() {
+                    @Override
+                    public void onFetchSuggestions(String responseBody) throws JSONException {
+                        JSONArray results = new JSONArray(responseBody);
+                        suggestions.clear();
+                        for (int i = 0; i < results.length(); i++) {
+                            JSONObject result = results.getJSONObject(i);
+                            String displayName = result.getString("display_name");
+                            suggestions.add(new SuggestionsAdapter.CityProprieties(
+                                    displayName,
+                                    result.getDouble("lat"),
+                                    result.getDouble("lon")
+                            ));
+                        }
+
+                        requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+                    }
+
+                    @Override
+                    public void onErrorMessage(String error) {
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                });
                 searchHandler.postDelayed(searchRunnable, 300);
             }
         });
@@ -178,46 +202,7 @@ public class MapFragment extends Fragment {
         });
     }
 
-    private void fetchSuggestions(String query) {
-        String url = "https://nominatim.openstreetmap.org/search?q=" + query + "&format=json&addressdetails=1";
 
-        Request request = new Request.Builder().url(url).build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(), "Errore nella richiesta", Toast.LENGTH_SHORT).show()
-                );
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
-                    try {
-                        JSONArray results = new JSONArray(responseBody);
-                        suggestions.clear();
-                        for (int i = 0; i < results.length(); i++) {
-                            JSONObject result = results.getJSONObject(i);
-                            String displayName = result.getString("display_name");
-                            suggestions.add(new SuggestionsAdapter.CityProprieties(
-                                    displayName,
-                                    result.getDouble("lat"),
-                                    result.getDouble("lon")
-                            ));
-                        }
-
-                        requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
-                    } catch (Exception e) {
-                        requireActivity().runOnUiThread(() ->
-                                Toast.makeText(requireContext(), "Errore nel parsing della risposta", Toast.LENGTH_SHORT).show()
-                        );
-                    }
-                }
-            }
-        });
-    }
 
     private void onSuggestionSelected(String cityName, double latitude, double longitude) {
         searchBar.setText(cityName);
