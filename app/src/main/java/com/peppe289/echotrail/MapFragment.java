@@ -1,5 +1,6 @@
 package com.peppe289.echotrail;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -196,6 +197,7 @@ public class MapFragment extends Fragment {
 
 
     // Process suggestions response
+    @SuppressLint("NotifyDataSetChanged")
     private void processSuggestionsResponse(String responseBody) throws JSONException {
         JSONArray results = new JSONArray(responseBody);
         suggestions.clear();
