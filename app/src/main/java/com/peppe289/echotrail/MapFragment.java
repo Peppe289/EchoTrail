@@ -1,7 +1,6 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -34,6 +33,10 @@ import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,14 +47,14 @@ public class MapFragment extends Fragment {
     // Data and adapter
     private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
     // Handlers and helpers
-    private final Handler searchHandler = new Handler();
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture;
     // UI components
     private com.google.android.material.search.SearchView searchView;
     private com.google.android.material.search.SearchBar searchBar;
     private RecyclerView suggestionsList;
     private FloatingActionButton floatingActionButton;
     private SuggestionsAdapter adapter;
-    private Runnable searchRunnable;
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
     private ActivityResultLauncher<String> requestPermissionLauncher;
@@ -167,11 +170,11 @@ public class MapFragment extends Fragment {
 
     // Handle search query
     private void handleSearchQuery(String query) {
-        if (searchRunnable != null) {
-            searchHandler.removeCallbacks(searchRunnable);
+        if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            scheduledFuture.cancel(false);
         }
 
-        searchRunnable = () -> MapHelper.fetchSuggestions(query, new MapHelper.OnFetchSuggestions() {
+        scheduledFuture = executorService.schedule(() -> MapHelper.fetchSuggestions(query, new MapHelper.OnFetchSuggestions() {
             @Override
             public void onFetchSuggestions(String responseBody) throws JSONException {
                 processSuggestionsResponse(responseBody);
@@ -181,10 +184,9 @@ public class MapFragment extends Fragment {
             public void onErrorMessage(String error) {
                 requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show());
             }
-        });
-
-        searchHandler.postDelayed(searchRunnable, 300);
+        }), 300, TimeUnit.MILLISECONDS);
     }
+
 
     // Process suggestions response
     private void processSuggestionsResponse(String responseBody) throws JSONException {
