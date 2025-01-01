@@ -33,6 +33,7 @@ import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class MapFragment extends Fragment {
 
     // Data and adapter
@@ -157,10 +159,15 @@ public class MapFragment extends Fragment {
                 // Handle marker click
                 List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
                 for (GeoPoint geoPoint : points) {
-                    for (String id : markerCounter.get(geoPoint)) {
-                        if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
-                            Log.i("MapFragment", "Note ID: " + id);
+                    try {
+                        for (String id : Objects.requireNonNull(markerCounter.get(geoPoint))) {
+                            if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
+                                Log.i("MapFragment", "Note ID: " + id);
+                            }
                         }
+                    } catch (NullPointerException e) {
+                        // this should never happen because the markerCounter should never be null int this loop.
+                        Log.e("MapFragment", "Error while handling marker click");
                     }
                 }
                 return true;
