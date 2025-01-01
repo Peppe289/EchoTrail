@@ -27,6 +27,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
     private ActivityAddNotesBinding binding;
     private boolean canPush = true;
+    private LocationHelper locationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,12 @@ public class AddNotesActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        locationHelper = new LocationHelper(this);
+        if (!locationHelper.locationPermissionIsGranted(this)) {
+            Toast.makeText(AddNotesActivity.this, "Permesso alla posizone non concesso!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         setUpToolBar();
         setupFocusOnTextArea();
@@ -103,12 +110,6 @@ public class AddNotesActivity extends AppCompatActivity {
         Map<String, Object> data = new HashMap<>();
 
         data.put("content", note);
-
-        LocationHelper locationHelper = new LocationHelper(this);
-        if (!locationHelper.locationPermissionIsGranted(this)) {
-            Toast.makeText(AddNotesActivity.this, "Permesso alla posizone non concesso!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
 
         locationHelper.getCurrentLocation(this, this, new LocationHelper.LocationCallback() {
             @Override
