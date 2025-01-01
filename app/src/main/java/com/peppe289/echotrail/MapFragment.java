@@ -55,16 +55,22 @@ import okhttp3.Response;
  */
 public class MapFragment extends Fragment {
 
-    private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
-    com.google.android.material.search.SearchView searchView;
-    com.google.android.material.search.SearchBar searchBar;
+    // UI components
+    private com.google.android.material.search.SearchView searchView;
+    private com.google.android.material.search.SearchBar searchBar;
     private RecyclerView suggestionsList;
+    private FloatingActionButton floatingActionButton;
+
+    // Data and adapter
+    private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
     private SuggestionsAdapter adapter;
+
+    // Handlers and helpers
     private final Handler searchHandler = new Handler();
     private Runnable searchRunnable;
     private MapHelper mapHelper;
-    private ActivityResultLauncher<String> requestPermissionLauncher;
     private LocationHelper locationHelper;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,21 +81,42 @@ public class MapFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
-        floatingActionButton.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class));
 
+        initializeUI(view);
+        initializeHelpers();
+        requestLocationPermission();
+        fetchNotes();
+
+        return view;
+    }
+
+    // Initialize UI components
+    private void initializeUI(View view) {
+        // Floating Action Button setup
+        floatingActionButton = view.findViewById(R.id.floatingActionButton);
+        floatingActionButton.setOnClickListener(e ->
+                MoveActivity.addActivity(getActivity(), AddNotesActivity.class)
+        );
+
+        // Map setup
         MapView mapView = view.findViewById(R.id.map);
         mapHelper = new MapHelper(mapView);
         mapHelper.initializeMap(requireContext());
 
-        adapter = new SuggestionsAdapter(suggestions, this::onSuggestionSelected);
+        // Suggestions list setup
         suggestionsList = view.findViewById(R.id.suggestions_list);
         suggestionsList.setLayoutManager(new LinearLayoutManager(requireContext()));
+        adapter = new SuggestionsAdapter(suggestions, this::onSuggestionSelected);
         suggestionsList.setAdapter(adapter);
 
+        // SearchView and SearchBar setup
         searchView = view.findViewById(R.id.search_view);
         searchBar = view.findViewById(R.id.search_bar);
+        setupSearchView();
+    }
 
+    // Setup SearchView behavior
+    private void setupSearchView() {
         searchView.addTransitionListener((sView, oldState, newState) -> {
             if (newState == SearchView.TransitionState.SHOWN) {
                 suggestionsList.setVisibility(View.VISIBLE);
@@ -98,96 +125,109 @@ public class MapFragment extends Fragment {
             }
         });
 
+        searchView.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                handleSearchQuery(s.toString());
+            }
+        });
+    }
+
+    // Initialize helpers and request permission
+    private void initializeHelpers() {
+        locationHelper = new LocationHelper(requireContext());
+    }
+
+    private void requestLocationPermission() {
         requestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
                     if (isGranted) {
-                        setDefatulLocation();
+                        setDefaultLocation();
                     } else {
                         Toast.makeText(requireContext(), "Permesso alla posizione negato!", Toast.LENGTH_SHORT).show();
                     }
-                });
-
-        searchView.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String query = s.toString();
-
-                if (searchRunnable != null) {
-                    searchHandler.removeCallbacks(searchRunnable);
                 }
+        );
 
-                searchRunnable = () -> MapHelper.fetchSuggestions(query, new MapHelper.OnFetchSuggestions() {
-                    @Override
-                    public void onFetchSuggestions(String responseBody) throws JSONException {
-                        JSONArray results = new JSONArray(responseBody);
-                        suggestions.clear();
-                        for (int i = 0; i < results.length(); i++) {
-                            JSONObject result = results.getJSONObject(i);
-                            String displayName = result.getString("display_name");
-                            suggestions.add(new SuggestionsAdapter.CityProprieties(
-                                    displayName,
-                                    result.getDouble("lat"),
-                                    result.getDouble("lon")
-                            ));
-                        }
-
-                        requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
-                    }
-
-                    @Override
-                    public void onErrorMessage(String error) {
-                        requireActivity().runOnUiThread(() ->
-                                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-                        );
-                    }
-                });
-                searchHandler.postDelayed(searchRunnable, 300);
-            }
-        });
-
-        locationHelper = new LocationHelper(requireContext());
         locationHelper.requestLocationPermission(requestPermissionLauncher);
+    }
 
+    // Fetch notes and add markers
+    private void fetchNotes() {
         NotesController.getAllNotes(documentSnapshot -> {
             com.google.firebase.firestore.GeoPoint coordinates = documentSnapshot.getGeoPoint("coordinates");
             String userID = UserController.getUid();
             String noteUserID = documentSnapshot.getString("userId");
 
-            if (coordinates == null || userID.equals(noteUserID)) {
-                return;
-            }
+            if (coordinates == null || userID.equals(noteUserID)) return;
 
-            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()), documentSnapshot.getId(), (markerCounter, point) -> {
-                GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
-                Log.d("MapFragment", "onMarkerClick: " + clickedPoint.toString());
+            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()),
+                    documentSnapshot.getId(), (markerCounter, point) -> {
+                        GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
 
-                // if this event is triggered, it means that the user has clicked on a marker, so, this hashmap can't be null
-                List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
-                for (GeoPoint geoPoint : points) {
-                    for (String id : markerCounter.get(geoPoint)) {
-                        if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
-                            Log.i("MapFragment", "Note ID: " + id);
+                        // Handle marker click
+                        List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
+                        for (GeoPoint geoPoint : points) {
+                            for (String id : markerCounter.get(geoPoint)) {
+                                if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
+                                    Log.i("MapFragment", "Note ID: " + id);
+                                }
+                            }
                         }
-                    }
-                }
-
-                return true;
-            });
+                        return true;
+                    });
         });
-
-        return view;
     }
 
-    private void setDefatulLocation() {
+    // Handle search query
+    private void handleSearchQuery(String query) {
+        if (searchRunnable != null) {
+            searchHandler.removeCallbacks(searchRunnable);
+        }
+
+        searchRunnable = () -> MapHelper.fetchSuggestions(query, new MapHelper.OnFetchSuggestions() {
+            @Override
+            public void onFetchSuggestions(String responseBody) throws JSONException {
+                processSuggestionsResponse(responseBody);
+            }
+
+            @Override
+            public void onErrorMessage(String error) {
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                );
+            }
+        });
+
+        searchHandler.postDelayed(searchRunnable, 300);
+    }
+
+    // Process suggestions response
+    private void processSuggestionsResponse(String responseBody) throws JSONException {
+        JSONArray results = new JSONArray(responseBody);
+        suggestions.clear();
+        for (int i = 0; i < results.length(); i++) {
+            JSONObject result = results.getJSONObject(i);
+            String displayName = result.getString("display_name");
+            suggestions.add(new SuggestionsAdapter.CityProprieties(
+                    displayName,
+                    result.getDouble("lat"),
+                    result.getDouble("lon")
+            ));
+        }
+
+        requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
+    }
+
+    // Set default location
+    private void setDefaultLocation() {
         locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
             @Override
             public void onLocationUpdated(GeoPoint location) {
@@ -202,8 +242,7 @@ public class MapFragment extends Fragment {
         });
     }
 
-
-
+    // Handle suggestion selection
     private void onSuggestionSelected(String cityName, double latitude, double longitude) {
         searchBar.setText(cityName);
         searchView.hide();
