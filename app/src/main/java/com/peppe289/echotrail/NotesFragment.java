@@ -47,6 +47,21 @@ public class NotesFragment extends Fragment {
         LinearLayout cardContainer = view.findViewById(R.id.card_container);
 
         UserDAO.getReadedNotesList(document -> {
+            if (document == null) {
+                TextView text = new TextView(binding.getRoot().getContext());
+                text.setText("Nessuna nota presente");
+                text.setGravity(Gravity.CENTER);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                );
+                layoutParams.gravity = Gravity.CENTER;
+                text.setLayoutParams(layoutParams);
+
+                cardContainer.addView(text);
+                return;
+            }
+
             String uid = document.getString("userId");
             String city = document.getString("city");
             String description = document.getString("content");
