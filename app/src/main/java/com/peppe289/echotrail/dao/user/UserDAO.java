@@ -65,6 +65,12 @@ public class UserDAO {
                 .update("notes", FieldValue.arrayUnion(noteId));
     }
 
+    public static void updateReadNotesList(String noteId) {
+        db.collection("users")
+                .document(getUid())
+                .update("readedNotes", FieldValue.arrayUnion(noteId));
+    }
+
     /**
      * Signs out the currently authenticated user.
      */

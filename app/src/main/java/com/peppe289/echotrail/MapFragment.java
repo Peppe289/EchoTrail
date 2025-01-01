@@ -203,6 +203,10 @@ public class MapFragment extends Fragment {
      * Launches the ReadNotesActivity with the given note IDs.
      */
     private void launchReadNotesActivity(List<String> noteIDs) {
+        for (String noteID : noteIDs) {
+            NotesController.updateReadNotesList(noteID);
+        }
+
         MoveActivity.addActivity(requireActivity(), ReadNotesActivity.class, intent -> {
             intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs));
         });
