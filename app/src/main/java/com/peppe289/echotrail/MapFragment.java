@@ -1,6 +1,5 @@
 package com.peppe289.echotrail;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -11,14 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.ActivityResultRegistry;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,16 +32,8 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,18 +41,16 @@ import okhttp3.Response;
  */
 public class MapFragment extends Fragment {
 
+    // Data and adapter
+    private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
+    // Handlers and helpers
+    private final Handler searchHandler = new Handler();
     // UI components
     private com.google.android.material.search.SearchView searchView;
     private com.google.android.material.search.SearchBar searchBar;
     private RecyclerView suggestionsList;
     private FloatingActionButton floatingActionButton;
-
-    // Data and adapter
-    private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
     private SuggestionsAdapter adapter;
-
-    // Handlers and helpers
-    private final Handler searchHandler = new Handler();
     private Runnable searchRunnable;
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
@@ -78,8 +62,7 @@ public class MapFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         initializeUI(view);
@@ -94,9 +77,7 @@ public class MapFragment extends Fragment {
     private void initializeUI(View view) {
         // Floating Action Button setup
         floatingActionButton = view.findViewById(R.id.floatingActionButton);
-        floatingActionButton.setOnClickListener(e ->
-                MoveActivity.addActivity(getActivity(), AddNotesActivity.class)
-        );
+        floatingActionButton.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class));
 
         // Map setup
         MapView mapView = view.findViewById(R.id.map);
@@ -127,10 +108,12 @@ public class MapFragment extends Fragment {
 
         searchView.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -145,16 +128,13 @@ public class MapFragment extends Fragment {
     }
 
     private void requestLocationPermission() {
-        requestPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                isGranted -> {
-                    if (isGranted) {
-                        setDefaultLocation();
-                    } else {
-                        Toast.makeText(requireContext(), "Permesso alla posizione negato!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                setDefaultLocation();
+            } else {
+                Toast.makeText(requireContext(), "Permesso alla posizione negato!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         locationHelper.requestLocationPermission(requestPermissionLauncher);
     }
@@ -168,21 +148,20 @@ public class MapFragment extends Fragment {
 
             if (coordinates == null || userID.equals(noteUserID)) return;
 
-            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()),
-                    documentSnapshot.getId(), (markerCounter, point) -> {
-                        GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
+            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()), documentSnapshot.getId(), (markerCounter, point) -> {
+                GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
 
-                        // Handle marker click
-                        List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
-                        for (GeoPoint geoPoint : points) {
-                            for (String id : markerCounter.get(geoPoint)) {
-                                if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
-                                    Log.i("MapFragment", "Note ID: " + id);
-                                }
-                            }
+                // Handle marker click
+                List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
+                for (GeoPoint geoPoint : points) {
+                    for (String id : markerCounter.get(geoPoint)) {
+                        if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
+                            Log.i("MapFragment", "Note ID: " + id);
                         }
-                        return true;
-                    });
+                    }
+                }
+                return true;
+            });
         });
     }
 
@@ -200,9 +179,7 @@ public class MapFragment extends Fragment {
 
             @Override
             public void onErrorMessage(String error) {
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-                );
+                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show());
             }
         });
 
@@ -216,11 +193,7 @@ public class MapFragment extends Fragment {
         for (int i = 0; i < results.length(); i++) {
             JSONObject result = results.getJSONObject(i);
             String displayName = result.getString("display_name");
-            suggestions.add(new SuggestionsAdapter.CityProprieties(
-                    displayName,
-                    result.getDouble("lat"),
-                    result.getDouble("lon")
-            ));
+            suggestions.add(new SuggestionsAdapter.CityProprieties(displayName, result.getDouble("lat"), result.getDouble("lon")));
         }
 
         requireActivity().runOnUiThread(() -> adapter.notifyDataSetChanged());
