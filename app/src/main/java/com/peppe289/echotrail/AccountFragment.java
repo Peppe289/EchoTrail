@@ -33,9 +33,6 @@ public class AccountFragment extends Fragment {
         username = binding.usernameTextView;
         email = binding.emailTextView;
 
-        // TODO: implements the button function (should be open personal notes list)
-        binding.mynotes.setOnClickListener(view -> Log.i("AccountFragment", "My notes button clicked"));
-
         // TODO: implements the button function (should be open personal information for editing)
         binding.personalData.setOnClickListener(view -> Log.i("AccountFragment", "Edit profile button clicked"));
 
