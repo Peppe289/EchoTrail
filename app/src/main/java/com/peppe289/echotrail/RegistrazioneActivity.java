@@ -69,7 +69,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
                         Objects.requireNonNull(usernameEditText.getText()).toString(),
                         success -> {
                             if (success) {
-                                MoveActivity.rebaseActivity(this, DispatcherActivity.class);
+                                MoveActivity.rebaseActivity(this, DispatcherActivity.class, null);
                             } else {
                                 Toast.makeText(this, "Errore durante la registrazione",
                                         Toast.LENGTH_SHORT).show();

@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         // if the user is already logged (from android sdk) skipp this first page.
         if (UserController.isLoggedIn()) {
-            MoveActivity.rebaseActivity(MainActivity.this, DispatcherActivity.class);
+            MoveActivity.rebaseActivity(MainActivity.this, DispatcherActivity.class, null);
         }
 
         EdgeToEdge.enable(this);
@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.registrazioneBtn.setOnClickListener(view -> {
-            MoveActivity.addActivity(MainActivity.this, RegistrazioneActivity.class);
+            MoveActivity.addActivity(MainActivity.this, RegistrazioneActivity.class, null);
         });
 
         binding.loginBtn.setOnClickListener(view -> {
-            MoveActivity.addActivity(MainActivity.this, LoginActivity.class);
+            MoveActivity.addActivity(MainActivity.this, LoginActivity.class, null);
         });
     }
 }

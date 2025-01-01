@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         if (validateInputs()) {
             UserController.login(Objects.requireNonNull(emailEditText.getText()).toString(), Objects.requireNonNull(passwordEditText.getText()).toString(), (result) -> {
                 if (result) {
-                    MoveActivity.rebaseActivity(LoginActivity.this, DispatcherActivity.class);
+                    MoveActivity.rebaseActivity(LoginActivity.this, DispatcherActivity.class, null);
                 } else {
                     passwordLayout.setError("Email o password errati");
                 }

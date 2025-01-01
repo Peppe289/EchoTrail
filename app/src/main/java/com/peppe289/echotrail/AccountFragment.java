@@ -41,7 +41,7 @@ public class AccountFragment extends Fragment {
 
         binding.logoutBtn.setOnClickListener(view -> {
             UserController.logout(requireContext());
-            MoveActivity.rebaseActivity(getActivity(), MainActivity.class);
+            MoveActivity.rebaseActivity(getActivity(), MainActivity.class, null);
             Log.i("AccountFragment", "User logged out");
         });
 
@@ -54,7 +54,7 @@ public class AccountFragment extends Fragment {
             binding.userIcon.setAlpha(1 - percentage);
         });
 
-        binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), MyNotesActivity.class));
+        binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), MyNotesActivity.class, null));
 
         // load user headers (name and email) from cache if possible.
         UserController.getUserHeadersFromPreferences(requireContext(), headers -> {

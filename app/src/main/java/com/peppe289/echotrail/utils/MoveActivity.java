@@ -20,8 +20,11 @@ public class MoveActivity {
      * @param activity    The context of the current activity.
      * @param destination The class of the activity to start.
      */
-    public static void addActivity(Context activity, Class<?> destination) {
+    public static void addActivity(Context activity, Class<?> destination, MoveActivityCallback callback) {
         Intent intent = new Intent(activity, destination);
+        if (callback != null) {
+            callback.onActivityMoved(intent);
+        }
         activity.startActivity(intent);
     }
 
@@ -37,9 +40,16 @@ public class MoveActivity {
      * @param activity    The context of the current activity.
      * @param destination The class of the activity to start.
      */
-    public static void rebaseActivity(Context activity, Class<?> destination) {
+    public static void rebaseActivity(Context activity, Class<?> destination, MoveActivityCallback callback) {
         Intent intent = new Intent(activity, destination);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        if (callback != null) {
+            callback.onActivityMoved(intent);
+        }
         activity.startActivity(intent);
+    }
+
+    public interface MoveActivityCallback {
+        void onActivityMoved(Intent intent);
     }
 }

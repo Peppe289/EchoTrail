@@ -83,7 +83,7 @@ public class MapFragment extends Fragment {
     private void initializeUI(View view) {
         // Floating Action Button setup
         floatingActionButton = view.findViewById(R.id.floatingActionButton);
-        floatingActionButton.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class));
+        floatingActionButton.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
 
         // Map setup
         MapView mapView = view.findViewById(R.id.map);
