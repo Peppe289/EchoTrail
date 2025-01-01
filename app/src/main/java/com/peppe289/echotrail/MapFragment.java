@@ -1,6 +1,7 @@
 package com.peppe289.echotrail;
 
 import android.annotation.SuppressLint;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -156,14 +157,15 @@ public class MapFragment extends Fragment {
 
             mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()), documentSnapshot.getId(), (markerCounter, point) -> {
                 GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
+                ArrayList<String> readyToSeeIDs = new ArrayList<>();
 
                 // Handle marker click
                 List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
                 for (GeoPoint geoPoint : points) {
                     try {
                         for (String id : Objects.requireNonNull(markerCounter.get(geoPoint))) {
-                            if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
-                                Log.i("MapFragment", "Note ID: " + id);
+                            if (MapHelper.arePointsClose(geoPoint, clickedPoint, MapHelper.MarkerDistance.CLOSE)) {
+                                readyToSeeIDs.add(id);
                             }
                         }
                     } catch (NullPointerException e) {
@@ -171,6 +173,24 @@ public class MapFragment extends Fragment {
                         Log.e("MapFragment", "Error while handling marker click");
                     }
                 }
+
+                locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
+                    @Override
+                    public void onLocationUpdated(GeoPoint location) {
+                        readyToSeeIDs.removeIf(id -> !MapHelper.arePointsClose(location, clickedPoint, MapHelper.MarkerDistance.CLOSE));
+                        if (!readyToSeeIDs.isEmpty()) {
+                            MoveActivity.addActivity(requireActivity(), ReadNotesActivity.class, (intent) -> {
+                                intent.putStringArrayListExtra("notes", readyToSeeIDs);
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onLocationError(String error) {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 return true;
             });
         });

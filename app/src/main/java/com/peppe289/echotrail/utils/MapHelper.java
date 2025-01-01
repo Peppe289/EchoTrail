@@ -241,16 +241,33 @@ public class MapHelper {
         return new BitmapDrawable(context.getResources(), bitmap);
     }
 
+    public enum MarkerDistance {
+        CLOSE,
+        TOO_CLOSE,
+    }
+
     /**
      * Determines if two geographic points are close to each other within a threshold distance.
      *
      * @param p1 the first {@link GeoPoint}
      * @param p2 the second {@link GeoPoint}
-     * @return true if the points are within a 10-meter distance, false otherwise
+     * @return true if the points are within a 3-meter distance, false otherwise
      */
     public static boolean arePointsClose(GeoPoint p1, GeoPoint p2) {
+        return arePointsClose(p1, p2, MarkerDistance.TOO_CLOSE);
+    }
+
+    /**
+     * Determines if two geographic points are close to each other within a threshold distance.
+     *
+     * @param p1 the first {@link GeoPoint}
+     * @param p2 the second {@link GeoPoint}
+     * @param markerDistance the distance threshold to use for comparison
+     * @return true if the points are within a 3-meter or 100-meter distance, false otherwise
+     */
+    public static boolean arePointsClose(GeoPoint p1, GeoPoint p2, MarkerDistance markerDistance) {
         double distance = p1.distanceToAsDouble(p2);
-        return distance < 10;
+        return markerDistance == MarkerDistance.TOO_CLOSE ? distance < 3 : distance < 100;
     }
 
     /**
