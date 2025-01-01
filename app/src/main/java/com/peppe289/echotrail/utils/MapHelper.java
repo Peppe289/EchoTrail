@@ -148,6 +148,7 @@ public class MapHelper {
                 Marker newMarker = new Marker(mapView);
                 newMarker.setPosition(point);
                 newMarker.setOnMarkerClickListener((marker, mapView) -> callback.onMarkerClick(markerCounts, point));
+                newMarker.setIcon(createMarkerWithNumber(1));
                 mapView.getOverlays().add(newMarker);
                 List<String> notesID = new ArrayList<>();
                 notesID.add(noteID);
