@@ -41,10 +41,6 @@ public class MyNotesActivity extends AppCompatActivity {
 
         LinearLayout cardContainer = findViewById(R.id.card_container);
 
-        String[] titles = {"Titolo 1", "Titolo 2", "Titolo 3", "Titolo 1", "Titolo 2", "Titolo 3", "Titolo 1", "Titolo 2", "Titolo 3"};
-        String[] descriptions = {"Descrizione 1", "Descrizione 2", "Descrizione 3", "Descrizione 1", "Descrizione 2", "Descrizione 3", "Descrizione 1", "Descrizione 2", "Descrizione 3"};
-
-
         UserController.getUserNotesList(document -> {
             if (document == null) {
                 TextView text = new TextView(binding.getRoot().getContext());
