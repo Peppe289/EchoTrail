@@ -150,7 +150,7 @@ public class MapFragment extends Fragment {
                 List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
                 for (GeoPoint geoPoint : points) {
                     for (String id : markerCounter.get(geoPoint)) {
-                        if (arePointsClose(geoPoint, clickedPoint)) {
+                        if (MapHelper.arePointsClose(geoPoint, clickedPoint)) {
                             Log.i("MapFragment", "Note ID: " + id);
                         }
                     }
@@ -161,13 +161,6 @@ public class MapFragment extends Fragment {
         });
 
         return view;
-    }
-
-    /**
-     * Check if two points are close to each other (range of 10mt).
-     */
-    private boolean arePointsClose(GeoPoint first, GeoPoint second) {
-        return first.distanceToAsDouble(second) < 10.0;
     }
 
     private void setDefatulLocation() {

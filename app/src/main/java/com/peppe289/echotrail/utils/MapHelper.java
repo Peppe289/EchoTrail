@@ -206,7 +206,7 @@ public class MapHelper {
      * @param p2 the second {@link GeoPoint}
      * @return true if the points are within a 10-meter distance, false otherwise
      */
-    private boolean arePointsClose(GeoPoint p1, GeoPoint p2) {
+    public static boolean arePointsClose(GeoPoint p1, GeoPoint p2) {
         double distance = p1.distanceToAsDouble(p2);
         return distance < 10;
     }
