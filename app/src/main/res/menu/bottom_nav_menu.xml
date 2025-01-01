@@ -7,7 +7,7 @@
         android:title="@string/mappa" />
     <item
         android:id="@+id/noteMenu"
-        android:icon="@drawable/baseline_android_24"
+        android:icon="@drawable/bookmark_24px"
         android:title="@string/note" />
     <item
         android:id="@+id/settingsMenu"
