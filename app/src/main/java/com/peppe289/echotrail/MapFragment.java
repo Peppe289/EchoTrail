@@ -35,6 +35,7 @@ import org.osmdroid.views.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -147,41 +148,43 @@ public class MapFragment extends Fragment {
     }
 
     // Fetch notes and add markers
+    @SuppressLint("NewApi")
     private void fetchNotes() {
         NotesController.getAllNotes(documentSnapshot -> {
             com.google.firebase.firestore.GeoPoint coordinates = documentSnapshot.getGeoPoint("coordinates");
             String userID = UserController.getUid();
             String noteUserID = documentSnapshot.getString("userId");
 
+            // Skip if coordinates are null or note belongs to the current user
             if (coordinates == null || userID.equals(noteUserID)) return;
 
-            mapHelper.addMarker(new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude()), documentSnapshot.getId(), (markerCounter, point) -> {
-                GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
-                ArrayList<String> readyToSeeIDs = new ArrayList<>();
+            GeoPoint noteLocation = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
 
-                // Handle marker click
-                List<GeoPoint> points = new ArrayList<>(markerCounter.keySet());
-                for (GeoPoint geoPoint : points) {
-                    try {
-                        for (String id : Objects.requireNonNull(markerCounter.get(geoPoint))) {
-                            if (MapHelper.arePointsClose(geoPoint, clickedPoint, MapHelper.MarkerDistance.CLOSE)) {
-                                readyToSeeIDs.add(id);
-                            }
-                        }
-                    } catch (NullPointerException e) {
-                        // this should never happen because the markerCounter should never be null int this loop.
-                        Log.e("MapFragment", "Error while handling marker click");
-                    }
-                }
+            mapHelper.addMarker(noteLocation, documentSnapshot.getId(), (markerCounter, point) -> {
+                GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
+
+                // Preliminary filtering of nearby markers
+                 List<Map.Entry<GeoPoint, List<String>>> nearbyMarkers = markerCounter.entrySet().stream()
+                        .filter(entry -> MapHelper.arePointsClose(entry.getKey(), clickedPoint, MapHelper.MarkerDistance.CLOSE))
+                        .toList();
+
+                // No relevant markers
+                if (nearbyMarkers.isEmpty()) return true;
 
                 locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
                     @Override
-                    public void onLocationUpdated(GeoPoint location) {
-                        readyToSeeIDs.removeIf(id -> !MapHelper.arePointsClose(location, clickedPoint, MapHelper.MarkerDistance.CLOSE));
+                    public void onLocationUpdated(GeoPoint currentLocation) {
+                        List<String> readyToSeeIDs = nearbyMarkers.stream()
+                                .filter(entry -> MapHelper.arePointsClose(currentLocation, entry.getKey(), MapHelper.MarkerDistance.CLOSE))
+                                .flatMap(entry -> entry.getValue().stream()) // Flatten IDs
+                                .distinct() // Remove duplicates
+                                .toList();
+
+                        // Launch activity if there are notes to see
                         if (!readyToSeeIDs.isEmpty()) {
-                            MoveActivity.addActivity(requireActivity(), ReadNotesActivity.class, (intent) -> {
-                                intent.putStringArrayListExtra("notes", readyToSeeIDs);
-                            });
+                            launchReadNotesActivity(readyToSeeIDs);
+                        } else {
+                            Toast.makeText(requireContext(), "Raggiungi il luogo per leggere la nota!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -193,6 +196,15 @@ public class MapFragment extends Fragment {
 
                 return true;
             });
+        });
+    }
+
+    /**
+     * Launches the ReadNotesActivity with the given note IDs.
+     */
+    private void launchReadNotesActivity(List<String> noteIDs) {
+        MoveActivity.addActivity(requireActivity(), ReadNotesActivity.class, intent -> {
+            intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs));
         });
     }
 
