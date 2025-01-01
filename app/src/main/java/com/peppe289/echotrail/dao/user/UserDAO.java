@@ -71,6 +71,26 @@ public class UserDAO {
                 .update("readedNotes", FieldValue.arrayUnion(noteId));
     }
 
+    public static void getReadedNotesList(NotesListCallback callback) {
+        try {
+            db.collection("users")
+                    .document(getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            try {
+                                List<String> notesID = (List<String>) documentSnapshot.get("readedNotes");
+                                NotesDAO.getNotes(notesID, callback);
+                            } catch (Exception ignored) {
+                                callback.onComplete(null);
+                            }
+                        }
+                    });
+        } catch (Exception ignored) {
+            callback.onComplete(null);
+        }
+    }
+
     /**
      * Signs out the currently authenticated user.
      */
