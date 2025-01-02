@@ -56,7 +56,8 @@ public class MapFragment extends Fragment {
     private com.google.android.material.search.SearchView searchView;
     private com.google.android.material.search.SearchBar searchBar;
     private RecyclerView suggestionsList;
-    private FloatingActionButton floatingActionButton;
+    private FloatingActionButton addNewNoteFloatingBtn;
+    private FloatingActionButton updatePositionFloatingBtn;
     private SuggestionsAdapter adapter;
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
@@ -82,11 +83,12 @@ public class MapFragment extends Fragment {
     // Initialize UI components
     private void initializeUI(View view) {
         // Floating Action Button setup
-        floatingActionButton = view.findViewById(R.id.floatingActionButton);
-        floatingActionButton.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
+        addNewNoteFloatingBtn = view.findViewById(R.id.addNewNoteBtn);
+        addNewNoteFloatingBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
 
         // Set current position button setup
-        view.findViewById(R.id.setCurrentPositionBtn).setOnClickListener(e -> setCurrentLocation());
+        updatePositionFloatingBtn = view.findViewById(R.id.setCurrentPositionBtn);
+        updatePositionFloatingBtn.setOnClickListener(e -> setCurrentLocation());
 
         // Map setup
         MapView mapView = view.findViewById(R.id.map);
@@ -276,6 +278,7 @@ public class MapFragment extends Fragment {
     private void onSuggestionSelected(String cityName, double latitude, double longitude) {
         searchBar.setText(cityName);
         searchView.hide();
+
         suggestionsList.setVisibility(View.GONE);
         mapHelper.setMapView(new GeoPoint(latitude, longitude));
     }
