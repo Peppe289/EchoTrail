@@ -62,6 +62,8 @@ public class MapFragment extends Fragment {
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
+    private final ScheduledExecutorService esFetchNotes = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> sFetchNotes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,9 +77,22 @@ public class MapFragment extends Fragment {
         initializeUI(view);
         initializeHelpers();
         requestLocationPermission();
-        fetchNotes();
+        startFetchingNotes();
 
         return view;
+    }
+
+    private void startFetchingNotes() {
+        sFetchNotes = esFetchNotes.scheduleWithFixedDelay(this::fetchNotes, 0, 4, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (sFetchNotes != null && !sFetchNotes.isCancelled()) {
+            sFetchNotes.cancel(true);
+        }
+        esFetchNotes.shutdown();
     }
 
     // Initialize UI components

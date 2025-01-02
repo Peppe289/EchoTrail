@@ -151,6 +151,11 @@ public class MapHelper {
             if (matchedPoint != null) {
                 // here should not be never null
                 List<String> notesID = markerCounts.get(matchedPoint);
+
+                assert notesID != null; // this should never be null
+                if (notesID.contains(noteID))
+                    return;
+
                 int count = Objects.requireNonNull(notesID).size() + 1;
                 notesID.add(noteID);
                 markerCounts.put(matchedPoint, notesID);
