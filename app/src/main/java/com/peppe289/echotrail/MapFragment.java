@@ -13,10 +13,12 @@ import android.Manifest;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchView;
 import com.peppe289.echotrail.controller.notes.NotesController;
@@ -97,6 +99,19 @@ public class MapFragment extends Fragment {
 
     // Initialize UI components
     private void initializeUI(View view) {
+        // AppBarLayout setup
+        // IDK why with material 3 the app bar scroll up and go outside of screen. Here the fix from stackoverflow <3
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.findViewById(R.id.appBarLayout).getLayoutParams();
+        params.setBehavior(new AppBarLayout.Behavior());
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+        assert behavior != null; // This is always true
+        behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            @Override
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                return false;
+            }
+        });
+
         // Floating Action Button setup
         addNewNoteFloatingBtn = view.findViewById(R.id.addNewNoteBtn);
         addNewNoteFloatingBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
