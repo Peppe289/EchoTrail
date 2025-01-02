@@ -1,11 +1,9 @@
 package com.peppe289.echotrail;
 
 import android.annotation.SuppressLint;
-import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,6 @@ import org.osmdroid.views.MapView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -144,10 +141,10 @@ public class MapFragment extends Fragment {
                     Boolean coarseLocationGranted = result.getOrDefault(
                             Manifest.permission.ACCESS_COARSE_LOCATION,false);
                     if (fineLocationGranted != null && fineLocationGranted) {
-                        setDefaultLocation();
+                        setCurrentLocation();
                     } else if (coarseLocationGranted != null && coarseLocationGranted) {
                         Toast.makeText(requireContext(), "Permesso di localizzazione approssimata concesso", Toast.LENGTH_SHORT).show();
-                        setDefaultLocation();
+                        setCurrentLocation();
                     } else {
                         Toast.makeText(requireContext(), "Permesso di localizzazione non concesso", Toast.LENGTH_SHORT).show();
                     }
@@ -257,7 +254,7 @@ public class MapFragment extends Fragment {
     }
 
     // Set default location
-    private void setDefaultLocation() {
+    private void setCurrentLocation() {
         locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
             @Override
             public void onLocationUpdated(GeoPoint location) {
