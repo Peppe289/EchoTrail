@@ -20,8 +20,14 @@ import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +36,10 @@ import java.util.Locale;
 public class NotesFragment extends Fragment {
 
     private FragmentNotesBinding binding;
+    private LinearLayout cardContainer;
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture;
+    private List<String> notes = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,8 +54,26 @@ public class NotesFragment extends Fragment {
 
         binding = FragmentNotesBinding.inflate(inflater, container, false);
 
-        LinearLayout cardContainer = view.findViewById(R.id.card_container);
+        cardContainer = view.findViewById(R.id.card_container);
+        startFetchingReadedNotes();
 
+        return view;
+    }
+
+    private void startFetchingReadedNotes() {
+        scheduledFuture = executorService.scheduleWithFixedDelay(this::fetchReadedNotes, 0, 5, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
+            scheduledFuture.cancel(true);
+        }
+        executorService.shutdown();
+    }
+
+    private void fetchReadedNotes() {
         UserDAO.getReadedNotesList(document -> {
             if (document == null) {
                 TextView text = new TextView(binding.getRoot().getContext());
@@ -61,6 +89,12 @@ public class NotesFragment extends Fragment {
                 cardContainer.addView(text);
                 return;
             }
+
+            if (!notes.isEmpty() && notes.contains(document.getId())) {
+                return;
+            }
+
+            notes.add(document.getId());
 
             String username = document.getString("username");
             if (username == null || username.isEmpty()) {
@@ -83,7 +117,6 @@ public class NotesFragment extends Fragment {
 
             cardContainer.addView(card);
         });
-        return view;
     }
 
     static class ViewHolder {
