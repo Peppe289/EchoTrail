@@ -62,7 +62,10 @@ public class NotesFragment extends Fragment {
                 return;
             }
 
-            String uid = document.getString("userId");
+            String username = document.getString("username");
+            if (username == null || username.isEmpty()) {
+                username = "Anonimo";
+            }
             String city = document.getString("city");
             String description = document.getString("content");
             Timestamp timestamp = (Timestamp) document.get("timestamp");
@@ -73,7 +76,7 @@ public class NotesFragment extends Fragment {
             View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
 
             ViewHolder viewHolder = new ViewHolder(card);
-            viewHolder.title.setText(uid);
+            viewHolder.title.setText(username);
             viewHolder.description.setText(description);
             viewHolder.city.setText(city);
             viewHolder.date.setText(formattedDate);
