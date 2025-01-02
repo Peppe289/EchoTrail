@@ -116,7 +116,7 @@ public class MapHelper {
      */
     public void setMapView(GeoPoint point) {
         if (mapView != null) {
-            mapView.getController().setCenter(point);
+            mapView.getController().animateTo(point);
         }
     }
 
