@@ -125,6 +125,8 @@ public class DispatcherActivity extends AppCompatActivity {
         binding = ActivityDispatcherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Set default button selection for the bottom navigation bar.
+        binding.bottomNavigationView.setSelectedItemId(BottomBar.getMapBtnId());
         // Set up a listener for the bottom navigation bar to handle menu item selections.
         binding.bottomNavigationView.setOnItemSelectedListener(BottomBar::onNavigationItemSelected);
 
