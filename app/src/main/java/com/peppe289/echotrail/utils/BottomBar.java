@@ -2,164 +2,192 @@ package com.peppe289.echotrail.utils;
 
 import android.view.MenuItem;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.peppe289.echotrail.AccountFragment;
 import com.peppe289.echotrail.MapFragment;
 import com.peppe289.echotrail.NotesFragment;
 import com.peppe289.echotrail.R;
-import com.peppe289.echotrail.AccountFragment;
 
 /**
- * The {@code BottomBar} class provides utility methods for managing the bottom navigation bar
- * and handling user interactions with its menu items.
+ * The {@code BottomBar} class is a utility for managing interactions with the bottom navigation bar
+ * and facilitating seamless fragment navigation in an Android application.
  *
- * <p>This class centralizes access to resource IDs for the bottom navigation bar components
- * and provides logic for fragment navigation based on user interaction. It includes static methods
- * for obtaining the resource IDs of various menu items and a navigation handler to load fragments
- * dynamically.</p>
+ * <p>This class provides methods for handling menu item selections, dynamically switching between
+ * fragments, and maintaining references to key fragments used in the application. It centralizes
+ * navigation logic to simplify the management of the bottom bar and its associated components.</p>
  *
- * <p>Example usage:</p>
+ * <h2>Features:</h2>
+ * <ul>
+ *     <li>Provides resource ID retrieval methods for bottom bar menu items.</li>
+ *     <li>Handles fragment transactions to display appropriate content based on user interaction.</li>
+ *     <li>Supports dynamic fragment visibility using {@link FragmentTransaction#show} and {@link FragmentTransaction#hide}.</li>
+ * </ul>
+ *
+ * <h2>Example Usage:</h2>
  * <pre>{@code
- * int bottomBarId = BottomBar.getBottomBarId();
- * int mapButtonId = BottomBar.getMapBtnId();
- * BottomBar.onNavigationItemSelected(menuItem);
+ * BottomBar.setActivity(fragmentActivity);
+ * BottomBar.setFragments(mapFragment, accountFragment, notesFragment);
+ * bottomNavigationView.setOnItemSelectedListener(BottomBar::onNavigationItemSelected);
  * }</pre>
  *
- * <p><strong>Note:</strong> The {@code FragmentActivity} must be properly set for fragment transactions
- * to work as expected.</p>
+ * <p><strong>Prerequisites:</strong> The hosting activity must be a {@link FragmentActivity}, and
+ * fragments must be initialized and passed to this utility using {@link #setFragments(MapFragment, AccountFragment, NotesFragment)}.</p>
  *
  * @see R
  * @see MenuItem
  * @see Fragment
+ * @see FragmentManager
+ * @see FragmentTransaction
  */
 public class BottomBar {
 
     /**
-     * Reference to the current {@link FragmentActivity}.
-     * Used for performing fragment transactions. Must be set before calling {@code loadFragment}.
+     * Holds a reference to the {@link MapFragment} used in the application.
+     * This fragment is displayed when the map menu item is selected.
      */
-    @Nullable
-    private static FragmentActivity activity = null;
-
     private static MapFragment mapFragment = null;
 
     /**
-     * Returns the resource ID of the bottom navigation view.
+     * Holds a reference to the {@link AccountFragment} used in the application.
+     * This fragment is displayed when the settings menu item is selected.
+     */
+    private static AccountFragment accountFragment = null;
+
+    /**
+     * Holds a reference to the {@link NotesFragment} used in the application.
+     * This fragment is displayed when the notes menu item is selected.
+     */
+    private static NotesFragment notesFragment = null;
+
+    /**
+     * Manages all fragment transactions for this utility. Must be initialized
+     * by calling {@link #setActivity(FragmentActivity)}.
+     */
+    private static FragmentManager fragmentManager;
+
+    /**
+     * Retrieves the resource ID of the bottom navigation view.
      *
-     * <p>This ID corresponds to the {@code R.id.bottomNavigationView} entry
-     * defined in the application's resource files.</p>
+     * <p>The ID is defined as {@code R.id.bottomNavigationView} in the application's resources.</p>
      *
-     * @return the resource ID of the bottom navigation view.
+     * @return The resource ID for the bottom navigation view.
      */
     @SuppressWarnings("unused")
-    static public int getBottomBarId() {
+    public static int getBottomBarId() {
         return R.id.bottomNavigationView;
     }
 
     /**
-     * Returns the resource ID of the map menu button.
+     * Sets the fragments to be managed by the bottom navigation utility.
      *
-     * <p>This ID corresponds to the {@code R.id.mapMenu} entry
-     * defined in the application's resource files.</p>
+     * <p>All fragments must be initialized and passed to this method before navigation is attempted.</p>
      *
-     * @return the resource ID of the map menu button.
+     * @param mapFragment     The {@link MapFragment} instance for the map view.
+     * @param accountFragment The {@link AccountFragment} instance for the account view.
+     * @param notesFragment   The {@link NotesFragment} instance for the notes view.
      */
-    static public int getMapBtnId() {
+    public static void setFragments(MapFragment mapFragment, AccountFragment accountFragment, NotesFragment notesFragment) {
+        BottomBar.mapFragment = mapFragment;
+        BottomBar.accountFragment = accountFragment;
+        BottomBar.notesFragment = notesFragment;
+    }
+
+    /**
+     * Retrieves the resource ID of the map menu button.
+     *
+     * <p>The ID is defined as {@code R.id.mapMenu} in the application's resources.</p>
+     *
+     * @return The resource ID for the map menu button.
+     */
+    public static int getMapBtnId() {
         return R.id.mapMenu;
     }
 
     /**
-     * Returns the resource ID of the notes menu button.
+     * Retrieves the resource ID of the notes menu button.
      *
-     * <p>This ID corresponds to the {@code R.id.noteMenu} entry
-     * defined in the application's resource files.</p>
+     * <p>The ID is defined as {@code R.id.noteMenu} in the application's resources.</p>
      *
-     * @return the resource ID of the notes menu button.
+     * @return The resource ID for the notes menu button.
      */
-    static public int getNotesBtnId() {
+    public static int getNotesBtnId() {
         return R.id.noteMenu;
     }
 
     /**
-     * Returns the resource ID of the settings menu button.
+     * Retrieves the resource ID of the settings menu button.
      *
-     * <p>This ID corresponds to the {@code R.id.settingsMenu} entry
-     * defined in the application's resource files.</p>
+     * <p>The ID is defined as {@code R.id.settingsMenu} in the application's resources.</p>
      *
-     * @return the resource ID of the settings menu button.
+     * @return The resource ID for the settings menu button.
      */
-    static public int getSettingsBtnId() {
+    public static int getSettingsBtnId() {
         return R.id.settingsMenu;
     }
 
     /**
-     * Handles navigation item selection events and loads the appropriate fragment.
+     * Handles navigation item selection and displays the appropriate fragment.
      *
-     * <p>This method identifies the menu item selected by the user, creates the corresponding
-     * {@link Fragment}, and initiates a fragment transaction to display it in the designated container.</p>
-     *
-     * <p>Supported menu items:</p>
+     * <p>This method matches the selected menu item to a fragment and updates the
+     * fragment container using a transaction. The menu options supported are:</p>
      * <ul>
-     *     <li>{@code getNotesBtnId()}: Loads {@link NotesFragment}</li>
-     *     <li>{@code getSettingsBtnId()}: Loads {@link AccountFragment}</li>
-     *     <li>{@code getMapBtnId()}: Loads {@link MapFragment}</li>
+     *     <li>{@link #getMapBtnId()}: Displays the {@link MapFragment}.</li>
+     *     <li>{@link #getNotesBtnId()}: Displays the {@link NotesFragment}.</li>
+     *     <li>{@link #getSettingsBtnId()}: Displays the {@link AccountFragment}.</li>
      * </ul>
      *
-     * @param item the {@link MenuItem} selected by the user.
-     * @return {@code true} if a valid menu item was handled; {@code false} otherwise.
+     * @param item The selected {@link MenuItem}.
+     * @return {@code true} if the menu item was handled successfully, {@code false} otherwise.
      */
-    static public boolean onNavigationItemSelected(MenuItem item) {
-        Fragment selectedFragment;
+    public static boolean onNavigationItemSelected(MenuItem item) {
         int triggerBtn = item.getItemId();
         if (triggerBtn == getNotesBtnId()) {
-            selectedFragment = new NotesFragment();
+            switchFragment(notesFragment);
         } else if (triggerBtn == getSettingsBtnId()) {
-            selectedFragment = new AccountFragment();
+            switchFragment(accountFragment);
         } else if (triggerBtn == getMapBtnId()) {
-            if (mapFragment == null)
-                mapFragment = new MapFragment();
-
-            selectedFragment = mapFragment;
+            switchFragment(mapFragment);
         } else {
             return false;
         }
 
-        loadFragment(selectedFragment);
         return true;
     }
 
     /**
-     * Loads the specified {@link Fragment} into the designated container in the current activity.
+     * Switches the visible fragment in the container.
      *
-     * <p>This method performs a fragment transaction to replace the contents of the container
-     * identified by {@code R.id.fragmentContainer} with the specified fragment.</p>
+     * <p>Hides all fragments except the one passed as a parameter and commits the transaction.</p>
      *
-     * <p><strong>Note:</strong> The {@code FragmentActivity} reference must be properly set before
-     * invoking this method. If the activity is {@code null}, a new {@link FragmentActivity} is instantiated,
-     * which may not align with the intended behavior.</p>
-     *
-     * @param fragment the {@link Fragment} to load into the container.
-     * @throws IllegalStateException if {@code activity} is not set.
+     * @param showFragment The fragment to be displayed.
      */
-    static public void loadFragment(Fragment fragment) {
-        if (activity == null) {
-            throw new IllegalStateException("FragmentActivity is not set. Call setActivity() before using loadFragment().");
+    private static void switchFragment(Fragment showFragment) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment.equals(showFragment)) {
+                transaction.show(fragment);
+            } else {
+                transaction.hide(fragment);
+            }
         }
-
-        activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+        transaction.commit();
     }
 
     /**
-     * Sets the current {@link FragmentActivity} for fragment transactions.
+     * Sets the hosting {@link FragmentActivity} for fragment transactions.
      *
-     * <p>This method must be called before invoking {@link #loadFragment(Fragment)} to ensure
-     * the activity context is available for performing fragment transactions.</p>
+     * <p>This method initializes the {@link FragmentManager} required for navigation.
+     * It must be called before attempting to load any fragments.</p>
      *
-     * @param fragmentActivity the current {@link FragmentActivity}.
+     * @param fragmentActivity The activity hosting the fragments.
      */
-    static public void setActivity(@Nullable FragmentActivity fragmentActivity) {
-        activity = fragmentActivity;
+    public static void setActivity(@NonNull FragmentActivity fragmentActivity) {
+        fragmentManager = fragmentActivity.getSupportFragmentManager();
     }
 }
+
