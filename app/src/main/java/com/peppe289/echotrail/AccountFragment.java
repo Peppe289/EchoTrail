@@ -15,6 +15,11 @@ import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
@@ -23,6 +28,8 @@ public class AccountFragment extends Fragment {
     private FragmentAccountBinding binding;
     private MaterialTextView username;
     private MaterialTextView email;
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledFuture;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -56,12 +63,29 @@ public class AccountFragment extends Fragment {
 
         binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), MyNotesActivity.class, null));
 
+        startFetchingUserInfo();
+
+        return rootView;
+    }
+
+    private void startFetchingUserInfo() {
+        scheduledFuture = executorService.scheduleWithFixedDelay(this::fetchInfo, 0, 2, TimeUnit.MINUTES);
+    }
+
+    private void fetchInfo() {
         // load user headers (name and email) from cache if possible.
         UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
             username.setText(headers.get("username"));
             email.setText(headers.get("email"));
         });
+    }
 
-        return rootView;
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
+            scheduledFuture.cancel(true);
+        }
+        executorService.shutdown();
     }
 }
