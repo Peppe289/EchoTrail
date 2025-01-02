@@ -85,6 +85,9 @@ public class MapFragment extends Fragment {
         floatingActionButton = view.findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
 
+        // Set current position button setup
+        view.findViewById(R.id.setCurrentPositionBtn).setOnClickListener(e -> setCurrentLocation());
+
         // Map setup
         MapView mapView = view.findViewById(R.id.map);
         mapHelper = new MapHelper(mapView);

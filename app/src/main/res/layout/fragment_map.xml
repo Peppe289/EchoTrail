@@ -58,4 +58,14 @@
         android:src="@drawable/add_24pm">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/setCurrentPositionBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="30dp"
+        android:contentDescription="@string/aggiorna_la_posizione_corrente"
+        android:src="@drawable/refresh_24px">
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
 </FrameLayout>
