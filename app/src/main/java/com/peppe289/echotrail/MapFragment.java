@@ -112,8 +112,12 @@ public class MapFragment extends Fragment {
         searchView.addTransitionListener((sView, oldState, newState) -> {
             if (newState == SearchView.TransitionState.SHOWN) {
                 suggestionsList.setVisibility(View.VISIBLE);
+                addNewNoteFloatingBtn.hide();
+                updatePositionFloatingBtn.hide();
             } else if (newState == SearchView.TransitionState.HIDDEN) {
                 suggestionsList.setVisibility(View.GONE);
+                addNewNoteFloatingBtn.show();
+                updatePositionFloatingBtn.show();
             }
         });
 
@@ -278,7 +282,8 @@ public class MapFragment extends Fragment {
     private void onSuggestionSelected(String cityName, double latitude, double longitude) {
         searchBar.setText(cityName);
         searchView.hide();
-
+        addNewNoteFloatingBtn.show();
+        updatePositionFloatingBtn.show();
         suggestionsList.setVisibility(View.GONE);
         mapHelper.setMapView(new GeoPoint(latitude, longitude));
     }
