@@ -85,6 +85,19 @@ public class DispatcherActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.dispatcher), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
+            // custom keyboard insets
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+
+            // keep the padding bottom if the keyboard is shown
+            if (!imeInsets.equals(Insets.NONE)) {
+                // ignore keyboard insets
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom + imeInsets.bottom);
+            } else {
+                // if the keyboard is hidden, apply system bar insets
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            }
+
             return insets;
         });
 
