@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -62,7 +63,7 @@ public class MapFragment extends Fragment {
     private SuggestionsAdapter adapter;
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
-    private ActivityResultLauncher<String> requestPermissionLauncher;
+    private ActivityResultLauncher<String[]> requestPermissionLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,13 +137,22 @@ public class MapFragment extends Fragment {
     }
 
     private void requestLocationPermission() {
-        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-            if (isGranted) {
-                setDefaultLocation();
-            } else {
-                Toast.makeText(requireContext(), "Permesso alla posizione negato!", Toast.LENGTH_SHORT).show();
-            }
-        });
+        requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts
+                        .RequestMultiplePermissions(), result -> {
+                    Boolean fineLocationGranted = result.getOrDefault(
+                            Manifest.permission.ACCESS_FINE_LOCATION, false);
+                    Boolean coarseLocationGranted = result.getOrDefault(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,false);
+                    if (fineLocationGranted != null && fineLocationGranted) {
+                        setDefaultLocation();
+                    } else if (coarseLocationGranted != null && coarseLocationGranted) {
+                        Toast.makeText(requireContext(), "Permesso di localizzazione approssimata concesso", Toast.LENGTH_SHORT).show();
+                        setDefaultLocation();
+                    } else {
+                        Toast.makeText(requireContext(), "Permesso di localizzazione non concesso", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
         locationHelper.requestLocationPermission(requestPermissionLauncher);
     }

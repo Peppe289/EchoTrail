@@ -87,8 +87,11 @@ public class LocationHelper {
      *
      * @param requestPermissionLauncher the launcher for requesting location permissions
      */
-    public void requestLocationPermission(ActivityResultLauncher<String> requestPermissionLauncher) {
-        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+    public void requestLocationPermission(ActivityResultLauncher<String[]> requestPermissionLauncher) {
+        requestPermissionLauncher.launch(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        });
     }
 
     public boolean locationPermissionIsGranted(Activity activity) {
@@ -108,8 +111,7 @@ public class LocationHelper {
      * @param locationCallback the callback to handle location updates or errors
      */
     public void getCurrentLocation(Context context, Activity activity, @NonNull LocationCallback locationCallback) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationCallback.onLocationError("Location permission not granted.");
             return;
         }
