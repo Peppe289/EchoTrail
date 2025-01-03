@@ -168,6 +168,28 @@ public class UserDAO {
         }
     }
 
+    public static void setDefaultAnonymousPreference(boolean isAnonymous) {
+        db.collection("users")
+                .document(getUid())
+                .update("anonymousByDefault", isAnonymous);
+    }
+
+    public static void getDefaultAnonymousPreference(SettingsPreferencesToggle callback) {
+        db.collection("users")
+                .document(getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        try {
+                            boolean isAnonymous = Boolean.TRUE.equals(documentSnapshot.getBoolean("anonymousByDefault"));
+                            callback.onComplete(isAnonymous);
+                        } catch (Exception ignored) {
+                            callback.onComplete(false);
+                        }
+                    }
+                });
+    }
+
     /**
      * Callback interface to handle the result of the sign-up process.
      */
@@ -218,5 +240,9 @@ public class UserDAO {
 
     public interface NotesListCallback {
         void onComplete(DocumentSnapshot notes);
+    }
+
+    public interface SettingsPreferencesToggle {
+        void onComplete(boolean isAnonymous);
     }
 }

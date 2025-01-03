@@ -2,6 +2,7 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 
+import com.peppe289.echotrail.PreferencesActivity;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;
@@ -115,6 +116,22 @@ public class UserController {
         } else {
             throw new UserStateException("User is not signed in.");
         }
+    }
+
+    public static void setDefaultAnonymousPreference(Context context, boolean isChecked) {
+        PreferencesHelper.setAnonymousPreferences(context, isChecked);
+        UserDAO.setDefaultAnonymousPreference(isChecked);
+    }
+
+    public static void getDefaultAnonymousPreference(Context context, UserDAO.SettingsPreferencesToggle callback) {
+        UserDAO.getDefaultAnonymousPreference((result) -> {
+            // correct cached value using the result from the data base if necessary
+            if (PreferencesHelper.getAnonymousPreferences(context) != result) {
+                PreferencesHelper.setAnonymousPreferences(context, result);
+            }
+
+            callback.onComplete(result);
+        });
     }
 
     /**

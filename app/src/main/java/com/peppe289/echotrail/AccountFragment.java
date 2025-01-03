@@ -62,6 +62,7 @@ public class AccountFragment extends Fragment {
         });
 
         binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), MyNotesActivity.class, null));
+        binding.mypreferences.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PreferencesActivity.class, null));
 
         startFetchingUserInfo();
 

@@ -142,4 +142,23 @@ public class PreferencesHelper {
                 .remove("email")
                 .apply();
     }
+
+    public static void setAnonymousPreferences(Context context, boolean isChecked) {
+        context.getSharedPreferences("user", MODE_PRIVATE)
+                .edit()
+                .putBoolean("anonymousByDefault", isChecked)
+                .apply();
+    }
+
+    public static boolean getAnonymousPreferences(Context context) {
+        return context.getSharedPreferences("user", MODE_PRIVATE)
+                .getBoolean("anonymousByDefault", false);
+    }
+
+    public static void clearAnonymousPreferences(Context context) {
+        context.getSharedPreferences("user", MODE_PRIVATE)
+                .edit()
+                .remove("anonymousByDefault")
+                .apply();
+    }
 }

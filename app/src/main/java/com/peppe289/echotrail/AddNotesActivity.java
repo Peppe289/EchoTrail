@@ -59,7 +59,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
     private void setUpAnonymousUserOptions() {
         switchAnonymous = binding.switchAnonymous;
-        switchAnonymous.setActivated(false);
+        UserController.getDefaultAnonymousPreference(binding.getRoot().getContext(), switchAnonymous::setChecked);
     }
 
     private void setupFocusOnTextArea() {

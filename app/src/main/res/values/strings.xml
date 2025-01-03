@@ -26,4 +26,6 @@
     <string name="note_disponibili">Note disponibili</string>
     <string name="aggiorna_la_posizione_corrente">Aggiorna la posizione corrente</string>
     <string name="pubblica_in_anonimo">Pubblica in anonimo</string>
+    <string name="anonimo_di_deafult">Anonimo di deafult</string>
+    <string name="descrizione_anonimo_preferences">L\'impostazione di default per pubblicare in anonimo quando pubblichi le note è arriva.</string>
 </resources>
