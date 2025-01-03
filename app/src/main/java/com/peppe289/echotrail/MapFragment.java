@@ -1,12 +1,14 @@
 package com.peppe289.echotrail;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.Manifest;
 
@@ -19,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchView;
 import com.peppe289.echotrail.controller.notes.NotesController;
@@ -182,8 +186,9 @@ public class MapFragment extends Fragment {
                     if (fineLocationGranted != null && fineLocationGranted) {
                         setCurrentLocation();
                     } else if (coarseLocationGranted != null && coarseLocationGranted) {
-                        Toast.makeText(requireContext(), "Permesso di localizzazione approssimata concesso", Toast.LENGTH_SHORT).show();
-                        setCurrentLocation();
+                        BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance("Permesso di localizzazione",
+                                "Per utilizzare l'applicazione non è sufficiente utilizzare il permesso di localizzazione approssimativa.");
+                        bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());
                     } else {
                         Toast.makeText(requireContext(), "Permesso di localizzazione non concesso", Toast.LENGTH_SHORT).show();
                     }
