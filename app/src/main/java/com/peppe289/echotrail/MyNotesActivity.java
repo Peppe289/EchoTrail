@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.Timestamp;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMyNotesBinding;
@@ -40,6 +41,7 @@ public class MyNotesActivity extends AppCompatActivity {
         });
 
         LinearLayout cardContainer = findViewById(R.id.card_container);
+        setUpToolBar();
 
         UserController.getUserNotesList(document -> {
             if (document == null) {
@@ -74,6 +76,18 @@ public class MyNotesActivity extends AppCompatActivity {
 
             cardContainer.addView(card);
         });
+    }
+
+    private void setUpToolBar() {
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
 
     static class ViewHolder {
