@@ -25,4 +25,5 @@
     <string name="cerca_sulla_mappa">Cerca sulla mappa</string>
     <string name="note_disponibili">Note disponibili</string>
     <string name="aggiorna_la_posizione_corrente">Aggiorna la posizione corrente</string>
+    <string name="pubblica_in_anonimo">Pubblica in anonimo</string>
 </resources>

@@ -47,23 +47,31 @@ public class NotesController {
         noteData.put("userId", UserDAO.getUid());
         noteData.put("content", data.get("content"));
         UserController.getUsername((username) -> {
-            noteData.put("username", username);
-            // Add optional geolocation data if available
-            if (data.get("latitude") != null && data.get("longitude") != null) {
-                GeoPoint coordinates = new GeoPoint(
-                        (double) data.get("latitude"),
-                        (double) data.get("longitude")
-                );
-                noteData.put("coordinates", coordinates);
-            }
 
-            // Add timestamp and optional city name
-            noteData.put("timestamp", com.google.firebase.Timestamp.now());
-            noteData.put("city", data.get("city"));
-
-            // Save the note through NotesDAO
-            NotesDAO.saveNote(noteData, callback);
         });
+
+        try {
+            String username = (String) data.get("username");
+            if (username != null && !username.isEmpty())
+                noteData.put("username", username);
+        } catch (Exception ignored) {
+        }
+
+        // Add optional geolocation data if available
+        if (data.get("latitude") != null && data.get("longitude") != null) {
+            GeoPoint coordinates = new GeoPoint(
+                    (double) data.get("latitude"),
+                    (double) data.get("longitude")
+            );
+            noteData.put("coordinates", coordinates);
+        }
+
+        // Add timestamp and optional city name
+        noteData.put("timestamp", com.google.firebase.Timestamp.now());
+        noteData.put("city", data.get("city"));
+
+        // Save the note through NotesDAO
+        NotesDAO.saveNote(noteData, callback);
     }
 
     public static void updateReadNotesList(String noteId) {

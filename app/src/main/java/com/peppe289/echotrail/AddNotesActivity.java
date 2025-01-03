@@ -13,8 +13,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
 import com.peppe289.echotrail.utils.LocationHelper;
 
@@ -28,6 +30,7 @@ public class AddNotesActivity extends AppCompatActivity {
     private ActivityAddNotesBinding binding;
     private boolean canPush = true;
     private LocationHelper locationHelper;
+    private SwitchMaterial switchAnonymous;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,13 @@ public class AddNotesActivity extends AppCompatActivity {
         }
 
         setUpToolBar();
+        setUpAnonymousUserOptions();
         setupFocusOnTextArea();
+    }
+
+    private void setUpAnonymousUserOptions() {
+        switchAnonymous = binding.switchAnonymous;
+        switchAnonymous.setActivated(false);
     }
 
     private void setupFocusOnTextArea() {
@@ -118,12 +127,20 @@ public class AddNotesActivity extends AppCompatActivity {
                 data.put("longitude", location.getLongitude());
                 data.put("city", LocationHelper.getCityName(AddNotesActivity.this, location.getLatitude(),
                         location.getLongitude()));
-                NotesController.saveNote(data, () -> {
-                    Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
-                    // like mutex to avoid multiple click on save button.
-                    canPush = true;
-                    finish();
+
+                UserController.getUsername(username -> {
+                    // save username only if the user is not anonymous
+                    if (!switchAnonymous.isChecked())
+                        data.put("username", username);
+
+                    NotesController.saveNote(data, () -> {
+                        Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+                        // like mutex to avoid multiple click on save button.
+                        canPush = true;
+                        finish();
+                    });
                 });
+
             }
 
             @Override
