@@ -21,6 +21,7 @@ import androidx.core.app.ActivityOptionsCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -116,7 +117,7 @@ public class LocationHelper {
             return;
         }
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(activity, location -> {
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener(activity, location -> {
             if (location != null) {
                 GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                 locationCallback.onLocationUpdated(startPoint);
