@@ -40,6 +40,8 @@ public class NotesFragment extends Fragment {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
     private List<String> notes = new ArrayList<>();
+    private final String NOTES_LIST_EMPTY = "Nessuna nota presente";
+    private TextView textListEmpty;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,8 +55,9 @@ public class NotesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
 
         binding = FragmentNotesBinding.inflate(inflater, container, false);
-
+        textListEmpty = new TextView(binding.getRoot().getContext());
         cardContainer = view.findViewById(R.id.card_container);
+        setUpEmptyListMessage();
         startFetchingReadedNotes();
 
         return view;
@@ -73,21 +76,26 @@ public class NotesFragment extends Fragment {
         executorService.shutdown();
     }
 
+    private void setUpEmptyListMessage() {
+        textListEmpty.setText(NOTES_LIST_EMPTY);
+        textListEmpty.setGravity(Gravity.CENTER);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        );
+        layoutParams.gravity = Gravity.CENTER;
+        textListEmpty.setLayoutParams(layoutParams);
+
+        cardContainer.addView(textListEmpty);
+    }
+
     private void fetchReadedNotes() {
         UserDAO.getReadedNotesList(document -> {
             if (document == null) {
-                TextView text = new TextView(binding.getRoot().getContext());
-                text.setText("Nessuna nota presente");
-                text.setGravity(Gravity.CENTER);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT
-                );
-                layoutParams.gravity = Gravity.CENTER;
-                text.setLayoutParams(layoutParams);
-
-                cardContainer.addView(text);
+                textListEmpty.setVisibility(View.VISIBLE);
                 return;
+            } else if (textListEmpty.getVisibility() == View.VISIBLE) {
+                textListEmpty.setVisibility(View.GONE);
             }
 
             if (!notes.isEmpty() && notes.contains(document.getId())) {
