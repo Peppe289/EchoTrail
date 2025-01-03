@@ -9,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.peppe289.echotrail.controller.user.PreferencesHelper;
 import com.peppe289.echotrail.controller.user.UserController;
@@ -32,8 +33,22 @@ public class PreferencesActivity extends AppCompatActivity {
             return insets;
         });
 
+        setUpToolBar();
         setUpToggle();
     }
+
+    private void setUpToolBar() {
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+    }
+
 
     private void setUpToggle() {
         SwitchMaterial anonymousSwitch = binding.switchAnonymousToggle;
