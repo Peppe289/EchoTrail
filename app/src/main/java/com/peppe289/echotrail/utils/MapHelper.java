@@ -95,9 +95,9 @@ public class MapHelper {
      *
      * @param point the {@link GeoPoint} to center the map on
      */
-    public void setMapCenter(GeoPoint point) {
+    public void setMapCenter(GeoPoint point, boolean setView) {
         if (mapView != null) {
-            mapView.getController().setCenter(point);
+            if (setView) mapView.getController().setCenter(point);
             if (marker == null) {
                 marker = new Marker(mapView);
                 marker.setTitle("La mia posizione");
@@ -107,6 +107,10 @@ public class MapHelper {
                 marker.setPosition(point);
             }
         }
+    }
+
+    public void setMapCenter(GeoPoint point) {
+        setMapCenter(point, true);
     }
 
     /**

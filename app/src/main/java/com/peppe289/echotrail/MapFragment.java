@@ -70,6 +70,8 @@ public class MapFragment extends Fragment {
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
     private final ScheduledExecutorService esFetchNotes = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> sFetchNotes;
+    private final ScheduledExecutorService esUpdateGPS = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> sUpdateGPS;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,8 +86,25 @@ public class MapFragment extends Fragment {
         initializeHelpers();
         requestLocationPermission();
         startFetchingNotes();
+        startUpdateGPS();
 
         return view;
+    }
+
+    private void startUpdateGPS() {
+        sUpdateGPS = esUpdateGPS.scheduleWithFixedDelay(() -> {
+            locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
+                @Override
+                public void onLocationUpdated(GeoPoint location) {
+                    mapHelper.setMapCenter(location, false);
+                }
+
+                @Override
+                public void onLocationError(String error) {
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }, 0, 5, TimeUnit.SECONDS);
     }
 
     private void startFetchingNotes() {
@@ -99,6 +118,11 @@ public class MapFragment extends Fragment {
             sFetchNotes.cancel(true);
         }
         esFetchNotes.shutdown();
+
+        if (sUpdateGPS != null && !sUpdateGPS.isCancelled()) {
+            sUpdateGPS.cancel(true);
+        }
+        esUpdateGPS.shutdown();
     }
 
     // Initialize UI components
