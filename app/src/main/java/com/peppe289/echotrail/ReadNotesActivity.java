@@ -50,7 +50,10 @@ public class ReadNotesActivity extends AppCompatActivity {
         LinearLayout cardContainer = findViewById(R.id.card_container);
 
         NotesDAO.getNotes(notesID, document -> {
-            String uid = document.getString("userId");
+            String username = document.getString("username");
+            if (username == null || username.isEmpty()) {
+                username = "Anonimo";
+            }
             String city = document.getString("city");
             String description = document.getString("content");
             Timestamp timestamp = (Timestamp) document.get("timestamp");
@@ -61,7 +64,7 @@ public class ReadNotesActivity extends AppCompatActivity {
             View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
 
             MyNotesActivity.ViewHolder viewHolder = new MyNotesActivity.ViewHolder(card);
-            viewHolder.title.setText(uid);
+            viewHolder.title.setText(username);
             viewHolder.description.setText(description);
             viewHolder.city.setText(city);
             viewHolder.date.setText(formattedDate);
