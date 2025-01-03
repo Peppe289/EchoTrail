@@ -2,6 +2,7 @@ package com.peppe289.echotrail.controller.notes;
 
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.auth.User;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
@@ -45,22 +46,24 @@ public class NotesController {
         // Add mandatory fields
         noteData.put("userId", UserDAO.getUid());
         noteData.put("content", data.get("content"));
+        UserController.getUsername((username) -> {
+            noteData.put("username", username);
+            // Add optional geolocation data if available
+            if (data.get("latitude") != null && data.get("longitude") != null) {
+                GeoPoint coordinates = new GeoPoint(
+                        (double) data.get("latitude"),
+                        (double) data.get("longitude")
+                );
+                noteData.put("coordinates", coordinates);
+            }
 
-        // Add optional geolocation data if available
-        if (data.get("latitude") != null && data.get("longitude") != null) {
-            GeoPoint coordinates = new GeoPoint(
-                    (double) data.get("latitude"),
-                    (double) data.get("longitude")
-            );
-            noteData.put("coordinates", coordinates);
-        }
+            // Add timestamp and optional city name
+            noteData.put("timestamp", com.google.firebase.Timestamp.now());
+            noteData.put("city", data.get("city"));
 
-        // Add timestamp and optional city name
-        noteData.put("timestamp", com.google.firebase.Timestamp.now());
-        noteData.put("city", data.get("city"));
-
-        // Save the note through NotesDAO
-        NotesDAO.saveNote(noteData, callback);
+            // Save the note through NotesDAO
+            NotesDAO.saveNote(noteData, callback);
+        });
     }
 
     public static void updateReadNotesList(String noteId) {
