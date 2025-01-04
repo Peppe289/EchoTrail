@@ -1,7 +1,6 @@
 package com.peppe289.echotrail.controller.notes;
 
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.auth.User;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;

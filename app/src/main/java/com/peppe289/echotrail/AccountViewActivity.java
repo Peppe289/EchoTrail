@@ -9,18 +9,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.ActivityAccountViewBinding;
-
-import java.util.List;
-import java.util.Objects;
 
 public class AccountViewActivity extends AppCompatActivity {
 
     private ActivityAccountViewBinding binding;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

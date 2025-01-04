@@ -1,13 +1,9 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -17,9 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.Timestamp;
-import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
-import com.peppe289.echotrail.databinding.ActivityMyNotesBinding;
 import com.peppe289.echotrail.databinding.ActivityReadNotesBinding;
 
 import java.text.SimpleDateFormat;

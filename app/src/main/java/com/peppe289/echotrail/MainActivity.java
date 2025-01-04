@@ -1,6 +1,5 @@
 package com.peppe289.echotrail;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;

@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.peppe289.echotrail.controller.user.PreferencesHelper;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPreferencesBinding;
 
@@ -48,7 +47,6 @@ public class PreferencesActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
-
 
     private void setUpToggle() {
         SwitchMaterial anonymousSwitch = binding.switchAnonymousToggle;

@@ -1,9 +1,6 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.Timestamp;
-import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
-import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
 
@@ -37,12 +33,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class NotesFragment extends Fragment {
 
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private final String NOTES_LIST_EMPTY = "Nessuna nota presente";
     private FragmentNotesBinding binding;
     private LinearLayout cardContainer;
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
-    private List<String> notes = new ArrayList<>();
-    private final String NOTES_LIST_EMPTY = "Nessuna nota presente";
+    private final List<String> notes = new ArrayList<>();
     private TextView textListEmpty;
 
     @Override

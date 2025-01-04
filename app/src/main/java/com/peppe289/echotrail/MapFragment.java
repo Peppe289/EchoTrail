@@ -1,16 +1,14 @@
 package com.peppe289.echotrail;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.Manifest;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -21,8 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchView;
 import com.peppe289.echotrail.controller.notes.NotesController;
@@ -57,6 +53,8 @@ public class MapFragment extends Fragment {
     private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
     // Handlers and helpers
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService esFetchNotes = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService esUpdateGPS = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
     // UI components
     private com.google.android.material.search.SearchView searchView;
@@ -68,9 +66,7 @@ public class MapFragment extends Fragment {
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
-    private final ScheduledExecutorService esFetchNotes = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> sFetchNotes;
-    private final ScheduledExecutorService esUpdateGPS = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> sUpdateGPS;
 
     @Override
@@ -206,7 +202,7 @@ public class MapFragment extends Fragment {
                     Boolean fineLocationGranted = result.getOrDefault(
                             Manifest.permission.ACCESS_FINE_LOCATION, false);
                     Boolean coarseLocationGranted = result.getOrDefault(
-                            Manifest.permission.ACCESS_COARSE_LOCATION,false);
+                            Manifest.permission.ACCESS_COARSE_LOCATION, false);
                     if (fineLocationGranted != null && fineLocationGranted) {
                         setCurrentLocation();
                     } else if (coarseLocationGranted != null && coarseLocationGranted) {
@@ -239,7 +235,7 @@ public class MapFragment extends Fragment {
                 GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
 
                 // Preliminary filtering of nearby markers
-                 List<Map.Entry<GeoPoint, List<String>>> nearbyMarkers = markerCounter.entrySet().stream()
+                List<Map.Entry<GeoPoint, List<String>>> nearbyMarkers = markerCounter.entrySet().stream()
                         .filter(entry -> MapHelper.arePointsClose(entry.getKey(), clickedPoint, MapHelper.MarkerDistance.CLOSE))
                         .toList();
 

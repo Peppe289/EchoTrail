@@ -11,17 +11,13 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.Timestamp;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -32,10 +28,10 @@ import java.util.concurrent.TimeUnit;
  * create an instance of this fragment.
  */
 public class AccountFragment extends Fragment implements PersonalInfoActivity.OnAccountEditedListener {
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private FragmentAccountBinding binding;
     private MaterialTextView username;
     private MaterialTextView email;
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
     private com.google.android.material.textview.MaterialTextView publishedNotes;
     private com.google.android.material.textview.MaterialTextView readedNotes;

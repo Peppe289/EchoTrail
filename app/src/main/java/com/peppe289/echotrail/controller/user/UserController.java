@@ -2,7 +2,6 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 
-import com.google.firebase.firestore.auth.User;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;
