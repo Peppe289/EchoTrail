@@ -169,6 +169,9 @@ public class UserController {
      */
     public static void getUserHeadersFromPreferences(Context context, UserHeadersCallback callback) {
         if (isLoggedIn()) {
+            // make 2 time. the first help in use case like start up op application (retrieve from preferences if isn't empty)
+            // the second help in case of change from database (update preferences) in async way
+            PreferencesHelper.checkOnPreferences(context, callback);
             updateUserHeadersToPreferences(context, el ->
                     PreferencesHelper.checkOnPreferences(context, callback));
         } else {
