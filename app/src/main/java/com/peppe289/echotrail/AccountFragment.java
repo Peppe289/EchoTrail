@@ -11,10 +11,17 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.Timestamp;
 import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -30,6 +37,8 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
     private MaterialTextView email;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
+    private com.google.android.material.textview.MaterialTextView publishedNotes;
+    private com.google.android.material.textview.MaterialTextView readedNotes;
 
     @Override
     public void onAccountEdited() {
@@ -54,6 +63,9 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
             Log.i("AccountFragment", "User logged out");
         });
 
+        publishedNotes = binding.notesPublished;
+        readedNotes = binding.notesRead;
+
         AppBarLayout appBarLayout = binding.appBarLayout;
         PersonalInfoActivity.AccountEditNotifier.getInstance().setListener(this);
 
@@ -69,6 +81,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
         binding.personalData.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PersonalInfoActivity.class, null));
 
         startFetchingUserInfo();
+        fetchInfo();
 
         return rootView;
     }
@@ -90,6 +103,19 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
         UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
             username.setText(headers.get("username"));
             email.setText(headers.get("email"));
+        });
+
+        List<String> notesWritten = new ArrayList<>();
+        List<String> notesReaded = new ArrayList<>();
+
+        UserController.getUserNotesList(document -> {
+            if (document != null) notesWritten.add(document.getId());
+            publishedNotes.setText(String.valueOf(notesWritten.size()));
+        });
+
+        UserDAO.getReadedNotesList(document -> {
+            if (document != null) notesReaded.add(document.getId());
+            readedNotes.setText(String.valueOf(notesReaded.size()));
         });
     }
 
