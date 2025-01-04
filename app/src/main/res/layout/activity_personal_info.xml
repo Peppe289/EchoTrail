@@ -31,6 +31,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
+                android:id="@+id/container_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
@@ -73,6 +74,7 @@
                 -->
 
                 <LinearLayout
+                    android:id="@+id/add_link"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp">
@@ -92,28 +94,6 @@
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
                         android:text="@string/aggiungi_link" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="@string/aggiungi_link"
-                        android:rotation="-45"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/link_24px" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:text="Link placeholder" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

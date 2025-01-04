@@ -41,6 +41,26 @@ public class UserDAO {
         });
     }
 
+    public static void getUserLinks(UserLinksCallback callback) {
+        db.collection("users")
+                .document(getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        try {
+                            List<String> links = (List<String>) documentSnapshot.get("links");
+                            callback.onComplete(links);
+                        } catch (Exception ignored) {
+                            callback.onComplete(null);
+                        }
+                    }
+                });
+    }
+
+    public interface UserLinksCallback {
+        void onComplete(List<String> links);
+    }
+
     /**
      * Registers a new user with the provided email, password, and username.
      *
@@ -69,6 +89,12 @@ public class UserDAO {
         db.collection("users")
                 .document(getUid())
                 .update("readedNotes", FieldValue.arrayUnion(noteId));
+    }
+
+    public static void updateUserLinks(String link) {
+        db.collection("users")
+                .document(getUid())
+                .update("links", FieldValue.arrayUnion(link));
     }
 
     public static void getReadedNotesList(NotesListCallback callback) {

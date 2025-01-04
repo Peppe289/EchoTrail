@@ -2,6 +2,7 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 
+import com.google.firebase.firestore.auth.User;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;
@@ -111,6 +112,10 @@ public class UserController {
         }
     }
 
+    public static void getUserLinks(UserDAO.UserLinksCallback callback) {
+        UserDAO.getUserLinks(callback);
+    }
+
     /**
      * Retrieves the username of the authenticated user.
      *
@@ -170,6 +175,10 @@ public class UserController {
         } else {
             throw new UserStateException("User is not signed in.");
         }
+    }
+
+    public static void updateUserLinks(String link) {
+        UserDAO.updateUserLinks(link);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.peppe289.echotrail;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPersonalInfoBinding;
 
@@ -25,6 +27,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private com.google.android.material.button.MaterialButton saveButton;
     private com.google.android.material.button.MaterialButton cancelButton;
     private OnAccountEditedListener listener;
+    private LinearLayout addLinkLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +62,18 @@ public class PersonalInfoActivity extends AppCompatActivity {
         });
 
         cancelButton.setOnClickListener(v -> finish());
+        addLinkLayout.setOnClickListener(v -> shouwCustomInput((str) -> {
+            attachLink(str);
+            UserController.updateUserLinks(str);
+        }));
+    }
+
+    private void attachLink(String link) {
+        LinearLayout container = findViewById(R.id.container_layout);
+        View customView = getLayoutInflater().inflate(R.layout.personal_link_row, container, false);
+        com.google.android.material.textview.MaterialTextView linkTextView = customView.findViewById(R.id.link_text_view);
+        linkTextView.setText(link);
+        container.addView(customView);
     }
 
     private void initialization() {
@@ -66,6 +81,15 @@ public class PersonalInfoActivity extends AppCompatActivity {
         saveButton = binding.saveButton;
         cancelButton = binding.cancelButton;
         listener = AccountEditNotifier.getInstance().getListener();
+        addLinkLayout = findViewById(R.id.add_link);
+
+        UserController.getUserLinks(links -> {
+            if (links != null) {
+                for (String link : links) {
+                    attachLink(link);
+                }
+            }
+        });
     }
 
     private void loadDefaultValue() {
@@ -93,6 +117,21 @@ public class PersonalInfoActivity extends AppCompatActivity {
         });
     }
 
+    private void shouwCustomInput(CallBackInput callBackDialog) {
+        View customView = getLayoutInflater().inflate(R.layout.dialog_input, null);
+        TextInputEditText inputEditText = customView.findViewById(R.id.link_edit_text);
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Iscerisci il link")
+                .setView(customView)
+                .setPositiveButton("Aggiungi", (dialogInterface, i) -> {
+                    String inputText = inputEditText.getText() != null ? inputEditText.getText().toString() : "";
+                    callBackDialog.onPositiveClick(inputText);
+                })
+                .setNegativeButton("Annulla", (dialogInterface, i) -> dialogInterface.dismiss())
+                .show();
+    }
+
     private void showCustomDialog(CallBackDialog callBackDialog) {
         // Inflate the custom layout
         View customView = getLayoutInflater().inflate(R.layout.dialog_custom, null);
@@ -109,6 +148,10 @@ public class PersonalInfoActivity extends AppCompatActivity {
         void onPositiveClick();
     }
 
+    private interface CallBackInput {
+        void onPositiveClick(String inputText);
+    }
+
     public interface OnAccountEditedListener {
         void onAccountEdited();
     }
@@ -117,7 +160,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
         private static AccountEditNotifier instance;
         private OnAccountEditedListener listener;
 
-        private AccountEditNotifier() {}
+        private AccountEditNotifier() {
+        }
 
         public static AccountEditNotifier getInstance() {
             if (instance == null) {
@@ -126,12 +170,12 @@ public class PersonalInfoActivity extends AppCompatActivity {
             return instance;
         }
 
-        public void setListener(OnAccountEditedListener listener) {
-            this.listener = listener;
-        }
-
         public OnAccountEditedListener getListener() {
             return listener;
+        }
+
+        public void setListener(OnAccountEditedListener listener) {
+            this.listener = listener;
         }
     }
 
