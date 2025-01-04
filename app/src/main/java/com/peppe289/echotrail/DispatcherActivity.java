@@ -131,6 +131,6 @@ public class DispatcherActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(BottomBar::onNavigationItemSelected);
 
         // Save or update user headers in shared preferences for future use.
-        UserController.updateUserHeadersToPreferences(binding.getRoot().getContext());
+        UserController.updateUserHeadersToPreferences(binding.getRoot().getContext(), null);
     }
 }

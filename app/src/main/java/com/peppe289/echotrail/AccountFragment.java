@@ -24,12 +24,17 @@ import java.util.concurrent.TimeUnit;
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class AccountFragment extends Fragment {
+public class AccountFragment extends Fragment implements PersonalInfoActivity.OnAccountEditedListener {
     private FragmentAccountBinding binding;
     private MaterialTextView username;
     private MaterialTextView email;
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
+
+    @Override
+    public void onAccountEdited() {
+        triggerFetchInfoImmediately();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -50,6 +55,7 @@ public class AccountFragment extends Fragment {
         });
 
         AppBarLayout appBarLayout = binding.appBarLayout;
+        PersonalInfoActivity.AccountEditNotifier.getInstance().setListener(this);
 
         appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
             float percentage = Math.abs(verticalOffset) / (float) appBarLayout1.getTotalScrollRange();
@@ -69,6 +75,14 @@ public class AccountFragment extends Fragment {
 
     private void startFetchingUserInfo() {
         scheduledFuture = executorService.scheduleWithFixedDelay(this::fetchInfo, 0, 2, TimeUnit.MINUTES);
+    }
+
+    private void triggerFetchInfoImmediately() {
+        if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
+            scheduledFuture.cancel(false);
+        }
+        fetchInfo();
+        startFetchingUserInfo();
     }
 
     private void fetchInfo() {

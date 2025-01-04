@@ -24,6 +24,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private String currentUsername;
     private com.google.android.material.button.MaterialButton saveButton;
     private com.google.android.material.button.MaterialButton cancelButton;
+    private OnAccountEditedListener listener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +53,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 UserController.setUsername(newUsername);
                 finish();
             }
+            if (listener != null) {
+                listener.onAccountEdited();
+            }
         });
 
         cancelButton.setOnClickListener(v -> finish());
@@ -61,6 +65,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         usernameEditText = binding.usernameEditText;
         saveButton = binding.saveButton;
         cancelButton = binding.cancelButton;
+        listener = AccountEditNotifier.getInstance().getListener();
     }
 
     private void loadDefaultValue() {
@@ -103,4 +108,31 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private interface CallBackDialog {
         void onPositiveClick();
     }
+
+    public interface OnAccountEditedListener {
+        void onAccountEdited();
+    }
+
+    public static class AccountEditNotifier {
+        private static AccountEditNotifier instance;
+        private OnAccountEditedListener listener;
+
+        private AccountEditNotifier() {}
+
+        public static AccountEditNotifier getInstance() {
+            if (instance == null) {
+                instance = new AccountEditNotifier();
+            }
+            return instance;
+        }
+
+        public void setListener(OnAccountEditedListener listener) {
+            this.listener = listener;
+        }
+
+        public OnAccountEditedListener getListener() {
+            return listener;
+        }
+    }
+
 }

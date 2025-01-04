@@ -2,7 +2,6 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 
-import com.peppe289.echotrail.PreferencesActivity;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;
@@ -166,7 +165,8 @@ public class UserController {
      */
     public static void getUserHeadersFromPreferences(Context context, UserHeadersCallback callback) {
         if (isLoggedIn()) {
-            PreferencesHelper.checkOnPreferences(context, callback);
+            updateUserHeadersToPreferences(context, el ->
+                    PreferencesHelper.checkOnPreferences(context, callback));
         } else {
             throw new UserStateException("User is not signed in.");
         }
@@ -181,9 +181,8 @@ public class UserController {
      * @param context The application context to access shared preferences.
      * @throws UserStateException if no user is logged in.
      */
-    public static void updateUserHeadersToPreferences(Context context) {
+    public static void updateUserHeadersToPreferences(Context context, UserHeadersCallback callback) {
         String username;
-        String email;
 
         if (!isLoggedIn()) {
             throw new UserStateException("User is not signed in.");
@@ -194,16 +193,17 @@ public class UserController {
             if (!Objects.equals(usernameDB, username)) {
                 PreferencesHelper.updateName(context, usernameDB);
             }
-        });
 
-        email = PreferencesHelper.retrieveEmail(context);
-        getEmail(emailDB -> {
-            if (!Objects.equals(email, emailDB)) {
-                PreferencesHelper.updateEmail(context, emailDB);
-            }
-        });
+            String email = PreferencesHelper.retrieveEmail(context);
+            getEmail(emailDB -> {
+                if (!Objects.equals(email, emailDB)) {
+                    PreferencesHelper.updateEmail(context, emailDB);
+                }
+            });
 
-        PreferencesHelper.checkOnPreferences(context, null);
+            // Make sure the user is in shared preferences
+            PreferencesHelper.checkOnPreferences(context, callback);
+        });
     }
 
     /**
