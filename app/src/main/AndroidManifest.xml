@@ -28,7 +28,7 @@
         <activity android:name=".MyNotesActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".AddNotesActivity" android:windowSoftInputMode="stateVisible" />
         <activity android:name=".DispatcherActivity" android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".RegistrazioneActivity" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".RegistrationActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".LoginActivity" android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
