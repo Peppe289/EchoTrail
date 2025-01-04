@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.peppe289.echotrail.controller.user.UserController;
@@ -18,6 +19,7 @@ import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
+import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -116,6 +118,16 @@ public class NotesFragment extends Fragment {
             String formattedDate = dateFormat.format(date);
 
             View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
+
+            // TODO: review to improve security
+            if (!username.equals("Anonimo")) {
+                card.setOnClickListener(v -> MoveActivity.addActivity(requireActivity(), AccountViewActivity.class, (intent) -> {
+                    String uid = document.getString("userId");
+                    intent.putExtra("UID", uid);
+                }));
+            } else {
+                card.setOnClickListener(v -> Toast.makeText(binding.getRoot().getContext(), "Utente anonimo", Toast.LENGTH_SHORT).show());
+            }
 
             ViewHolder viewHolder = new ViewHolder(card);
             viewHolder.title.setText(username);

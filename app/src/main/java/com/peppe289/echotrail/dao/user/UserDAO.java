@@ -168,6 +168,36 @@ public class UserDAO {
         db.collection("users").document(getUid()).update("username", username);
     }
 
+    public static void getUserInfoByUID(String UID, GetUserInfoCallBack callback) {
+        HashMap<String, Object> userInfo = new HashMap<>();
+        try {
+            db.collection("users")
+                    .document(UID)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            try {
+                                List<String> notesID = (List<String>) documentSnapshot.get("notes");
+                                List<String> readedNotesID = (List<String>) documentSnapshot.get("readedNotes");
+                                userInfo.put("notes", notesID == null ? 0 : notesID.size());
+                                userInfo.put("readedNotes", readedNotesID == null ? 0 : readedNotesID.size());
+                                userInfo.put("username", documentSnapshot.getString("username"));
+                                userInfo.put("links", documentSnapshot.get("links"));
+                                callback.onComplete(userInfo);
+                            } catch (Exception ignored) {
+                                callback.onComplete(null);
+                            }
+                        }
+                    });
+        } catch (Exception ignored) {
+            callback.onComplete(null);
+        }
+    }
+
+    public interface GetUserInfoCallBack {
+        void onComplete(HashMap<String, Object> userInfo);
+    }
+
     /**
      * Retrieves the email address of the currently authenticated user.
      *

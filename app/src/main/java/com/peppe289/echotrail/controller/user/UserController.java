@@ -229,6 +229,10 @@ public class UserController {
         }
     }
 
+    public static void getUserInfoByUID(String UID, UserDAO.GetUserInfoCallBack callback){
+        UserDAO.getUserInfoByUID(UID, callback);
+    }
+
     /**
      * Retrieves the unique user ID of the authenticated user.
      *
