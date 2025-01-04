@@ -104,6 +104,14 @@ public class UserController {
         }
     }
 
+    public static void setUsername(String newUsername) {
+        if (isLoggedIn()) {
+            UserDAO.setUsername(newUsername);
+        } else {
+            throw new UserStateException("User is not signed in.");
+        }
+    }
+
     /**
      * Retrieves the username of the authenticated user.
      *

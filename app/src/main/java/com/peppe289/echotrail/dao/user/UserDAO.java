@@ -138,6 +138,10 @@ public class UserDAO {
         });
     }
 
+    public static void setUsername(String username) {
+        db.collection("users").document(getUid()).update("username", username);
+    }
+
     /**
      * Retrieves the email address of the currently authenticated user.
      *

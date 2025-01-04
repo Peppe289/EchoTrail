@@ -40,9 +40,6 @@ public class AccountFragment extends Fragment {
         username = binding.usernameTextView;
         email = binding.emailTextView;
 
-        // TODO: implements the button function (should be open personal information for editing)
-        binding.personalData.setOnClickListener(view -> Log.i("AccountFragment", "Edit profile button clicked"));
-
         // TODO: implements the button function (should be open notify settings)
         binding.notify.setOnClickListener(view -> Log.i("AccountFragment", "Notify settings button clicked"));
 
@@ -63,6 +60,7 @@ public class AccountFragment extends Fragment {
 
         binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), MyNotesActivity.class, null));
         binding.mypreferences.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PreferencesActivity.class, null));
+        binding.personalData.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PersonalInfoActivity.class, null));
 
         startFetchingUserInfo();
 

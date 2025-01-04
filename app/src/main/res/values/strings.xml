@@ -28,4 +28,5 @@
     <string name="pubblica_in_anonimo">Pubblica in anonimo</string>
     <string name="anonimo_di_deafult">Anonimo di deafult</string>
     <string name="descrizione_anonimo_preferences">Abilitare di default l\'impostazione per pubblicare in anonimo le note.</string>
+    <string name="aggiungi_link">Aggiungi un nuovo link al tuo profilo</string>
 </resources>
