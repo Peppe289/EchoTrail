@@ -15,6 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
+import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
     private ScheduledFuture<?> scheduledFuture;
     private com.google.android.material.textview.MaterialTextView publishedNotes;
     private com.google.android.material.textview.MaterialTextView readedNotes;
+    private LoadingManager loadingManager;
 
     @Override
     public void onAccountEdited() {
@@ -50,6 +52,9 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
 
         username = binding.usernameTextView;
         email = binding.emailTextView;
+
+        loadingManager = new LoadingManager(rootView);
+        loadingManager.showLoading();
 
         // TODO: implements the button function (should be open notify settings)
         binding.notify.setOnClickListener(view -> Log.i("AccountFragment", "Notify settings button clicked"));
@@ -121,6 +126,8 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
                         }
                     }
                     readedNotes.setText(String.valueOf(notesReaded.size()));
+
+                    loadingManager.hideLoading();
                 });
             });
         });
