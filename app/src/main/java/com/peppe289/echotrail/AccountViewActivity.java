@@ -11,10 +11,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAccountViewBinding;
+import com.peppe289.echotrail.utils.LoadingManager;
 
 public class AccountViewActivity extends AppCompatActivity {
 
     private ActivityAccountViewBinding binding;
+    private LoadingManager loadingManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,13 +31,16 @@ public class AccountViewActivity extends AppCompatActivity {
             return insets;
         });
 
-        String UID = getIntent().getStringExtra("UID");
+        loadingManager = new LoadingManager(binding.getRoot());
+        loadingManager.showLoading();
 
+        String UID = getIntent().getStringExtra("UID");
 
         UserController.getUserInfoByUID(UID, userInfo -> {
             binding.usernameTextView.setText(userInfo.get("username").toString());
             binding.notesRead.setText(userInfo.get("readedNotes").toString());
             binding.notesPublished.setText(userInfo.get("notes").toString());
+            loadingManager.hideLoading();
         });
     }
 }
