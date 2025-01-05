@@ -16,6 +16,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
+import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.text.SimpleDateFormat;
@@ -41,6 +42,7 @@ public class NotesFragment extends Fragment {
     private LinearLayout cardContainer;
     private ScheduledFuture<?> scheduledFuture;
     private TextView textListEmpty;
+    private LoadingManager loadingManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,10 @@ public class NotesFragment extends Fragment {
         cardContainer = view.findViewById(R.id.card_container);
         setUpEmptyListMessage();
         startFetchingReadedNotes();
+
+        loadingManager = new LoadingManager(view);
+        loadingManager.showLoading();
+        fetchReadedNotes();
 
         return view;
     }
@@ -84,14 +90,15 @@ public class NotesFragment extends Fragment {
         );
         layoutParams.gravity = Gravity.CENTER;
         textListEmpty.setLayoutParams(layoutParams);
-
         cardContainer.addView(textListEmpty);
+        textListEmpty.setVisibility(View.GONE);
     }
 
     private void fetchReadedNotes() {
         UserDAO.getReadedNotesList(querySnapshot -> {
             if (querySnapshot == null || querySnapshot.isEmpty()) {
                 textListEmpty.setVisibility(View.VISIBLE);
+                loadingManager.hideLoading();
                 return;
             } else if (textListEmpty.getVisibility() == View.VISIBLE) {
                 textListEmpty.setVisibility(View.GONE);
@@ -134,6 +141,7 @@ public class NotesFragment extends Fragment {
 
                 cardContainer.addView(card);
             }
+            loadingManager.hideLoading();
         });
     }
 

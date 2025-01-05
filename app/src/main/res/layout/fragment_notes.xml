@@ -17,5 +17,5 @@
             android:orientation="vertical" />
 
     </ScrollView>
-
+    <include layout="@layout/loading_overlay" />
 </FrameLayout>
