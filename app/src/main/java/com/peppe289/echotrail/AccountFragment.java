@@ -83,7 +83,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
     }
 
     private void startFetchingUserInfo() {
-        scheduledFuture = executorService.scheduleWithFixedDelay(this::fetchInfo, 0, 2, TimeUnit.MINUTES);
+        scheduledFuture = executorService.scheduleWithFixedDelay(this::fetchInfo, 0, 5, TimeUnit.SECONDS);
     }
 
     private void triggerFetchInfoImmediately() {
@@ -95,23 +95,25 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
     }
 
     private void fetchInfo() {
-        // load user headers (name and email) from cache if possible.
-        UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
-            username.setText(headers.get("username"));
-            email.setText(headers.get("email"));
-        });
+        requireActivity().runOnUiThread(() -> {
+            // load user headers (name and email) from cache if possible.
+            UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
+                username.setText(headers.get("username"));
+                email.setText(headers.get("email"));
+            });
 
-        List<String> notesWritten = new ArrayList<>();
-        List<String> notesReaded = new ArrayList<>();
+            List<String> notesWritten = new ArrayList<>();
+            List<String> notesReaded = new ArrayList<>();
 
-        UserController.getUserNotesList(document -> {
-            if (document != null) notesWritten.add(document.getId());
-            publishedNotes.setText(String.valueOf(notesWritten.size()));
-        });
+            UserController.getUserNotesList(document -> {
+                if (document != null) notesWritten.add(document.getId());
+                publishedNotes.setText(String.valueOf(notesWritten.size()));
+            });
 
-        UserDAO.getReadedNotesList(document -> {
-            if (document != null) notesReaded.add(document.getId());
-            readedNotes.setText(String.valueOf(notesReaded.size()));
+            UserDAO.getReadedNotesList(document -> {
+                if (document != null) notesReaded.add(document.getId());
+                readedNotes.setText(String.valueOf(notesReaded.size()));
+            });
         });
     }
 
