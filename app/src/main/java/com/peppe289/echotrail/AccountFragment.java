@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
@@ -105,14 +106,22 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
             List<String> notesWritten = new ArrayList<>();
             List<String> notesReaded = new ArrayList<>();
 
-            UserController.getUserNotesList(document -> {
-                if (document != null) notesWritten.add(document.getId());
+            UserController.getUserNotesList(querySnapshot -> {
+                if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                    for (DocumentSnapshot document : querySnapshot) {
+                        if (document != null) notesWritten.add(document.getId());
+                    }
+                }
                 publishedNotes.setText(String.valueOf(notesWritten.size()));
-            });
 
-            UserDAO.getReadedNotesList(document -> {
-                if (document != null) notesReaded.add(document.getId());
-                readedNotes.setText(String.valueOf(notesReaded.size()));
+                UserDAO.getReadedNotesList(querySnapshot2 -> {
+                    if (querySnapshot2 != null && !querySnapshot2.isEmpty()) {
+                        for (DocumentSnapshot document : querySnapshot2) {
+                            if (document != null) notesReaded.add(document.getId());
+                        }
+                    }
+                    readedNotes.setText(String.valueOf(notesReaded.size()));
+                });
             });
         });
     }

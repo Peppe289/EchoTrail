@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 
 import java.util.HashMap;
@@ -299,7 +300,7 @@ public class UserDAO {
     }
 
     public interface NotesListCallback {
-        void onComplete(DocumentSnapshot notes);
+        void onComplete(QuerySnapshot notes);
     }
 
     public interface SettingsPreferencesToggle {

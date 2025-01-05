@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -35,10 +36,10 @@ public class NotesFragment extends Fragment {
 
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private final String NOTES_LIST_EMPTY = "Nessuna nota presente";
+    private final List<String> notes = new ArrayList<>();
     private FragmentNotesBinding binding;
     private LinearLayout cardContainer;
     private ScheduledFuture<?> scheduledFuture;
-    private final List<String> notes = new ArrayList<>();
     private TextView textListEmpty;
 
     @Override
@@ -88,50 +89,51 @@ public class NotesFragment extends Fragment {
     }
 
     private void fetchReadedNotes() {
-        UserDAO.getReadedNotesList(document -> {
-            if (document == null) {
+        UserDAO.getReadedNotesList(querySnapshot -> {
+            if (querySnapshot == null || querySnapshot.isEmpty()) {
                 textListEmpty.setVisibility(View.VISIBLE);
                 return;
             } else if (textListEmpty.getVisibility() == View.VISIBLE) {
                 textListEmpty.setVisibility(View.GONE);
             }
+            for (DocumentSnapshot document : querySnapshot) {
+                if (!notes.isEmpty() && notes.contains(document.getId())) {
+                    return;
+                }
 
-            if (!notes.isEmpty() && notes.contains(document.getId())) {
-                return;
+                notes.add(document.getId());
+
+                String username = document.getString("username");
+                if (username == null || username.isEmpty()) {
+                    username = "Anonimo";
+                }
+                String city = document.getString("city");
+                String description = document.getString("content");
+                Timestamp timestamp = (Timestamp) document.get("timestamp");
+                Date date = timestamp.toDate();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(date);
+
+                View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
+
+                // TODO: review to improve security
+                if (!username.equals("Anonimo")) {
+                    card.setOnClickListener(v -> MoveActivity.addActivity(requireActivity(), AccountViewActivity.class, (intent) -> {
+                        String uid = document.getString("userId");
+                        intent.putExtra("UID", uid);
+                    }));
+                } else {
+                    card.setOnClickListener(v -> Toast.makeText(binding.getRoot().getContext(), "Utente anonimo", Toast.LENGTH_SHORT).show());
+                }
+
+                ViewHolder viewHolder = new ViewHolder(card);
+                viewHolder.title.setText(username);
+                viewHolder.description.setText(description);
+                viewHolder.city.setText(city);
+                viewHolder.date.setText(formattedDate);
+
+                cardContainer.addView(card);
             }
-
-            notes.add(document.getId());
-
-            String username = document.getString("username");
-            if (username == null || username.isEmpty()) {
-                username = "Anonimo";
-            }
-            String city = document.getString("city");
-            String description = document.getString("content");
-            Timestamp timestamp = (Timestamp) document.get("timestamp");
-            Date date = timestamp.toDate();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String formattedDate = dateFormat.format(date);
-
-            View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
-
-            // TODO: review to improve security
-            if (!username.equals("Anonimo")) {
-                card.setOnClickListener(v -> MoveActivity.addActivity(requireActivity(), AccountViewActivity.class, (intent) -> {
-                    String uid = document.getString("userId");
-                    intent.putExtra("UID", uid);
-                }));
-            } else {
-                card.setOnClickListener(v -> Toast.makeText(binding.getRoot().getContext(), "Utente anonimo", Toast.LENGTH_SHORT).show());
-            }
-
-            ViewHolder viewHolder = new ViewHolder(card);
-            viewHolder.title.setText(username);
-            viewHolder.description.setText(description);
-            viewHolder.city.setText(city);
-            viewHolder.date.setText(formattedDate);
-
-            cardContainer.addView(card);
         });
     }
 

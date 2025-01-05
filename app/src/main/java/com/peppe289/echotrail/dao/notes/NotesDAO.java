@@ -68,11 +68,7 @@ public class NotesDAO {
         db.collection("notes")
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    for (DocumentSnapshot noteDoc : querySnapshot) {
-                        callback.onComplete(noteDoc);
-                    }
-                })
+                .addOnSuccessListener(callback::onComplete)
                 .addOnFailureListener(e -> Log.e("NotesDAO", "Error getting notes: " + e.getMessage()));
     }
 
@@ -88,11 +84,7 @@ public class NotesDAO {
     public static void getAllNotes(UserDAO.NotesListCallback callback) {
         db.collection("notes")
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    for (DocumentSnapshot noteDoc : querySnapshot) {
-                        callback.onComplete(noteDoc);
-                    }
-                })
+                .addOnSuccessListener(callback::onComplete)
                 .addOnFailureListener(e -> Log.e("NotesDAO", "Error getting all notes: " + e.getMessage()));
     }
 }

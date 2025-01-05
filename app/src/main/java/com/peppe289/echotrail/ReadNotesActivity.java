@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.databinding.ActivityReadNotesBinding;
 
@@ -43,27 +44,30 @@ public class ReadNotesActivity extends AppCompatActivity {
 
         LinearLayout cardContainer = findViewById(R.id.card_container);
 
-        NotesDAO.getNotes(notesID, document -> {
-            String username = document.getString("username");
-            if (username == null || username.isEmpty()) {
-                username = "Anonimo";
+        NotesDAO.getNotes(notesID, querySnapshot -> {
+            if (querySnapshot == null || querySnapshot.isEmpty()) return;
+            for (DocumentSnapshot document : querySnapshot) {
+                String username = document.getString("username");
+                if (username == null || username.isEmpty()) {
+                    username = "Anonimo";
+                }
+                String city = document.getString("city");
+                String description = document.getString("content");
+                Timestamp timestamp = (Timestamp) document.get("timestamp");
+                Date date = timestamp.toDate();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(date);
+
+                View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
+
+                MyNotesActivity.ViewHolder viewHolder = new MyNotesActivity.ViewHolder(card);
+                viewHolder.title.setText(username);
+                viewHolder.description.setText(description);
+                viewHolder.city.setText(city);
+                viewHolder.date.setText(formattedDate);
+
+                cardContainer.addView(card);
             }
-            String city = document.getString("city");
-            String description = document.getString("content");
-            Timestamp timestamp = (Timestamp) document.get("timestamp");
-            Date date = timestamp.toDate();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String formattedDate = dateFormat.format(date);
-
-            View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
-
-            MyNotesActivity.ViewHolder viewHolder = new MyNotesActivity.ViewHolder(card);
-            viewHolder.title.setText(username);
-            viewHolder.description.setText(description);
-            viewHolder.city.setText(city);
-            viewHolder.date.setText(formattedDate);
-
-            cardContainer.addView(card);
         });
     }
 }

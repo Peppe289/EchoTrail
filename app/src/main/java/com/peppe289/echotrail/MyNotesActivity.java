@@ -16,6 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMyNotesBinding;
 
@@ -43,8 +44,8 @@ public class MyNotesActivity extends AppCompatActivity {
         LinearLayout cardContainer = findViewById(R.id.card_container);
         setUpToolBar();
 
-        UserController.getUserNotesList(document -> {
-            if (document == null) {
+        UserController.getUserNotesList(querySnapshot -> {
+            if (querySnapshot == null || querySnapshot.isEmpty()) {
                 TextView text = new TextView(binding.getRoot().getContext());
                 text.setText("Nessuna nota presente");
                 text.setGravity(Gravity.CENTER);
@@ -58,23 +59,24 @@ public class MyNotesActivity extends AppCompatActivity {
                 cardContainer.addView(text);
                 return;
             }
+            for (DocumentSnapshot document : querySnapshot) {
+                String city = document.getString("city");
+                String description = document.getString("content");
+                Timestamp timestamp = (Timestamp) document.get("timestamp");
+                Date date = timestamp.toDate();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(date);
 
-            String city = document.getString("city");
-            String description = document.getString("content");
-            Timestamp timestamp = (Timestamp) document.get("timestamp");
-            Date date = timestamp.toDate();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String formattedDate = dateFormat.format(date);
+                View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
 
-            View card = LayoutInflater.from(binding.getRoot().getContext()).inflate(R.layout.card_item, cardContainer, false);
+                ViewHolder viewHolder = new ViewHolder(card);
+                viewHolder.title.setText("La tua nota");
+                viewHolder.description.setText(description);
+                viewHolder.city.setText(city);
+                viewHolder.date.setText(formattedDate);
 
-            ViewHolder viewHolder = new ViewHolder(card);
-            viewHolder.title.setText("La tua nota");
-            viewHolder.description.setText(description);
-            viewHolder.city.setText(city);
-            viewHolder.date.setText(formattedDate);
-
-            cardContainer.addView(card);
+                cardContainer.addView(card);
+            }
         });
     }
 
