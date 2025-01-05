@@ -19,6 +19,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMyNotesBinding;
+import com.peppe289.echotrail.utils.LoadingManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,6 +27,7 @@ import java.util.Locale;
 
 public class MyNotesActivity extends AppCompatActivity {
     private ActivityMyNotesBinding binding;
+    private LoadingManager loadingManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,9 @@ public class MyNotesActivity extends AppCompatActivity {
 
         binding = ActivityMyNotesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        loadingManager = new LoadingManager(binding.getRoot());
+        loadingManager.showLoading();
 
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
@@ -57,6 +62,7 @@ public class MyNotesActivity extends AppCompatActivity {
                 text.setLayoutParams(layoutParams);
 
                 cardContainer.addView(text);
+                loadingManager.hideLoading();
                 return;
             }
             for (DocumentSnapshot document : querySnapshot) {
@@ -77,6 +83,8 @@ public class MyNotesActivity extends AppCompatActivity {
 
                 cardContainer.addView(card);
             }
+
+            loadingManager.hideLoading();
         });
     }
 
