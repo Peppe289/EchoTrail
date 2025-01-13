@@ -58,10 +58,12 @@ public class NotesController {
 
         // Add optional geolocation data if available
         if (data.get("latitude") != null && data.get("longitude") != null) {
-            GeoPoint coordinates = new GeoPoint(
-                    (double) data.get("latitude"),
-                    (double) data.get("longitude")
-            );
+            Double latitude = (Double) data.get("latitude");
+            Double longitude = (Double) data.get("longitude");
+            GeoPoint coordinates = null;
+            if (latitude != null && longitude != null) {
+                coordinates = new GeoPoint(latitude, longitude);
+            }
             noteData.put("coordinates", coordinates);
         }
 

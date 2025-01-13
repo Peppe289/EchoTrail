@@ -209,7 +209,7 @@ public class MapHelper {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
+                    String responseBody = response.body() == null ? "" : response.body().string();
                     try {
                         callback.onFetchSuggestions(responseBody);
                     } catch (Exception e) {

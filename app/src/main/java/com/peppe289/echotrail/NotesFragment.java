@@ -117,7 +117,7 @@ public class NotesFragment extends Fragment {
                 String city = document.getString("city");
                 String description = document.getString("content");
                 Timestamp timestamp = (Timestamp) document.get("timestamp");
-                Date date = timestamp.toDate();
+                Date date = timestamp != null ? timestamp.toDate() : null;
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                 String formattedDate = dateFormat.format(date);
 

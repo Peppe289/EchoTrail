@@ -2,6 +2,7 @@ package com.peppe289.echotrail;
 
 import android.os.Bundle;
 
+import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAccountViewBinding;
 import com.peppe289.echotrail.utils.LoadingManager;
+
+import java.util.Objects;
 
 public class AccountViewActivity extends AppCompatActivity {
 
@@ -37,10 +40,16 @@ public class AccountViewActivity extends AppCompatActivity {
         String UID = getIntent().getStringExtra("UID");
 
         UserController.getUserInfoByUID(UID, userInfo -> {
-            binding.usernameTextView.setText(userInfo.get("username").toString());
-            binding.notesRead.setText(userInfo.get("readedNotes").toString());
-            binding.notesPublished.setText(userInfo.get("notes").toString());
+            setTextViewIfNotNull(binding.usernameTextView, userInfo.get("username"));
+            setTextViewIfNotNull(binding.notesRead, userInfo.get("readedNotes"));
+            setTextViewIfNotNull(binding.notesPublished, userInfo.get("notes"));
             loadingManager.hideLoading();
         });
+    }
+
+    private void setTextViewIfNotNull(TextView textView, Object value) {
+        if (value != null) {
+            textView.setText(value.toString());
+        }
     }
 }
