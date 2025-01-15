@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.peppe289.echotrail.R;
 
 public class BottomSheetFragment extends BottomSheetDialogFragment {
     private static final String ARG_TITLE = "title";

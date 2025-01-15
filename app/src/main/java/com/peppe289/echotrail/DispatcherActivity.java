@@ -11,6 +11,9 @@ import androidx.fragment.app.FragmentManager;
 
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityDispatcherBinding;
+import com.peppe289.echotrail.fragment.AccountFragment;
+import com.peppe289.echotrail.fragment.MapFragment;
+import com.peppe289.echotrail.fragment.NotesFragment;
 import com.peppe289.echotrail.utils.BottomBar;
 
 /**

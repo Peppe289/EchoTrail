@@ -40,10 +40,12 @@ public class AccountViewActivity extends AppCompatActivity {
         String UID = getIntent().getStringExtra("UID");
 
         UserController.getUserInfoByUID(UID, userInfo -> {
-            setTextViewIfNotNull(binding.usernameTextView, userInfo.get("username"));
-            setTextViewIfNotNull(binding.notesRead, userInfo.get("readedNotes"));
-            setTextViewIfNotNull(binding.notesPublished, userInfo.get("notes"));
-            loadingManager.hideLoading();
+            if (userInfo != null) {
+                setTextViewIfNotNull(binding.usernameTextView, userInfo.get("username"));
+                setTextViewIfNotNull(binding.notesRead, userInfo.get("readedNotes"));
+                setTextViewIfNotNull(binding.notesPublished, userInfo.get("notes"));
+                loadingManager.hideLoading();
+            }
         });
     }
 

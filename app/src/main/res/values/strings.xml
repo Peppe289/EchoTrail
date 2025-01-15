@@ -23,10 +23,11 @@
     <string name="salva">Salva</string>
     <string name="le_note_trovate">le note trovate</string>
     <string name="cerca_sulla_mappa">Cerca sulla mappa</string>
-    <string name="note_disponibili">Note disponibili</string>
     <string name="aggiorna_la_posizione_corrente">Aggiorna la posizione corrente</string>
     <string name="pubblica_in_anonimo">Pubblica in anonimo</string>
     <string name="anonimo_di_deafult">Anonimo di deafult</string>
     <string name="descrizione_anonimo_preferences">Abilitare di default l\'impostazione per pubblicare in anonimo le note.</string>
     <string name="aggiungi_link">Aggiungi un nuovo link al tuo profilo</string>
+    <string name="nessuna_nota">Nessuna nota</string>
+    <string name="non_ci_sono_note">Non ci sono note</string>
 </resources>

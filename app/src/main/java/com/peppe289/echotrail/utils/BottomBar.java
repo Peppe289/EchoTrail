@@ -8,9 +8,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.peppe289.echotrail.AccountFragment;
-import com.peppe289.echotrail.MapFragment;
-import com.peppe289.echotrail.NotesFragment;
+import com.peppe289.echotrail.fragment.AccountFragment;
+import com.peppe289.echotrail.fragment.MapFragment;
+import com.peppe289.echotrail.fragment.NotesFragment;
 import com.peppe289.echotrail.R;
 
 /**

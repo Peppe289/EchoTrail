@@ -6,6 +6,7 @@ import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -73,6 +74,10 @@ public class NotesController {
 
         // Save the note through NotesDAO
         NotesDAO.saveNote(noteData, callback);
+    }
+
+    public static void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
+        NotesDAO.getNotes(notesID, callback);
     }
 
     public static void updateReadNotesList(String noteId) {

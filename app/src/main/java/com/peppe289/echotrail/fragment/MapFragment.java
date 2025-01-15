@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -22,6 +22,9 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.peppe289.echotrail.AddNotesActivity;
+import com.peppe289.echotrail.NotesListActivity;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.utils.LocationHelper;
@@ -282,7 +285,7 @@ public class MapFragment extends Fragment {
             NotesController.updateReadNotesList(noteID);
         }
 
-        MoveActivity.addActivity(requireActivity(), ReadNotesActivity.class, intent -> {
+        MoveActivity.addActivity(requireActivity(), NotesListActivity.class, intent -> {
             intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs));
         });
     }
