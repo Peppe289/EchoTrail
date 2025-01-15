@@ -2,6 +2,7 @@ package com.peppe289.echotrail.model;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class CardItem {
     @NonNull
@@ -26,7 +27,7 @@ public class CardItem {
         this.id = id;
     }
 
-    public String getId() {
+    public @NotNull String getId() {
         return id;
     }
 

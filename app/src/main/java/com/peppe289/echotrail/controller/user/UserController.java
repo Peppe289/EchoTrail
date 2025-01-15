@@ -2,8 +2,6 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 
-import com.google.firebase.firestore.FieldValue;
-import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;

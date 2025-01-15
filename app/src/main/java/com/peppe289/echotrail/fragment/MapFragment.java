@@ -92,19 +92,17 @@ public class MapFragment extends Fragment {
     }
 
     private void startUpdateGPS() {
-        sUpdateGPS = esUpdateGPS.scheduleWithFixedDelay(() -> {
-            locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
-                @Override
-                public void onLocationUpdated(GeoPoint location) {
-                    mapHelper.setMapCenter(location, false);
-                }
+        sUpdateGPS = esUpdateGPS.scheduleWithFixedDelay(() -> locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
+            @Override
+            public void onLocationUpdated(GeoPoint location) {
+                mapHelper.setMapCenter(location, false);
+            }
 
-                @Override
-                public void onLocationError(String error) {
-                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }, 0, 5, TimeUnit.SECONDS);
+            @Override
+            public void onLocationError(String error) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        }), 0, 5, TimeUnit.SECONDS);
     }
 
     private void startFetchingNotes() {
@@ -285,9 +283,7 @@ public class MapFragment extends Fragment {
             NotesController.updateReadNotesList(noteID);
         }
 
-        MoveActivity.addActivity(requireActivity(), NotesListActivity.class, intent -> {
-            intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs));
-        });
+        MoveActivity.addActivity(requireActivity(), NotesListActivity.class, intent -> intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs)));
     }
 
     // Handle search query

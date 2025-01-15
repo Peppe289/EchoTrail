@@ -14,8 +14,6 @@ import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAccountViewBinding;
 import com.peppe289.echotrail.utils.LoadingManager;
 
-import java.util.Objects;
-
 public class AccountViewActivity extends AppCompatActivity {
 
     private ActivityAccountViewBinding binding;

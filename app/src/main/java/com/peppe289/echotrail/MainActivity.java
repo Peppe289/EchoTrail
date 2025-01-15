@@ -40,12 +40,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        binding.registrazioneBtn.setOnClickListener(view -> {
-            MoveActivity.addActivity(MainActivity.this, RegistrationActivity.class, null);
-        });
+        binding.registrazioneBtn.setOnClickListener(view -> MoveActivity.addActivity(MainActivity.this, RegistrationActivity.class, null));
 
-        binding.loginBtn.setOnClickListener(view -> {
-            MoveActivity.addActivity(MainActivity.this, LoginActivity.class, null);
-        });
+        binding.loginBtn.setOnClickListener(view -> MoveActivity.addActivity(MainActivity.this, LoginActivity.class, null));
     }
 }

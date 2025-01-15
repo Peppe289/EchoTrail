@@ -17,7 +17,6 @@ import com.peppe289.echotrail.NotesListActivity;
 import com.peppe289.echotrail.PersonalInfoActivity;
 import com.peppe289.echotrail.PreferencesActivity;
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;

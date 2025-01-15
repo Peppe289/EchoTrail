@@ -117,9 +117,7 @@ public class LocationHelper {
             } else {
                 locationCallback.onLocationError("Location not found.");
             }
-        }).addOnFailureListener(e -> {
-            locationCallback.onLocationError("Failed to get location: " + e.getMessage());
-        });
+        }).addOnFailureListener(e -> locationCallback.onLocationError("Failed to get location: " + e.getMessage()));
     }
 
     /**

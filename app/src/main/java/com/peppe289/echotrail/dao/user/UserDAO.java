@@ -1,12 +1,10 @@
 package com.peppe289.echotrail.dao.user;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.notes.NotesController;
-import com.peppe289.echotrail.dao.notes.NotesDAO;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,9 +37,7 @@ public class UserDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void signIn(String email, String password, SignInCallback callback) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            callback.onComplete(task.isSuccessful());
-        });
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> callback.onComplete(task.isSuccessful()));
     }
 
     public void getUserLinks(UserLinksCallback callback) {
@@ -51,6 +47,8 @@ public class UserDAO {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         try {
+                            /* consider this always as list of string. */
+                            @SuppressWarnings("unchecked")
                             List<String> links = (List<String>) documentSnapshot.get("links");
                             callback.onComplete(links);
                         } catch (Exception ignored) {
@@ -61,13 +59,9 @@ public class UserDAO {
     }
 
     public void signUp(String email, String password, String username, SignUpCallback callback) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            db.collection("users").document(getUid()).set(new HashMap<String, Object>() {{
-                put("username", username);
-            }}).addOnCompleteListener(task1 -> {
-                callback.onComplete(task.isSuccessful() && task1.isSuccessful());
-            });
-        });
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> db.collection("users").document(getUid()).set(new HashMap<String, Object>() {{
+            put("username", username);
+        }}).addOnCompleteListener(task1 -> callback.onComplete(task.isSuccessful() && task1.isSuccessful())));
     }
 
     public void updateNotesList(String noteId) {
@@ -96,6 +90,8 @@ public class UserDAO {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             try {
+                                /* consider this always as list of string. */
+                                @SuppressWarnings("unchecked")
                                 List<String> notesID = (List<String>) documentSnapshot.get("readedNotes");
                                 NotesController.getNotes(notesID, callback);
                             } catch (Exception ignored) {
@@ -120,10 +116,6 @@ public class UserDAO {
         return Objects.requireNonNull(auth.getCurrentUser()).getUid();
     }
 
-    public void sendPasswordResetEmail(String email) {
-        auth.sendPasswordResetEmail(email);
-    }
-
     public void getUsername(UpdateUsernameViewCallback callback) {
         db.collection("users").document(getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -145,7 +137,11 @@ public class UserDAO {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             try {
+                                /* consider this always as list of string. */
+                                @SuppressWarnings("unchecked")
                                 List<String> notesID = (List<String>) documentSnapshot.get("notes");
+                                /* consider this always as list of string. */
+                                @SuppressWarnings("unchecked")
                                 List<String> readedNotesID = (List<String>) documentSnapshot.get("readedNotes");
                                 userInfo.put("notes", notesID == null ? 0 : notesID.size());
                                 userInfo.put("readedNotes", readedNotesID == null ? 0 : readedNotesID.size());
@@ -175,6 +171,8 @@ public class UserDAO {
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             try {
+                                /* consider this always as list of string. */
+                                @SuppressWarnings("unchecked")
                                 List<String> notesID = (List<String>) documentSnapshot.get("notes");
                                 NotesController.getNotes(notesID, callback);
                             } catch (Exception ignored) {

@@ -4,7 +4,6 @@ import com.google.firebase.firestore.GeoPoint;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
-import org.checkerframework.checker.units.qual.N;
 
 import java.util.HashMap;
 import java.util.List;
