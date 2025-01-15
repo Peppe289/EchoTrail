@@ -11,6 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.AccountViewActivity;
 import com.peppe289.echotrail.R;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.CardItem;
@@ -99,7 +100,7 @@ public class NotesFragment extends Fragment {
 
     private void fetchNotesFromDatabase() {
         // Recupera le note dal database utilizzando UserDAO
-        UserDAO.getReadedNotesList(querySnapshot -> {
+        UserController.getReadedNotesList(querySnapshot -> {
             if (querySnapshot == null || querySnapshot.isEmpty()) {
                 handleEmptyNoteList();
                 return;

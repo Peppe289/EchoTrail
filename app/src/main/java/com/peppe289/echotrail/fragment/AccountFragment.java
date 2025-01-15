@@ -123,7 +123,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
                 }
                 publishedNotes.setText(String.valueOf(notesWritten.size()));
 
-                UserDAO.getReadedNotesList(querySnapshot2 -> {
+                UserController.getReadedNotesList(querySnapshot2 -> {
                     if (querySnapshot2 != null && !querySnapshot2.isEmpty()) {
                         for (DocumentSnapshot document : querySnapshot2) {
                             if (document != null) notesReaded.add(document.getId());

@@ -2,6 +2,8 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 
+import com.google.firebase.firestore.FieldValue;
+import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.HashMap;
@@ -30,6 +32,22 @@ import java.util.Objects;
 public class UserController {
 
     /**
+     * User DAO object for handling user-related operations.
+     */
+    private static UserDAO userDAO;
+
+    /**
+     * Initializes the {@link UserDAO} instance for user-related operations.
+     */
+    public static void init() {
+        init(new UserDAO());
+    }
+
+    public static void init(UserDAO userDAO) {
+        UserController.userDAO = userDAO;
+    }
+
+    /**
      * Logs in a user using their email and password.
      * <p>
      * This method ensures no user is already logged in before initiating the login process.
@@ -46,10 +64,18 @@ public class UserController {
         validateCallback(callback);
 
         if (!isLoggedIn()) {
-            UserDAO.signIn(email, password, callback);
+            userDAO.signIn(email, password, callback);
         } else {
             throw new UserStateException("User is already signed in.");
         }
+    }
+
+    public static void getReadedNotesList(UserDAO.NotesListCallback callback) {
+        userDAO.getReadedNotesList(callback);
+    }
+
+    public static void updateNotesList(String noteId) {
+        userDAO.updateNotesList(noteId);
     }
 
     /**
@@ -70,7 +96,7 @@ public class UserController {
         validateCallback(callback);
 
         if (!isLoggedIn()) {
-            UserDAO.signUp(email, password, username, callback);
+            userDAO.signUp(email, password, username, callback);
         } else {
             throw new UserStateException("User is already signed in.");
         }
@@ -82,7 +108,7 @@ public class UserController {
      * @return {@code true} if a user is logged in, {@code false} otherwise.
      */
     public static boolean isLoggedIn() {
-        return UserDAO.isSignedIn();
+        return userDAO.isSignedIn();
     }
 
     /**
@@ -96,7 +122,7 @@ public class UserController {
      */
     public static void logout(Context context) {
         if (isLoggedIn()) {
-            UserDAO.signOut();
+            userDAO.signOut();
             PreferencesHelper.clearUserHeaders(context);
         } else {
             throw new UserStateException("User is not signed in.");
@@ -105,14 +131,14 @@ public class UserController {
 
     public static void setUsername(String newUsername) {
         if (isLoggedIn()) {
-            UserDAO.setUsername(newUsername);
+            userDAO.setUsername(newUsername);
         } else {
             throw new UserStateException("User is not signed in.");
         }
     }
 
     public static void getUserLinks(UserDAO.UserLinksCallback callback) {
-        UserDAO.getUserLinks(callback);
+        userDAO.getUserLinks(callback);
     }
 
     /**
@@ -123,7 +149,7 @@ public class UserController {
      */
     public static void getUsername(UserDAO.UpdateUsernameViewCallback callback) {
         if (isLoggedIn()) {
-            UserDAO.getUsername(callback);
+            userDAO.getUsername(callback);
         } else {
             throw new UserStateException("User is not signed in.");
         }
@@ -131,11 +157,11 @@ public class UserController {
 
     public static void setDefaultAnonymousPreference(Context context, boolean isChecked) {
         PreferencesHelper.setAnonymousPreferences(context, isChecked);
-        UserDAO.setDefaultAnonymousPreference(isChecked);
+        userDAO.setDefaultAnonymousPreference(isChecked);
     }
 
     public static void getDefaultAnonymousPreference(Context context, UserDAO.SettingsPreferencesToggle callback) {
-        UserDAO.getDefaultAnonymousPreference((result) -> {
+        userDAO.getDefaultAnonymousPreference((result) -> {
             // correct cached value using the result from the data base if necessary
             if (PreferencesHelper.getAnonymousPreferences(context) != result) {
                 PreferencesHelper.setAnonymousPreferences(context, result);
@@ -153,7 +179,7 @@ public class UserController {
      */
     public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
         if (isLoggedIn()) {
-            UserDAO.getEmail(callback);
+            userDAO.getEmail(callback);
         } else {
             throw new UserStateException("User is not signed in.");
         }
@@ -180,7 +206,7 @@ public class UserController {
     }
 
     public static void updateUserLinks(String link) {
-        UserDAO.updateUserLinks(link);
+        userDAO.updateUserLinks(link);
     }
 
     /**
@@ -225,14 +251,14 @@ public class UserController {
      */
     public static void getUserNotesList(UserDAO.NotesListCallback callback) {
         if (isLoggedIn()) {
-            UserDAO.getUserNotesList(callback);
+            userDAO.getUserNotesList(callback);
         } else {
             throw new UserStateException("User is not signed in.");
         }
     }
 
     public static void getUserInfoByUID(String UID, UserDAO.GetUserInfoCallBack callback){
-        UserDAO.getUserInfoByUID(UID, callback);
+        userDAO.getUserInfoByUID(UID, callback);
     }
 
     /**
@@ -241,7 +267,12 @@ public class UserController {
      * @return The UID of the authenticated user.
      */
     public static String getUid() {
-        return UserDAO.getUid();
+        return userDAO.getUid();
+    }
+
+
+    public static void updateReadNotesList(String noteId) {
+        userDAO.updateReadNotesList(noteId);
     }
 
     /**

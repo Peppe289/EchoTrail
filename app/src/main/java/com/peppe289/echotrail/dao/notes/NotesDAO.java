@@ -2,10 +2,12 @@ package com.peppe289.echotrail.dao.notes;
 
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 
 import java.util.List;
@@ -31,7 +33,11 @@ public class NotesDAO {
     /**
      * The Firestore database instance used for accessing and managing notes.
      */
-    private static final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db;
+
+    public NotesDAO() {
+        this.db = FirebaseFirestore.getInstance();
+    }
 
     /**
      * Saves a new note to the Firestore database.
@@ -43,13 +49,13 @@ public class NotesDAO {
      * @param noteData a {@link Map} containing the note's data (e.g., title, content, metadata)
      * @param callback a callback instance to notify when the save operation is complete
      */
-    public static void saveNote(Map<String, Object> noteData, NotesController.SaveNoteCallback callback) {
+    public void saveNote(Map<String, Object> noteData, NotesController.SaveNoteCallback callback) {
         db.collection("notes")
                 .add(noteData)
                 .addOnSuccessListener(documentReference -> {
                     String noteId = documentReference.getId();
                     callback.onSavedNote();
-                    UserDAO.updateNotesList(noteId);
+                    UserController.updateNotesList(noteId);
                 })
                 .addOnFailureListener(e -> Log.e("NotesDAO", "Error saving note: " + e.getMessage()));
     }
@@ -64,7 +70,7 @@ public class NotesDAO {
      * @param notesID  a {@link List} of note document IDs to fetch
      * @param callback a callback instance to handle the retrieved notes
      */
-    public static void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
+    public void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
         db.collection("notes")
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
@@ -81,7 +87,7 @@ public class NotesDAO {
      *
      * @param callback a callback instance to handle the retrieved notes
      */
-    public static void getAllNotes(UserDAO.NotesListCallback callback) {
+    public void getAllNotes(UserDAO.NotesListCallback callback) {
         db.collection("notes")
                 .get()
                 .addOnSuccessListener(callback::onComplete)

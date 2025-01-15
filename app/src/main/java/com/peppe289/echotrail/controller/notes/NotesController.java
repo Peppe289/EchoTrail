@@ -4,6 +4,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
+import org.checkerframework.checker.units.qual.N;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,16 @@ import java.util.Map;
  * </ul>
  */
 public class NotesController {
+
+    private static NotesDAO notesDAO;
+
+    public static void init() {
+        init(new NotesDAO());
+    }
+
+    public static void init(NotesDAO notesDAO) {
+        NotesController.notesDAO = notesDAO;
+    }
 
     /**
      * Saves a new note with optional geolocation and city data.
@@ -44,7 +55,7 @@ public class NotesController {
         Map<String, Object> noteData = new HashMap<>();
 
         // Add mandatory fields
-        noteData.put("userId", UserDAO.getUid());
+        noteData.put("userId", UserController.getUid());
         noteData.put("content", data.get("content"));
         UserController.getUsername((username) -> {
 
@@ -73,15 +84,15 @@ public class NotesController {
         noteData.put("city", data.get("city"));
 
         // Save the note through NotesDAO
-        NotesDAO.saveNote(noteData, callback);
+        notesDAO.saveNote(noteData, callback);
     }
 
     public static void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
-        NotesDAO.getNotes(notesID, callback);
+        notesDAO.getNotes(notesID, callback);
     }
 
     public static void updateReadNotesList(String noteId) {
-        UserDAO.updateReadNotesList(noteId);
+        UserController.updateReadNotesList(noteId);
     }
 
     /**
@@ -93,7 +104,7 @@ public class NotesController {
      * @param callback A callback invoked with the list of notes retrieved.
      */
     public static void getAllNotes(UserDAO.NotesListCallback callback) {
-        NotesDAO.getAllNotes(callback);
+        notesDAO.getAllNotes(callback);
     }
 
     /**

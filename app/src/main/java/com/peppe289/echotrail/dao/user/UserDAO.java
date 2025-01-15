@@ -5,6 +5,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 
 import java.util.HashMap;
@@ -15,19 +16,20 @@ import java.util.Objects;
  * The {@code UserDAO} class provides methods for user authentication and management using Firebase Authentication and Firestore.
  * It supports anonymous sign-in, email/password authentication, user registration, password reset, and user session management.
  *
- * <p><b>Note:</b> This implementation uses synchronous behavior with {@code CountDownLatch},
- * which may block the current thread. Ensure it is not used on the main UI thread to avoid freezing the application.</p>
+ * <p><b>Note:</b> This implementation is designed to be instantiated, providing more flexibility for dependency injection and testing.</p>
  */
 public class UserDAO {
 
+    private final FirebaseAuth auth;
+    private final FirebaseFirestore db;
+
     /**
-     * The Firebase Authentication instance.
+     * Constructor for UserDAO. Initializes FirebaseAuth and FirebaseFirestore instances.
      */
-    static private final FirebaseAuth auth = FirebaseAuth.getInstance();
-    /**
-     * The Firestore database instance.
-     */
-    static private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public UserDAO() {
+        this.auth = FirebaseAuth.getInstance();
+        this.db = FirebaseFirestore.getInstance();
+    }
 
     /**
      * Signs in the user using email and password authentication.
@@ -36,13 +38,13 @@ public class UserDAO {
      * @param password The user's password.
      * @param callback The callback to be invoked upon completion.
      */
-    public static void signIn(String email, String password, SignInCallback callback) {
+    public void signIn(String email, String password, SignInCallback callback) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             callback.onComplete(task.isSuccessful());
         });
     }
 
-    public static void getUserLinks(UserLinksCallback callback) {
+    public void getUserLinks(UserLinksCallback callback) {
         db.collection("users")
                 .document(getUid())
                 .get()
@@ -58,19 +60,7 @@ public class UserDAO {
                 });
     }
 
-    public interface UserLinksCallback {
-        void onComplete(List<String> links);
-    }
-
-    /**
-     * Registers a new user with the provided email, password, and username.
-     *
-     * @param email    The user's email address.
-     * @param password The user's password.
-     * @param username The user's desired username.
-     * @param callback The callback to be invoked upon completion.
-     */
-    public static void signUp(String email, String password, String username, SignUpCallback callback) {
+    public void signUp(String email, String password, String username, SignUpCallback callback) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             db.collection("users").document(getUid()).set(new HashMap<String, Object>() {{
                 put("username", username);
@@ -80,25 +70,25 @@ public class UserDAO {
         });
     }
 
-    public static void updateNotesList(String noteId) {
+    public void updateNotesList(String noteId) {
         db.collection("users")
                 .document(getUid())
                 .update("notes", FieldValue.arrayUnion(noteId));
     }
 
-    public static void updateReadNotesList(String noteId) {
+    public void updateReadNotesList(String noteId) {
         db.collection("users")
                 .document(getUid())
                 .update("readedNotes", FieldValue.arrayUnion(noteId));
     }
 
-    public static void updateUserLinks(String link) {
+    public void updateUserLinks(String link) {
         db.collection("users")
                 .document(getUid())
                 .update("links", FieldValue.arrayUnion(link));
     }
 
-    public static void getReadedNotesList(NotesListCallback callback) {
+    public void getReadedNotesList(NotesListCallback callback) {
         try {
             db.collection("users")
                     .document(getUid())
@@ -107,7 +97,7 @@ public class UserDAO {
                         if (documentSnapshot.exists()) {
                             try {
                                 List<String> notesID = (List<String>) documentSnapshot.get("readedNotes");
-                                NotesDAO.getNotes(notesID, callback);
+                                NotesController.getNotes(notesID, callback);
                             } catch (Exception ignored) {
                                 callback.onComplete(null);
                             }
@@ -118,46 +108,23 @@ public class UserDAO {
         }
     }
 
-    /**
-     * Signs out the currently authenticated user.
-     */
-    public static void signOut() {
+    public void signOut() {
         auth.signOut();
     }
 
-    /**
-     * Checks if a user is currently signed in.
-     *
-     * @return {@code true} if a user is signed in, {@code false} otherwise.
-     */
-    public static boolean isSignedIn() {
+    public boolean isSignedIn() {
         return auth.getCurrentUser() != null;
     }
 
-    /**
-     * Retrieves the unique identifier (UID) of the currently authenticated user.
-     *
-     * @return The UID of the current user, or {@code null} if no user is signed in.
-     */
-    public static String getUid() {
+    public String getUid() {
         return Objects.requireNonNull(auth.getCurrentUser()).getUid();
     }
 
-    /**
-     * Sends a password reset email to the specified email address.
-     *
-     * @param email The email address to send the password reset link to.
-     */
-    public static void sendPasswordResetEmail(String email) {
+    public void sendPasswordResetEmail(String email) {
         auth.sendPasswordResetEmail(email);
     }
 
-    /**
-     * Retrieves the username of the currently authenticated user from Firestore.
-     *
-     * @param callback The callback to be invoked with the retrieved username.
-     */
-    public static void getUsername(UpdateUsernameViewCallback callback) {
+    public void getUsername(UpdateUsernameViewCallback callback) {
         db.collection("users").document(getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 callback.onComplete(Objects.requireNonNull(task.getResult()).getString("username"));
@@ -165,11 +132,11 @@ public class UserDAO {
         });
     }
 
-    public static void setUsername(String username) {
+    public void setUsername(String username) {
         db.collection("users").document(getUid()).update("username", username);
     }
 
-    public static void getUserInfoByUID(String UID, GetUserInfoCallBack callback) {
+    public void getUserInfoByUID(String UID, GetUserInfoCallBack callback) {
         HashMap<String, Object> userInfo = new HashMap<>();
         try {
             db.collection("users")
@@ -195,21 +162,12 @@ public class UserDAO {
         }
     }
 
-    public interface GetUserInfoCallBack {
-        void onComplete(HashMap<String, Object> userInfo);
-    }
-
-    /**
-     * Retrieves the email address of the currently authenticated user.
-     *
-     * @param callback The callback to be invoked with the retrieved email address.
-     */
-    public static void getEmail(UpdateEmailViewCallback callback) {
+    public void getEmail(UpdateEmailViewCallback callback) {
         String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
         callback.onComplete(email);
     }
 
-    public static void getUserNotesList(NotesListCallback callback) {
+    public void getUserNotesList(NotesListCallback callback) {
         try {
             db.collection("users")
                     .document(getUid())
@@ -218,7 +176,7 @@ public class UserDAO {
                         if (documentSnapshot.exists()) {
                             try {
                                 List<String> notesID = (List<String>) documentSnapshot.get("notes");
-                                NotesDAO.getNotes(notesID, callback);
+                                NotesController.getNotes(notesID, callback);
                             } catch (Exception ignored) {
                                 callback.onComplete(null);
                             }
@@ -229,13 +187,13 @@ public class UserDAO {
         }
     }
 
-    public static void setDefaultAnonymousPreference(boolean isAnonymous) {
+    public void setDefaultAnonymousPreference(boolean isAnonymous) {
         db.collection("users")
                 .document(getUid())
                 .update("anonymousByDefault", isAnonymous);
     }
 
-    public static void getDefaultAnonymousPreference(SettingsPreferencesToggle callback) {
+    public void getDefaultAnonymousPreference(SettingsPreferencesToggle callback) {
         db.collection("users")
                 .document(getUid())
                 .get()
@@ -251,51 +209,19 @@ public class UserDAO {
                 });
     }
 
-    /**
-     * Callback interface to handle the result of the sign-up process.
-     */
     public interface SignUpCallback {
-        /**
-         * Called upon completion of the sign-up process.
-         *
-         * @param success {@code true} if sign-up was successful, {@code false} otherwise.
-         */
         void onComplete(boolean success);
     }
 
-    /**
-     * Callback interface to handle the result of the sign-in process.
-     */
     public interface SignInCallback {
-        /**
-         * Called upon completion of the sign-in process.
-         *
-         * @param success {@code true} if sign-in was successful, {@code false} otherwise.
-         */
         void onComplete(boolean success);
     }
 
-    /**
-     * Callback interface to handle the result of username retrieval.
-     */
     public interface UpdateUsernameViewCallback {
-        /**
-         * Called upon completion of the username retrieval process.
-         *
-         * @param name The username of the currently authenticated user.
-         */
         void onComplete(String name);
     }
 
-    /**
-     * Callback interface to handle the result of email retrieval.
-     */
     public interface UpdateEmailViewCallback {
-        /**
-         * Called upon completion of the email retrieval process.
-         *
-         * @param email The email address of the currently authenticated user.
-         */
         void onComplete(String email);
     }
 
@@ -305,5 +231,13 @@ public class UserDAO {
 
     public interface SettingsPreferencesToggle {
         void onComplete(boolean isAnonymous);
+    }
+
+    public interface UserLinksCallback {
+        void onComplete(List<String> links);
+    }
+
+    public interface GetUserInfoCallBack {
+        void onComplete(HashMap<String, Object> userInfo);
     }
 }
