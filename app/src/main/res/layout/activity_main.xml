@@ -21,6 +21,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+            android:textColor="#000000"
             android:padding="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
