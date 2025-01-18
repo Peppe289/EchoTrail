@@ -1,5 +1,7 @@
 # EchoTrail - An App to Connect Emotions and Places
 
+<img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.webp" width="90" height="90" alt="EchoTrail logo" align="left">
+
 **EchoTrail** is an Android app that allows users to leave and discover messages (written) tied to real-world locations. Explore an interactive map, read heartfelt notes, and share your thoughts when visiting meaningful places. The app leverages `Firebase` to ensure scalable, _real-time management_ of users and data.
 
 ## Key Features
