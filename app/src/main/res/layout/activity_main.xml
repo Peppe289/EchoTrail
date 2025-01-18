@@ -26,8 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/registrati"
-        android:backgroundTint="@color/buttonSecondary"
-        android:textColor="@color/buttonTextSecondary"
         app:layout_constraintBottom_toTopOf="@id/loginBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -38,8 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/accedi"
-        android:backgroundTint="@color/buttonPrimary"
-        android:textColor="@color/buttonText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
