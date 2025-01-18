@@ -1,7 +1,10 @@
 package com.peppe289.echotrail;
 
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.os.Bundle;
 
+import android.widget.ImageView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -27,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // add blur to background image
+        ImageView imageView = findViewById(R.id.backgroundImage);
+        imageView.setRenderEffect(RenderEffect.createBlurEffect(15, 15, Shader.TileMode.CLAMP));
 
         // if the user is already logged (from android sdk) skipp this first page.
         if (UserController.isLoggedIn()) {
