@@ -231,7 +231,7 @@ public class MapFragment extends Fragment {
                 String noteUserID = documentSnapshot.getString("userId");
 
                 // Skip if coordinates are null or note belongs to the current user
-                if (coordinates == null || userID.equals(noteUserID)) return;
+                if (coordinates == null || userID.equals(noteUserID)) continue;
 
                 GeoPoint noteLocation = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
 
