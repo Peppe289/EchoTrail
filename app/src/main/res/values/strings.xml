@@ -28,4 +28,6 @@
     <string name="marker">Marker</string>
     <string name="fai_viaggiare_il_tuo_echo">Fai viaggiare il tuo echo</string>
     <string name="slogan">Fai viaggiare i tuoi pensieri</string>
+    <string name="accedi_in_et">Accedi in ET!</string>
+    <string name="registrati_in_et">Registrati in ET!</string>
 </resources>

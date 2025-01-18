@@ -2,15 +2,15 @@ package com.peppe289.echotrail;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.peppe289.echotrail.controller.user.UserController;
@@ -30,6 +30,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private TextInputEditText usernameEditText;
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
+    private ProgressBar progressBar;
 
     private TextInputLayout usernameLayout;
     private TextInputLayout emailLayout;
@@ -65,8 +66,21 @@ public class RegistrationActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.textInputLayoutEmail);
         passwordLayout = findViewById(R.id.textInputLayoutPassword);
 
+        progressBar = findViewById(R.id.progressBar);
+
+        setUpToolBar();
         // Set up the submit button click listener
-        binding.submitButton.setOnClickListener(v -> submitRegistration());
+        binding.registrationBtn.setOnClickListener(v -> submitRegistration());
+    }
+
+    private void setUpToolBar() {
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
     }
 
     /**
@@ -75,6 +89,7 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     protected void submitRegistration() {
         if (validateInputs()) {
+            progressBar.setVisibility(ProgressBar.VISIBLE);
             try {
                 String email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
                 String password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
@@ -84,6 +99,7 @@ public class RegistrationActivity extends AppCompatActivity {
             } catch (Exception e) {
                 // Handle any error during the registration process
                 handleError(e);
+                progressBar.setVisibility(ProgressBar.GONE);
             }
         } else {
             showToast("Dati non validi");

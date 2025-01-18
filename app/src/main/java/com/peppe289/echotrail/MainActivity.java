@@ -1,24 +1,33 @@
 package com.peppe289.echotrail;
 
-import android.graphics.RenderEffect;
-import android.graphics.Shader;
 import android.os.Bundle;
-
-import android.widget.ImageView;
+import android.text.TextUtils;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.ProgressBar;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseApp;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
-    private ActivityMainBinding binding;
+
+    private TextInputEditText emailEditText;
+    private TextInputEditText passwordEditText;
+    private ProgressBar progressBar;
+
+    private TextInputLayout emailLayout;
+    private TextInputLayout passwordLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +37,9 @@ public class MainActivity extends AppCompatActivity {
         NotesController.init();
         FirebaseApp.initializeApp(getApplicationContext());
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        com.peppe289.echotrail.databinding.ActivityMainBinding binding =
+                ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        // add blur to background image
-        ImageView imageView = findViewById(R.id.backgroundImage);
-        imageView.setRenderEffect(RenderEffect.createBlurEffect(15, 15, Shader.TileMode.CLAMP));
 
         // if the user is already logged (from android sdk) skipp this first page.
         if (UserController.isLoggedIn()) {
@@ -47,8 +53,51 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        binding.registrazioneBtn.setOnClickListener(view -> MoveActivity.addActivity(MainActivity.this, RegistrationActivity.class, null));
+        emailEditText = findViewById(R.id.textInputEditTextEmail);
+        passwordEditText = findViewById(R.id.textInputEditTextPassword);
 
-        binding.loginBtn.setOnClickListener(view -> MoveActivity.addActivity(MainActivity.this, LoginActivity.class, null));
+        emailLayout = findViewById(R.id.textInputLayoutEmail);
+        passwordLayout = findViewById(R.id.textInputLayoutPassword);
+
+        progressBar = findViewById(R.id.progressBar);
+
+        binding.registrationBtn.setOnClickListener(view -> MoveActivity.addActivity(MainActivity.this, RegistrationActivity.class, null));
+        findViewById(R.id.loginBtn).setOnClickListener(view -> verifyLoginOnSubmit());
+    }
+
+    protected void verifyLoginOnSubmit() {
+        if (validateInputs()) {
+            progressBar.setVisibility(View.VISIBLE);
+            UserController.login(Objects.requireNonNull(emailEditText.getText()).toString(), Objects.requireNonNull(passwordEditText.getText()).toString(), (result) -> {
+                if (result) {
+                    MoveActivity.rebaseActivity(this, DispatcherActivity.class, null);
+                } else {
+                    passwordLayout.setError("Email o password errati");
+                }
+                progressBar.setVisibility(View.GONE);
+            });
+        }
+    }
+
+    private boolean validateInputs() {
+        boolean isValid = true;
+
+        String email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
+        if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailLayout.setError("Inserisci un'email valida.");
+            isValid = false;
+        } else {
+            emailLayout.setError(null);
+        }
+
+        String password = Objects.requireNonNull(passwordEditText.getText()).toString();
+        if (TextUtils.isEmpty(password) || password.length() < 6) {
+            passwordLayout.setError("La password deve avere almeno 6 caratteri.");
+            isValid = false;
+        } else {
+            passwordLayout.setError(null);
+        }
+
+        return isValid;
     }
 }
