@@ -11,7 +11,6 @@
 
     <style name="Widget.MyApp.Button" parent="Widget.Material3.Button">
         <item name="cornerRadius">15dp</item>
-        <item name="android:textColor">#FFFFFF</item>
         <item name="android:layout_margin">15dp</item>
     </style>
 
