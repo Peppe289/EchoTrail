@@ -20,6 +20,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+            android:padding="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/slogan"
+            app:layout_constraintTop_toTopOf="@+id/backgroundImage"
+            app:layout_constraintBottom_toTopOf="@+id/registrazioneBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:fontFamily="monospace"
+            android:textSize="35sp"
+            android:lineSpacingExtra="8sp"
+            android:textStyle="bold|italic"/>
     <Button
         android:id="@+id/registrazioneBtn"
         android:layout_width="match_parent"
