@@ -104,6 +104,8 @@ public class DispatcherActivity extends AppCompatActivity {
             return insets;
         });
 
+        UserController.init();
+
         // Initialize fragments for navigation.
         MapFragment mapFragment = new MapFragment();
         AccountFragment accountFragment = new AccountFragment();
