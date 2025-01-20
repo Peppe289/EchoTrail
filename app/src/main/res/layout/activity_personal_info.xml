@@ -1,47 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".PersonalInfoActivity">
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   tools:context=".PersonalInfoActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
-        android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/arrow_back_24px" />
+            android:id="@+id/toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
+            android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/arrow_back_24px"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-            app:layout_constraintTop_toTopOf="parent">
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-            <LinearLayout
+        <LinearLayout
                 android:id="@+id/container_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
                 android:spacing="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="10dp">
 
-                <!-- Text Input for Name -->
-                <com.google.android.material.textfield.TextInputLayout
+            <!-- Text Input for Name -->
+            <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Username"
@@ -50,78 +43,92 @@
                     app:boxCornerRadiusTopEnd="18dp"
                     app:boxCornerRadiusTopStart="18dp">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/username_edit_text"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Email Input
-                <com.google.android.material.textfield.TextInputLayout
+            <!-- Email Input
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                app:boxCornerRadiusBottomEnd="18dp"
+                app:boxCornerRadiusBottomStart="18dp"
+                app:boxCornerRadiusTopEnd="18dp"
+                app:boxCornerRadiusTopStart="18dp">
+
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Email"
-                    app:boxCornerRadiusBottomEnd="18dp"
-                    app:boxCornerRadiusBottomStart="18dp"
-                    app:boxCornerRadiusTopEnd="18dp"
-                    app:boxCornerRadiusTopStart="18dp">
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+            -->
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress" />
-                </com.google.android.material.textfield.TextInputLayout>
-                -->
-
-                <LinearLayout
+            <LinearLayout
+                    android:orientation="horizontal"
                     android:id="@+id/add_link"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp">
 
-                    <ImageView
+                <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:background="@drawable/circle_border"
                         android:contentDescription="@string/aggiungi_link"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/add_24pm" />
+                        android:src="@drawable/add_24pm"/>
 
-                    <TextView
+                <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
-                        android:text="@string/aggiungi_link" />
-                </LinearLayout>
+                        android:text="@string/aggiungi_link"/>
             </LinearLayout>
-        </ScrollView>
+        </LinearLayout>
+
+        <ListView
+                android:id="@+id/links_list"
+                app:layout_constraintTop_toBottomOf="@+id/container_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+                android:foregroundGravity="center"
+                android:fastScrollEnabled="true"
+                android:divider="@null"
+                android:footerDividersEnabled="false"
+                android:headerDividersEnabled="false"
+                android:layout_height="0dp"
+                android:layout_width="0dp" />
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteX="10dp">
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:layout_editor_absoluteX="10dp">
             <!-- Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/cancel_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="3dp"
-                android:layout_weight="1"
-                android:text="Annulla" />
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3dp"
+                    android:layout_weight="1"
+                    android:text="Annulla"/>
 
             <!-- Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/save_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
-                android:layout_weight="1"
-                android:text="Salva" />
+                    android:id="@+id/save_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_weight="1"
+                    android:text="Salva"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

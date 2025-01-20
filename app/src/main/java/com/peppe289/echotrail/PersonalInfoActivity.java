@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import android.widget.ListView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +17,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPersonalInfoBinding;
+import com.peppe289.echotrail.utils.UserLinksAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class PersonalInfoActivity extends AppCompatActivity {
@@ -27,6 +31,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private com.google.android.material.button.MaterialButton saveButton;
     private com.google.android.material.button.MaterialButton cancelButton;
     private OnAccountEditedListener listener;
+    private ListView linksView;
+    private UserLinksAdapter userLinksAdapter;
+    private List<String> links;
     private LinearLayout addLinkLayout;
 
     @Override
@@ -63,17 +70,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         cancelButton.setOnClickListener(v -> finish());
         addLinkLayout.setOnClickListener(v -> shouwCustomInput((str) -> {
-            attachLink(str);
+            userLinksAdapter.add(str);
             UserController.updateUserLinks(str);
         }));
-    }
-
-    private void attachLink(String link) {
-        LinearLayout container = findViewById(R.id.container_layout);
-        View customView = getLayoutInflater().inflate(R.layout.personal_link_row, container, false);
-        com.google.android.material.textview.MaterialTextView linkTextView = customView.findViewById(R.id.link_text_view);
-        linkTextView.setText(link);
-        container.addView(customView);
     }
 
     private void initialization() {
@@ -82,11 +81,15 @@ public class PersonalInfoActivity extends AppCompatActivity {
         cancelButton = binding.cancelButton;
         listener = AccountEditNotifier.getInstance().getListener();
         addLinkLayout = findViewById(R.id.add_link);
+        linksView = findViewById(R.id.links_list);
+        links = new ArrayList<>();
+        userLinksAdapter = new UserLinksAdapter(this, R.layout.personal_link_row, links);
+        linksView.setAdapter(userLinksAdapter);
 
         UserController.getUserLinks(links -> {
             if (links != null) {
                 for (String link : links) {
-                    attachLink(link);
+                    userLinksAdapter.add(link);
                 }
             }
         });
