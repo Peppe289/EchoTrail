@@ -139,6 +139,10 @@ public class UserController {
         userDAO.getUserLinks(callback);
     }
 
+    public static void getUserLinks(String userID, UserDAO.UserLinksCallback callback) {
+        userDAO.getUserLinks(userID, callback);
+    }
+
     /**
      * Retrieves the username of the authenticated user.
      *

@@ -41,8 +41,12 @@ public class UserDAO {
     }
 
     public void getUserLinks(UserLinksCallback callback) {
+        getUserLinks(getUid(), callback);
+    }
+
+    public void getUserLinks(String userID, UserLinksCallback callback) {
         db.collection("users")
-                .document(getUid())
+                .document(userID)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {

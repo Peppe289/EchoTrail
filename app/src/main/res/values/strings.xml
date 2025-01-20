@@ -30,4 +30,7 @@
     <string name="slogan">Fai viaggiare i tuoi pensieri</string>
     <string name="accedi_in_et">Accedi in ET!</string>
     <string name="registrati_in_et">Registrati in ET!</string>
+    <string name="note_pubblicate">Note Pubblicate</string>
+    <string name="copia_id">Copia ID</string>
+    <string name="note_lette">Note Lette</string>
 </resources>
