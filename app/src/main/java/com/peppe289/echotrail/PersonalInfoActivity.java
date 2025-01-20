@@ -128,7 +128,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 .setTitle("Iscerisci il link")
                 .setView(customView)
                 .setPositiveButton("Aggiungi", (dialogInterface, i) -> {
-                    String inputText = inputEditText.getText() != null ? inputEditText.getText().toString() : "";
+                    String inputText = inputEditText.getText() != null ? inputEditText
+                            .getText().toString().replaceAll("[\\n\\r]", "") : "";
+
                     callBackDialog.onPositiveClick(inputText);
                 })
                 .setNegativeButton("Annulla", (dialogInterface, i) -> dialogInterface.dismiss())
