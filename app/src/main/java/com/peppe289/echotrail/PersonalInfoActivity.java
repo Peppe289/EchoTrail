@@ -3,7 +3,6 @@ package com.peppe289.echotrail;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-
 import android.widget.ListView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -85,6 +83,15 @@ public class PersonalInfoActivity extends AppCompatActivity {
         links = new ArrayList<>();
         userLinksAdapter = new UserLinksAdapter(this, R.layout.personal_link_row, links);
         linksView.setAdapter(userLinksAdapter);
+        linksView.setOnItemClickListener((parent, view, position, id) ->
+                showCustomDialog("Eliminare?", "Stai per eliminare questo link dal tuo account. Sei sicuro?",
+                        () -> {
+                            String link = userLinksAdapter.getItem(position);
+                            if (link != null) {
+                                userLinksAdapter.remove(link);
+                                UserController.removeUserLink(link);
+                            }
+                        }, "Annulla", "Elimina"));
 
         UserController.getUserLinks(links -> {
             if (links != null) {
@@ -113,7 +120,8 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> {
             if (!Objects.requireNonNull(usernameEditText.getText()).toString().equals(currentUsername)) {
-                showCustomDialog(() -> getOnBackPressedDispatcher().onBackPressed());
+                showCustomDialog("Restare nella schermata?", "Stai per uscire dalla pagina ed hai modifiche non salvate. ignorare?",
+                        () -> getOnBackPressedDispatcher().onBackPressed());
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
             }
@@ -137,15 +145,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void showCustomDialog(CallBackDialog callBackDialog) {
-        // Inflate the custom layout
-        View customView = getLayoutInflater().inflate(R.layout.dialog_custom, null);
+    private void showCustomDialog(String title, String message, CallBackDialog callBackDialog) {
+        showCustomDialog(title, message, callBackDialog, "Annulla", "Ignora");
+    }
 
+    private void showCustomDialog(String title, String message, CallBackDialog callBackDialog, String negativeText, String positiveText) {
         new MaterialAlertDialogBuilder(this)
-                .setTitle("Restare nella schermata?")
-                .setView(customView)
-                .setPositiveButton("Ignora", (dialogInterface, i) -> callBackDialog.onPositiveClick())
-                .setNegativeButton("Annulla", (dialogInterface, i) -> dialogInterface.dismiss())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveText, (dialogInterface, i) -> callBackDialog.onPositiveClick())
+                .setNegativeButton(negativeText, (dialogInterface, i) -> dialogInterface.dismiss())
                 .show();
     }
 

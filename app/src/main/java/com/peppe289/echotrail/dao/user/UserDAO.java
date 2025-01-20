@@ -86,6 +86,12 @@ public class UserDAO {
                 .update("links", FieldValue.arrayUnion(link));
     }
 
+    public void removeUserLink(String link) {
+        db.collection("users")
+                .document(getUid())
+                .update("links", FieldValue.arrayRemove(link));
+    }
+
     public void getReadedNotesList(NotesListCallback callback) {
         try {
             db.collection("users")

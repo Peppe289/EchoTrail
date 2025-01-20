@@ -76,6 +76,10 @@ public class UserController {
         userDAO.updateNotesList(noteId);
     }
 
+    public static void removeUserLink(String link) {
+        userDAO.removeUserLink(link);
+    }
+
     /**
      * Registers a new user with the provided credentials and username.
      * <p>
