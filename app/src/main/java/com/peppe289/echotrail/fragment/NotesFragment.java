@@ -15,6 +15,7 @@ import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.CardItem;
 import com.peppe289.echotrail.utils.CardItemAdapter;
+import com.peppe289.echotrail.utils.CardListView;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
 
@@ -62,23 +63,11 @@ public class NotesFragment extends Fragment {
                 id -> MoveActivity.addActivity(requireActivity(), AccountViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 
-        // Imposta l'adapter sulla ListView
-        viewBinding.notesList.setAdapter(notesAdapter);
+        CardListView notesListView = viewBinding.notesList;
+        notesListView.setAdapter(notesAdapter);
 
         // Mostra l'indicatore di caricamento all'avvio
         loadingIndicator.showLoading();
-
-        // Aggiunge un listener per la selezione di un elemento della lista
-        viewBinding.notesList.setOnItemClickListener((parent, view, position, id) -> {
-            CardItem selectedNote = notesAdapter.getItem(position);
-
-            if (selectedNote != null && selectedNote.getUserId() != null) {
-                MoveActivity.addActivity(requireActivity(), AccountViewActivity.class, (intent) -> {
-                    String uid = selectedNote.getUserId();
-                    intent.putExtra("UID", uid);
-                });
-            }
-        });
     }
 
     private void schedulePeriodicNoteFetch() {

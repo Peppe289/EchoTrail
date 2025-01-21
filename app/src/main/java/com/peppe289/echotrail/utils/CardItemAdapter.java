@@ -6,10 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.google.android.material.card.MaterialCardView;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.model.CardItem;
@@ -57,6 +55,10 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
             viewHolder.date.setText(item.getDate());
 
             if (callback != null) {
+                // because MaterialCardView is used for click event,
+                // I can't use the setOnItemClickListener in listView.
+                // And yeah ignore event and return false not work. DON'T
+                // CHANGE THIS AND DON'T USE ITEM CLICK EVENT IN LISTVIEW.
                 clickAdapter((MaterialCardView) convertView, item.getUserId());
             }
         }
