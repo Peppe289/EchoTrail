@@ -92,7 +92,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
 
         binding.idTextView.setText(UserController.getUid());
         binding.copyIdLayout.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getContext()).getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("UID", binding.idTextView.getText().toString());
             clipboard.setPrimaryClip(clip);
             Toast.makeText(binding.getRoot().getContext(), "UID Copied", Toast.LENGTH_SHORT).show();
