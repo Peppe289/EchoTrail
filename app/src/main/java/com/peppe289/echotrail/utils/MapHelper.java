@@ -198,7 +198,8 @@ public class MapHelper {
     public static void fetchSuggestions(String query, OnFetchSuggestions callback) {
         String url = "https://nominatim.openstreetmap.org/search?q=" + query + "&format=json&addressdetails=1";
 
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder().url(url)
+                .header("User-Agent", "EchoTrailApp/1.0 ()").build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
