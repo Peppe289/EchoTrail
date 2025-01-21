@@ -1,11 +1,15 @@
 package com.peppe289.echotrail.fragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -23,6 +27,7 @@ import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -84,6 +89,14 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
         binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), NotesListActivity.class, null));
         binding.mypreferences.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PreferencesActivity.class, null));
         binding.personalData.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PersonalInfoActivity.class, null));
+
+        binding.idTextView.setText(UserController.getUid());
+        binding.copyIdLayout.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) Objects.requireNonNull(getContext()).getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("UID", binding.idTextView.getText().toString());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(binding.getRoot().getContext(), "UID Copied", Toast.LENGTH_SHORT).show();
+        });
 
         startFetchingUserInfo();
         fetchInfo();
