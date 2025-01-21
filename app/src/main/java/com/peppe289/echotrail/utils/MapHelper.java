@@ -96,7 +96,10 @@ public class MapHelper {
      */
     public void setMapCenter(GeoPoint point, boolean setView) {
         if (mapView != null) {
-            if (setView) mapView.getController().setCenter(point);
+            if (setView) {
+                mapView.getController().animateTo(point);
+                mapView.getController().setZoom(15.0);
+            }
             if (marker == null) {
                 marker = new Marker(mapView);
                 marker.setTitle("La mia posizione");
