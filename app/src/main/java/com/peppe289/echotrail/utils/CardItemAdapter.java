@@ -1,10 +1,13 @@
 package com.peppe289.echotrail.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,25 +57,45 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
             viewHolder.city.setText(item.getCity());
             viewHolder.date.setText(item.getDate());
 
-            if (callback != null) {
-                // because MaterialCardView is used for click event,
-                // I can't use the setOnItemClickListener in listView.
-                // And yeah ignore event and return false not work. DON'T
-                // CHANGE THIS AND DON'T USE ITEM CLICK EVENT IN LISTVIEW.
-                clickAdapter((MaterialCardView) convertView, item.getUserId());
-            }
+            // because MaterialCardView is used for click event,
+            // I can't use the setOnItemClickListener in listView.
+            // And yeah ignore event and return false not work. DON'T
+            // CHANGE THIS AND DON'T USE ITEM CLICK EVENT IN LISTVIEW.
+            clickAdapter((MaterialCardView) convertView, item.getUserId());
         }
 
         return convertView;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void clickAdapter(MaterialCardView card, String userID) {
-        card.setOnClickListener(v ->
-        {
-            // this should not be never null!!
-            assert callback != null;
-            callback.onClick(userID);
-        });
+        TextView textView = card.findViewById(R.id.content);
+        ImageView imageView = card.findViewById(R.id.expand_btn);
+        if (callback != null) {
+            imageView.setOnTouchListener((v, event) -> {
+                onTouchExpandEvent(imageView, event, textView);
+                return true;
+            });
+
+            card.setOnClickListener(v -> callback.onClick(userID));
+        } else {
+            card.setOnTouchListener((v, event) -> {
+                onTouchExpandEvent(imageView, event, textView);
+                return false;
+            });
+        }
+    }
+
+    private void onTouchExpandEvent(ImageView imageView, MotionEvent event, TextView textView) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (textView.getMaxLines() != Integer.MAX_VALUE) {
+                textView.setMaxLines(Integer.MAX_VALUE);
+            } else {
+                textView.setMaxLines(1);
+            }
+
+            imageView.setRotation(imageView.getRotation() + 180);
+        }
     }
 
     public List<CardItem> getItems() {
@@ -86,6 +109,10 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
     }
 
     public interface CardClickCallback {
+        void onClick(String userID);
+    }
+
+    public interface CardClickExtendsCallback {
         void onClick(String userID);
     }
 
