@@ -1,20 +1,19 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
-
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityDispatcherBinding;
 import com.peppe289.echotrail.fragment.AccountFragment;
 import com.peppe289.echotrail.fragment.MapFragment;
 import com.peppe289.echotrail.fragment.NotesFragment;
 import com.peppe289.echotrail.utils.BottomBar;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The {@code DispatcherActivity} class serves as the main activity for managing the application's
@@ -135,7 +134,30 @@ public class DispatcherActivity extends AppCompatActivity {
         // Set up a listener for the bottom navigation bar to handle menu item selections.
         binding.bottomNavigationView.setOnItemSelectedListener(BottomBar::onNavigationItemSelected);
 
+        // Restore the selected item index from the saved instance state.
+        if (savedInstanceState != null) {
+            int selectedItemId = savedInstanceState.getInt("selectedItemId");
+            // Using post to avoid IllegalStateException: Navigation is not allowed after onSaveInstanceState.
+            // Wait in async state for the view to be created before selecting the item.
+            binding.bottomNavigationView.post(() -> binding.bottomNavigationView.setSelectedItemId(selectedItemId));
+        }
+
         // Save or update user headers in shared preferences for future use.
         UserController.updateUserHeadersToPreferences(binding.getRoot().getContext(), null);
+    }
+
+    /**
+     * View the android:configChanges="uiMode" attribute in the AndroidManifest.xml file this method
+     * is called when change theme configuration. This should solve the problem of resetting the index
+     * selected in the bottom bar (for example if I change theme when I'm in the notes page the main
+     * page of the map is then selected).
+     *
+     * @param outState exit state before destroy.
+     */
+    @Override
+    public void onSaveInstanceState(@NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int selectedItemId = binding.bottomNavigationView.getSelectedItemId();
+        outState.putInt("selectedItemId", selectedItemId);
     }
 }
