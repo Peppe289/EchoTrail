@@ -298,8 +298,9 @@ public class MapFragment extends Fragment {
                             if (!readyToSeeIDs.isEmpty()) {
                                 launchReadNotesActivity(readyToSeeIDs);
                             } else {
-                                Toast.makeText(requireContext(), "Raggiungi il luogo per leggere la nota!", Toast.LENGTH_SHORT).show();
-                            }
+                                BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance("Camminare fa bene!",
+                                        "Raggiungi il luogo per leggere la nota.");
+                                bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());}
                         }
 
                         @Override
