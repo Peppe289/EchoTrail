@@ -49,20 +49,52 @@
         </com.google.android.material.search.SearchView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+
+    <LinearLayout
+            android:layout_gravity="bottom|end"
+            android:orientation="vertical"
+            android:layout_marginBottom="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:visibility="gone"
+                android:id="@+id/publicNoteBtn"
+                android:text="@string/nota_pubblica"/>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="50dp"
+                android:visibility="gone"
+                android:id="@+id/privateNoteBtn"
+                android:text="@string/nota_privata" />
+
+    </LinearLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNewNoteBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_gravity="bottom|end"
-        android:layout_margin="30dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
         android:contentDescription="@string/aggiungi_una_nuova_nota"
         android:src="@drawable/add_24pm">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/setCurrentPositionBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_gravity="bottom|start"
         android:layout_margin="30dp"
         android:contentDescription="@string/aggiorna_la_posizione_corrente"

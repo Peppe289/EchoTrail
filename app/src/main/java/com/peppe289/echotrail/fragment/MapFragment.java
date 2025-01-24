@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchView;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -72,6 +73,9 @@ public class MapFragment extends Fragment {
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
     private ScheduledFuture<?> sFetchNotes;
     private ScheduledFuture<?> sUpdateGPS;
+    private boolean isFABOpen = false;
+    private ExtendedFloatingActionButton publicNotesBtn;
+    private ExtendedFloatingActionButton privateNotesBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,6 +129,9 @@ public class MapFragment extends Fragment {
 
     // Initialize UI components
     private void initializeUI(View view) {
+        privateNotesBtn = view.findViewById(R.id.privateNoteBtn);
+        publicNotesBtn = view.findViewById(R.id.publicNoteBtn);
+
         // AppBarLayout setup
         // IDK why with material 3 the app bar scroll up and go outside of screen. Here the fix from stackoverflow <3
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) view.findViewById(R.id.appBarLayout).getLayoutParams();
@@ -138,9 +145,41 @@ public class MapFragment extends Fragment {
             }
         });
 
+        publicNotesBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
+
         // Floating Action Button setup
         addNewNoteFloatingBtn = view.findViewById(R.id.addNewNoteBtn);
-        addNewNoteFloatingBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
+        addNewNoteFloatingBtn.setOnClickListener(e -> {
+            // from docs this allows to animate by default when use show()
+            // and hide() method.
+            publicNotesBtn.setAnimateShowBeforeLayout(true);
+            privateNotesBtn.setAnimateShowBeforeLayout(true);
+
+            isFABOpen = !isFABOpen;
+            if (isFABOpen) {
+                addNewNoteFloatingBtn.animate().
+                        setInterpolator(null).
+                        setListener(null).
+                        rotation(45f).
+                        withLayer().
+                        setDuration(300).
+                        withStartAction(() -> {
+                            privateNotesBtn.show();
+                            publicNotesBtn.show();
+                        }).start();
+            } else {
+                addNewNoteFloatingBtn.animate().
+                        setInterpolator(null).
+                        setListener(null).
+                        rotation(0).
+                        withLayer().
+                        setDuration(300).
+                        withStartAction(() -> {
+                            privateNotesBtn.hide();
+                            publicNotesBtn.hide();
+                        }).start();
+            }
+        });
 
         // Set current position button setup
         updatePositionFloatingBtn = view.findViewById(R.id.setCurrentPositionBtn);

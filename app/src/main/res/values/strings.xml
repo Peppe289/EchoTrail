@@ -33,4 +33,6 @@
     <string name="note_pubblicate">Note Pubblicate</string>
     <string name="copia_id">Copia ID</string>
     <string name="note_lette">Note Lette</string>
+    <string name="nota_pubblica">Nota pubblica</string>
+    <string name="nota_privata">Nota privata</string>
 </resources>
