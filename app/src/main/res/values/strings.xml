@@ -35,4 +35,6 @@
     <string name="note_lette">Note Lette</string>
     <string name="nota_pubblica">Nota pubblica</string>
     <string name="nota_privata">Nota privata</string>
+    <string name="cerca">Cerca</string>
+    <string name="conferma">Conferma</string>
 </resources>

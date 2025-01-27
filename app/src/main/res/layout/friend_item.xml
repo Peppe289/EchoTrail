@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_height="wrap_content"
+              android:layout_width="match_parent"
+              android:minHeight="50dp"
+              android:orientation="horizontal"
+              android:padding="20dp"
+              android:gravity="center">
+
+    <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/friend_name"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:text="@null"/>
+
+    <!-- this is only visible if this item is a pending friends request -->
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/accept_button"
+            android:text="@string/conferma"
+            android:layout_marginStart="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <ImageView
+            android:id="@+id/remove_button"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@null"
+            android:src="@drawable/close_24px"
+            android:layout_width="30dp"
+            android:layout_height="30dp">
+    </ImageView>
+</LinearLayout>

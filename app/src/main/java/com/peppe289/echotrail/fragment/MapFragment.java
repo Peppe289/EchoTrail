@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.AddNotesActivity;
+import com.peppe289.echotrail.FriendsActivity;
 import com.peppe289.echotrail.NotesListActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.notes.NotesController;
@@ -146,6 +147,7 @@ public class MapFragment extends Fragment {
         });
 
         publicNotesBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
+        privateNotesBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), FriendsActivity.class, null));
 
         // Floating Action Button setup
         addNewNoteFloatingBtn = view.findViewById(R.id.addNewNoteBtn);

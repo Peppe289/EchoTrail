@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseApp;
 import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         UserController.init();
         NotesController.init();
+        FriendsController.init();
         FirebaseApp.initializeApp(getApplicationContext());
 
         com.peppe289.echotrail.databinding.ActivityMainBinding binding =
