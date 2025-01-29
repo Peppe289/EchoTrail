@@ -17,6 +17,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
+import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
 import com.peppe289.echotrail.utils.LoadingManager;
@@ -28,6 +30,7 @@ public class UserViewActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private ActivityUserViewBinding binding;
     private LoadingManager loadingManager;
+    private MaterialButton sendFriendRequestButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +67,8 @@ public class UserViewActivity extends AppCompatActivity {
     }
 
     private void initialize() {
+        sendFriendRequestButton = findViewById(R.id.send_friend_request);
+
         loadingManager = new LoadingManager(binding.getRoot());
         loadingManager.showLoading();
 
@@ -72,6 +77,17 @@ public class UserViewActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.list_links);
         UserLinksAdapter adapter = new UserLinksAdapter(this, R.layout.personal_link_row, new ArrayList<>());
         listView.setAdapter(adapter);
+
+        sendFriendRequestButton.setOnClickListener(v -> {
+            FriendsController.requestToBeFriends(UID, success -> {
+                if (success) {
+                    sendFriendRequestButton.setIconResource(R.drawable.check_24px);
+                    sendFriendRequestButton.setText("Richiesta inviata!");
+                } else {
+                    Toast.makeText(this, "Errore nell'invio della richiesta di amicizia!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String link = adapter.getItem(position);

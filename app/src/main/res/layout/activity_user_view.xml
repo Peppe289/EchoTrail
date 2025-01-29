@@ -35,8 +35,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="10dp"
                     android:text="@null"/>
-
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/send_friend_request"
+                android:layout_width="wrap_content"
+                app:icon="@drawable/person_add_24px"
+                android:layout_height="wrap_content"
+                android:text="@string/invia_richiesta"
+                style="@style/AppTheme.Alternative.Button1"/>
 
         <LinearLayout
                 android:layout_width="match_parent"

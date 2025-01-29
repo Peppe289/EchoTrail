@@ -3,10 +3,13 @@ package com.peppe289.echotrail.dao.user;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.peppe289.echotrail.controller.user.UserController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FriendsDAO {
     private final FirebaseFirestore db;
@@ -24,14 +27,21 @@ public class FriendsDAO {
      */
     public void requestToBeFriends(String friendId, AddFriendCallback callback) {
         UserDAO userDAO = new UserDAO();
-        // Add friend to user's friend list
+        String currentUserId = userDAO.getUid();
+        String friendshipId = currentUserId + "_" + friendId;
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("from", currentUserId);
+        data.put("to", friendId);
+        data.put("date", System.currentTimeMillis());
+
         db.collection("friends")
-                .document(userDAO.getUid() + "_" + friendId)
-                .update("from", userDAO.getUid(), "to", friendId,
-                        "date", System.currentTimeMillis())
+                .document(friendshipId)
+                .set(data, SetOptions.merge()) // Usa merge per non sovrascrivere altri campi
                 .addOnSuccessListener(aVoid -> callback.onFriendAdded(true))
                 .addOnFailureListener(e -> callback.onFriendAdded(false));
     }
+
 
     /**
      * Accepts a friend request from another user. This method removes the friend request
