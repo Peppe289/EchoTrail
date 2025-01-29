@@ -95,6 +95,7 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 //Log.d("SearchView", "onQueryTextChange: " + newText);
+                adapter.getFilter().filter(newText);
                 return false;
             }
         });

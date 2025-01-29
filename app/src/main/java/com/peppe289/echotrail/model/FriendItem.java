@@ -1,5 +1,7 @@
 package com.peppe289.echotrail.model;
 
+import org.jetbrains.annotations.NotNull;
+
 public class FriendItem {
     private String name;
     private boolean onPendingRequest;
@@ -43,5 +45,10 @@ public class FriendItem {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return name;
     }
 }
