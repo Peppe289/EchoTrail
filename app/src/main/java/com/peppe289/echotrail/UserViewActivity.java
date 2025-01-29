@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
 import com.peppe289.echotrail.utils.LoadingManager;
@@ -22,7 +25,7 @@ import com.peppe289.echotrail.utils.UserLinksAdapter;
 import java.util.ArrayList;
 
 public class UserViewActivity extends AppCompatActivity {
-
+    private MaterialToolbar toolbar;
     private ActivityUserViewBinding binding;
     private LoadingManager loadingManager;
 
@@ -32,6 +35,8 @@ public class UserViewActivity extends AppCompatActivity {
         binding = ActivityUserViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        toolbar = findViewById(R.id.toolbar);
+
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -39,7 +44,23 @@ public class UserViewActivity extends AppCompatActivity {
             return insets;
         });
 
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+
         initialize();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getOnBackPressedDispatcher().onBackPressed(); // Torna alla schermata precedente
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initialize() {
