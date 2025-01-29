@@ -13,6 +13,10 @@ public class FriendsController {
         FriendsController.friendsDAO = friendsDAO;
     }
 
+    public static void searchPendingRequests(FriendsDAO.GetFriendsCallback callback) {
+        friendsDAO.searchPendingRequests(callback);
+    }
+
     public static void requestToBeFriends(String friendId, FriendsDAO.AddFriendCallback callback) {
         friendsDAO.requestToBeFriends(friendId, callback);
     }
