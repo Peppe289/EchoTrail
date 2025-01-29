@@ -51,20 +51,36 @@ public class FriendsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        FriendsController.getUIDFriendsList(friendList -> {
-            if (friendList == null) {
-                Log.d("FriendsActivity", "No friends found");
+        FriendsController.searchPendingRequests(pendingFriends -> {
+            if (pendingFriends == null) {
+                Log.d("FriendsActivity", "No pending requests found");
             } else {
                 runOnUiThread(() -> {
-                    for (String id : friendList) {
+                    for (String id : pendingFriends) {
                         String finalId = id.trim();
                         UserController.getUserInfoByUID(finalId, user -> {
-                            adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
+                            adapter.add(new FriendItem((String) user.get("username"), true, false, finalId));
                             adapter.notifyDataSetChanged();
                         });
                     }
                 });
             }
+
+            FriendsController.getUIDFriendsList(friendList -> {
+                if (friendList == null) {
+                    Log.d("FriendsActivity", "No friends found");
+                } else {
+                    runOnUiThread(() -> {
+                        for (String id : friendList) {
+                            String finalId = id.trim();
+                            UserController.getUserInfoByUID(finalId, user -> {
+                                adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
+                                adapter.notifyDataSetChanged();
+                            });
+                        }
+                    });
+                }
+            });
         });
     }
 
