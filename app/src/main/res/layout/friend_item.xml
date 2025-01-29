@@ -12,14 +12,16 @@
             android:id="@+id/friend_name"
             android:textSize="18sp"
             android:layout_weight="1"
+            android:layout_marginEnd="10dp"
             android:text="@null"/>
 
     <!-- this is only visible if this item is a pending friends request -->
     <com.google.android.material.button.MaterialButton
             android:id="@+id/accept_button"
             android:text="@string/conferma"
-            android:layout_marginStart="20dp"
             android:layout_width="wrap_content"
+            style="@style/AppTheme.Alternative.Button1"
+            android:layout_margin="0dp"
             android:layout_height="wrap_content"/>
 
     <ImageView
