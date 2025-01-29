@@ -1,5 +1,6 @@
 package com.peppe289.echotrail.dao.user;
 
+import android.util.Log;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -90,7 +91,7 @@ public class FriendsDAO {
                 .addOnFailureListener(e -> callback.onFriendAdded(false));
     }
 
-    public void searchPendingRequest(GetFriendsCallback callback) {
+    public void searchPendingRequests(GetFriendsCallback callback) {
         UserDAO userDAO = new UserDAO();
         db.collection("friends")
                 .get()
@@ -99,13 +100,15 @@ public class FriendsDAO {
                     for (DocumentSnapshot document : querySnapshot.getDocuments()) {
                         String documentId = document.getId();
                         if (documentId.endsWith("_" + userDAO.getUid())) {
-                            pendingRequest.add(documentId.substring(0, documentId.length() - (userDAO.getUid().length() - 1)));
+                            pendingRequest.add(documentId.substring(0, documentId.length() - (userDAO.getUid().length() + 1)));
                         }
                     }
 
                     callback.onFriendsRetrieved(pendingRequest);
                 })
-                .addOnFailureListener(e -> callback.onFriendsRetrieved(null));
+                .addOnFailureListener(e -> {
+                    callback.onFriendsRetrieved(null);
+                });
     }
 
     /**
@@ -130,7 +133,7 @@ public class FriendsDAO {
                         return;
                     }
 
-                    searchPendingRequest(pendingRequest -> {
+                    searchPendingRequests(pendingRequest -> {
                         for (String friend : friendsList) {
                             db.collection("users")
                                     .document(friend)
