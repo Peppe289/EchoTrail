@@ -1,8 +1,5 @@
 package com.peppe289.echotrail;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,21 +15,21 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.databinding.ActivityAccountViewBinding;
+import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.UserLinksAdapter;
 
 import java.util.ArrayList;
 
-public class AccountViewActivity extends AppCompatActivity {
+public class UserViewActivity extends AppCompatActivity {
 
-    private ActivityAccountViewBinding binding;
+    private ActivityUserViewBinding binding;
     private LoadingManager loadingManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityAccountViewBinding.inflate(getLayoutInflater());
+        binding = ActivityUserViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         EdgeToEdge.enable(this);
@@ -46,18 +43,10 @@ public class AccountViewActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        binding.copyIdLayout.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("UID", binding.idTextView.getText().toString());
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(this, "UID Copied", Toast.LENGTH_SHORT).show();
-        });
-
         loadingManager = new LoadingManager(binding.getRoot());
         loadingManager.showLoading();
 
         String UID = getIntent().getStringExtra("UID");
-        binding.idTextView.setText(UID);
 
         ListView listView = findViewById(R.id.list_links);
         UserLinksAdapter adapter = new UserLinksAdapter(this, R.layout.personal_link_row, new ArrayList<>());

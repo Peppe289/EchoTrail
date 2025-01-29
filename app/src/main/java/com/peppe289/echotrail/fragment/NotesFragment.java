@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.peppe289.echotrail.AccountViewActivity;
+import com.peppe289.echotrail.UserViewActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
@@ -60,7 +60,7 @@ public class NotesFragment extends Fragment {
         // Configurazione del caricamento e dell'adapter per la lista di note
         loadingIndicator = new LoadingManager(viewBinding.getRoot());
         notesAdapter = new CardItemAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
-                id -> MoveActivity.addActivity(requireActivity(), AccountViewActivity.class,
+                id -> MoveActivity.addActivity(requireActivity(), UserViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 
         CardListView notesListView = viewBinding.notesList;

@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.peppe289.echotrail.AccountViewActivity;
+import com.peppe289.echotrail.UserViewActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
@@ -45,7 +45,7 @@ public class AvailableNotesFragment extends Fragment {
         ListView listView = binding.notesList;
         loadingManager = new LoadingManager(binding.getRoot());
         cardItemAdapter = new CardItemAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
-                id -> MoveActivity.addActivity(requireActivity(), AccountViewActivity.class,
+                id -> MoveActivity.addActivity(requireActivity(), UserViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 
         listView.setAdapter(cardItemAdapter);

@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".FriendsActivity" />
-        <activity android:name=".AccountViewActivity" />
+        <activity android:name=".UserViewActivity" />
         <activity android:name=".PersonalInfoActivity" />
         <activity android:name=".PreferencesActivity" />
         <activity android:name=".NotesListActivity" android:windowSoftInputMode="adjustResize" />
