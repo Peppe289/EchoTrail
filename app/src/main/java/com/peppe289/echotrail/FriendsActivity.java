@@ -55,7 +55,6 @@ public class FriendsActivity extends AppCompatActivity {
         adapter.setCallback(new FriendsCustomAdapter.OnFriendCallback() {
             @Override
             public void onAllowClick(String friendId, int position) {
-                /*
                 FriendsController.acceptRequest(friendId, success -> {
                     if (success) {
                         FriendItem fi = adapter.getItem(position);
@@ -63,10 +62,9 @@ public class FriendsActivity extends AppCompatActivity {
                         fi.setFriend(true);
                         adapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(FriendsActivity.this, "Errore durante la rimozione dell'amico", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FriendsActivity.this, "Errore durante l'accettazione dell'amicizia", Toast.LENGTH_SHORT).show();
                     }
                 });
-                 */
             }
 
             @Override
