@@ -106,11 +106,12 @@ public class FriendsDAO {
                                         .update("friends", friends)
                                         .addOnSuccessListener(aVoid -> callback.onFriendRemoved(true))
                                         .addOnFailureListener(e -> callback.onFriendRemoved(false));
-                                break;
+                                return;
                             }
                         }
                     }
-                });
+                    callback.onFriendRemoved(false);
+                }).addOnFailureListener(e -> callback.onFriendRemoved(false));
     }
 
     public void searchPendingRequests(GetFriendsCallback callback) {
