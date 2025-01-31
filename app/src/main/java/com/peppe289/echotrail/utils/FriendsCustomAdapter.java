@@ -16,10 +16,20 @@ import java.util.List;
 
 public class FriendsCustomAdapter extends ArrayAdapter<FriendItem> {
     private final LayoutInflater inflater;
+    private OnFriendCallback callback;
+
+    public interface OnFriendCallback {
+        void onAllowClick(String friendId, int position);
+        void onRemoveClick(String friendId, int position, boolean isFriends);
+    }
 
     public FriendsCustomAdapter(@NonNull Context context, int resource, @NonNull List<FriendItem> objects) {
         super(context, resource, objects);
         inflater = LayoutInflater.from(context);
+    }
+
+    public void setCallback(OnFriendCallback callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -40,13 +50,17 @@ public class FriendsCustomAdapter extends ArrayAdapter<FriendItem> {
             holder.userName.setText(item.getName());
             if (item.isOnPendingRequest()) {
                 holder.allowButton.setOnClickListener((v) -> {
-
+                    if (callback != null) {
+                        callback.onAllowClick(item.getUid(), position);
+                    }
                 });
             } else {
                 holder.allowButton.setVisibility(View.GONE);
             }
             holder.remove.setOnClickListener((v) -> {
-
+                if (callback != null) {
+                    callback.onRemoveClick(item.getUid(), position, item.isFriend());
+                }
             });
         }
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,6 +51,36 @@ public class FriendsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+
+        adapter.setCallback(new FriendsCustomAdapter.OnFriendCallback() {
+            @Override
+            public void onAllowClick(String friendId, int position) {
+                /*
+                FriendsController.acceptRequest(friendId, success -> {
+                    if (success) {
+                        FriendItem fi = adapter.getItem(position);
+                        fi.setOnPendingRequest(false);
+                        fi.setFriend(true);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(FriendsActivity.this, "Errore durante la rimozione dell'amico", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                 */
+            }
+
+            @Override
+            public void onRemoveClick(String friendId, int position, boolean isFriends) {
+                FriendsController.removeFriend(friendId, isFriends, success -> {
+                    if (success) {
+                        adapter.remove(adapter.getItem(position));
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(FriendsActivity.this, "Errore durante la rimozione dell'amico", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
         FriendsController.searchPendingRequests(pendingFriends -> {
             if (pendingFriends == null) {
