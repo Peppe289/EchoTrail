@@ -73,22 +73,44 @@ public class FriendsDAO {
      * @param friendID The ID of the user whose friend request is being rejected.
      * @param callback The callback to be invoked upon completion.
      */
-    public void rejectRequest(String friendID, AddFriendCallback callback) {
+    public void rejectRequest(String friendID, RemoveFriendCallback callback) {
         UserDAO userDAO = new UserDAO();
         db.collection("friends")
-                .document(userDAO.getUid() + "_" + friendID)
+                .document(friendID + "_" + userDAO.getUid())
                 .delete()
-                .addOnSuccessListener(aVoid -> callback.onFriendAdded(true))
-                .addOnFailureListener(e -> callback.onFriendAdded(false));
+                .addOnSuccessListener(aVoid -> callback.onFriendRemoved(true))
+                .addOnFailureListener(e -> callback.onFriendRemoved(false));
     }
 
-    public void removeFriend(String friendID, AddFriendCallback callback) {
+    /**
+     * Removes a friend from the user's friend list.
+     * PLEASE DON'T TRY TO "OPTIMIZE" THIS METHOD BY REWORKING THE FOR LOOP! I LOST 3 DAY TO UNDERSTAND WHY IT DOESN'T WORK!
+     * I HATE JAVA! For remove this object from array need the right instance of the object, not only the same value...
+     *
+     * @param friendID The ID of the friend to be removed.
+     * @param callback The callback to be invoked upon completion.
+     */
+    public void removeFriend(String friendID, RemoveFriendCallback callback) {
         UserDAO userDAO = new UserDAO();
-        db.collection("users")
-                .document(userDAO.getUid())
-                .update("friends", FieldValue.arrayRemove(friendID))
-                .addOnSuccessListener(aVoid -> callback.onFriendAdded(true))
-                .addOnFailureListener(e -> callback.onFriendAdded(false));
+        String uid = userDAO.getUid();
+
+        db.collection("users").document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    List<String> friends = (List<String>) documentSnapshot.get("friends");
+                    if (friends != null) {
+                        for (String odioJava : friends) {
+                            if (odioJava.trim().compareTo(friendID.trim()) == 0) {
+                                friends.remove(odioJava);
+                                db.collection("users").document(uid)
+                                        .update("friends", friends)
+                                        .addOnSuccessListener(aVoid -> callback.onFriendRemoved(true))
+                                        .addOnFailureListener(e -> callback.onFriendRemoved(false));
+                                break;
+                            }
+                        }
+                    }
+                });
     }
 
     public void searchPendingRequests(GetFriendsCallback callback) {
@@ -191,5 +213,9 @@ public class FriendsDAO {
 
     public interface AddFriendCallback {
         void onFriendAdded(boolean success);
+    }
+
+    public interface RemoveFriendCallback {
+        void onFriendRemoved(boolean success);
     }
 }
