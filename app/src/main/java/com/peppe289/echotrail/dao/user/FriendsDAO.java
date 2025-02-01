@@ -13,8 +13,15 @@ import java.util.Map;
 
 public class FriendsDAO {
     private final FirebaseFirestore db;
+    private final UserDAO userDAO;
 
     public FriendsDAO() {
+        this.userDAO = new UserDAO();
+        this.db = FirebaseFirestore.getInstance();
+    }
+
+    public FriendsDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
         this.db = FirebaseFirestore.getInstance();
     }
 
@@ -26,7 +33,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void requestToBeFriends(String friendId, AddFriendCallback callback) {
-        UserDAO userDAO = new UserDAO();
         String currentUserId = userDAO.getUid();
         String friendshipId = currentUserId + "_" + friendId;
 
@@ -51,7 +57,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void acceptRequest(String friendID, AddFriendCallback callback) {
-        UserDAO userDAO = new UserDAO();
         // Add friend to user's friend list
         db.collection("friends")
                 .document(userDAO.getUid() + "_" + friendID)
@@ -73,7 +78,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void rejectRequest(String friendID, RemoveFriendCallback callback) {
-        UserDAO userDAO = new UserDAO();
         db.collection("friends")
                 .document(friendID + "_" + userDAO.getUid())
                 .delete()
@@ -90,7 +94,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void removeFriend(String friendID, RemoveFriendCallback callback) {
-        UserDAO userDAO = new UserDAO();
         String uid = userDAO.getUid();
 
         db.collection("users").document(uid)
@@ -114,7 +117,6 @@ public class FriendsDAO {
     }
 
     public void searchPendingRequests(GetFriendsCallback callback) {
-        UserDAO userDAO = new UserDAO();
         db.collection("friends")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -140,7 +142,6 @@ public class FriendsDAO {
      *
      */
     public void synchronizeFriendsList(Runnable runnable) {
-        UserDAO userDAO = new UserDAO();
         // just ignore the user which send me the request.
         // we need later
         List<String> ignoreList = new ArrayList<>();
@@ -233,8 +234,6 @@ public class FriendsDAO {
      *                 if the friend is accepted, add him to my friend list!!!
      */
     private void checkIfFriendIsAccepted(String friendID, Runnable runnable) {
-        UserDAO userDAO = new UserDAO();
-
         getUIDFriendsList(friendID, friends -> {
             if (friends != null) {
                 for (String fr : friends) {
