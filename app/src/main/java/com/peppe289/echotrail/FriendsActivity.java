@@ -69,13 +69,9 @@ public class FriendsActivity extends AppCompatActivity {
 
             @Override
             public void onRemoveClick(String friendId, int position, boolean isFriends) {
-                FriendsController.removeFriend(friendId, isFriends, success -> {
-                    if (success) {
-                        adapter.remove(adapter.getItem(position));
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(FriendsActivity.this, "Errore durante la rimozione dell'amico", Toast.LENGTH_SHORT).show();
-                    }
+                FriendsController.removeFriend(friendId, () -> {
+                    adapter.remove(adapter.getItem(position));
+                    adapter.notifyDataSetChanged();
                 });
             }
         });

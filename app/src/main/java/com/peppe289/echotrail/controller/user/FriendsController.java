@@ -29,23 +29,18 @@ public class FriendsController {
         friendsDAO.rejectRequest(friendID, callback);
     }
 
-    public static void removeFriend(String friendID, FriendsDAO.RemoveFriendCallback callback) {
-        friendsDAO.removeFriend(friendID, callback);
-    }
-
     /**
      * Removes a friend from the friends list or pending list.
+     * Don't care about if is in pending request or friends list.
+     * Just remove in both if exists.
+     * This approach is used for simplify the code and logic and
+     * improve stability.
      *
      * @param friendID id of the friend to be removed
-     * @param isFriends true if the friend is in the friends list, false if the friend is in the pending list
      * @param callback callback to be invoked upon completion
      */
-    public static void removeFriend(String friendID, boolean isFriends, FriendsDAO.RemoveFriendCallback callback) {
-        if (isFriends) {
-            removeFriend(friendID, callback);
-        } else {
-            rejectRequest(friendID, callback);
-        }
+    public static void removeFriend(String friendID, FriendsDAO.RemoveFriendCallback callback) {
+        friendsDAO.removeFriend(friendID, () -> FriendsController.rejectRequest(friendID, callback));
     }
 
     public static void getUIDFriendsList(String userID, FriendsDAO.GetFriendsCallback callback) {
