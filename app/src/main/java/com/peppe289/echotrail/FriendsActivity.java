@@ -91,21 +91,25 @@ public class FriendsActivity extends AppCompatActivity {
                 });
             }
 
-            FriendsController.getUIDFriendsList(friendList -> {
-                if (friendList == null) {
-                    Log.d("FriendsActivity", "No friends found");
-                } else {
-                    runOnUiThread(() -> {
-                        for (String id : friendList) {
-                            String finalId = id.trim();
-                            UserController.getUserInfoByUID(finalId, user -> {
-                                adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
-                                adapter.notifyDataSetChanged();
+            // check at first and all time when have trigger event to update friends list
+            FriendsController.getUIDFriendsList(friendList ->
+                    FriendsController.getUIDFriendsList(friends -> {
+                        // is better if I clean the list before retrieve the new data
+                        adapter.clear();
+                        if (friends == null) {
+                            Log.d("FriendsActivity", "No friends found");
+                        } else {
+                            runOnUiThread(() -> {
+                                for (String id : friends) {
+                                    String finalId = id.trim();
+                                    UserController.getUserInfoByUID(finalId, user -> {
+                                        adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
+                                        adapter.notifyDataSetChanged();
+                                    });
+                                }
                             });
                         }
-                    });
-                }
-            });
+                    }));
         });
     }
 

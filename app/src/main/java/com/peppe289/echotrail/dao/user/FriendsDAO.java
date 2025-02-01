@@ -1,5 +1,6 @@
 package com.peppe289.echotrail.dao.user;
 
+import android.util.Log;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -192,7 +193,7 @@ public class FriendsDAO {
                                     if (!checkThisStrunz)
                                         continue;
 
-                                    db.collection("user")
+                                    db.collection("users")
                                             .document(brother)
                                             .get().addOnSuccessListener(brotherData -> {
                                                 List<String> brotherFriends = (List<String>) brotherData.get("friends");
@@ -217,10 +218,10 @@ public class FriendsDAO {
                                                     removeFriend(brother, () -> {
                                                     });
                                                 }
+                                                runnable.run();
                                             });
                                 }
                             });
-
 
                     runnable.run();
                 }).addOnFailureListener(e -> runnable.run());
