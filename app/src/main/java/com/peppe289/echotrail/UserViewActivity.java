@@ -78,6 +78,20 @@ public class UserViewActivity extends AppCompatActivity {
         UserLinksAdapter adapter = new UserLinksAdapter(this, R.layout.personal_link_row, new ArrayList<>());
         listView.setAdapter(adapter);
 
+        FriendsController.getUIDFriendsList(friends -> {
+            if (friends != null) {
+                for (String fr : friends) {
+                    if (fr.equals(UID)) {
+                        // disable the button if the user is already a friend
+                        sendFriendRequestButton.setIconResource(R.drawable.check_24px);
+                        sendFriendRequestButton.setText("Amico");
+                        sendFriendRequestButton.setEnabled(false);
+                    }
+                }
+            }
+        });
+
+        // if the user is already a friend, disable the button
         sendFriendRequestButton.setOnClickListener(v -> {
             FriendsController.requestToBeFriends(UID, success -> {
                 if (success) {
