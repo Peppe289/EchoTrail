@@ -129,9 +129,12 @@ public class FriendsDAO {
                         }
                     }
 
-                    callback.onFriendsRetrieved(pendingRequest);
+                    if (callback != null)
+                        callback.onFriendsRetrieved(pendingRequest);
                 })
-                .addOnFailureListener(e -> callback.onFriendsRetrieved(null));
+                .addOnFailureListener(e -> {
+                        if (callback != null) callback.onFriendsRetrieved(null);
+                });
     }
 
     /**
