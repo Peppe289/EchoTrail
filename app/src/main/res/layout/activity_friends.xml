@@ -27,4 +27,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
+    <include layout="@layout/loading_overlay"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

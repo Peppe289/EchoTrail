@@ -19,13 +19,16 @@ import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
 import com.peppe289.echotrail.model.FriendItem;
 import com.peppe289.echotrail.utils.FriendsCustomAdapter;
+import com.peppe289.echotrail.utils.LoadingManager;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FriendsActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private FriendsCustomAdapter adapter;
     private ListView listView;
+    private LoadingManager loadingManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +44,9 @@ public class FriendsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        loadingManager = new LoadingManager(binding.getRoot());
+        loadingManager.showLoading();
 
         listView = findViewById(R.id.friend_list);
         adapter = new FriendsCustomAdapter(this, R.layout.friend_item, new ArrayList<>());
@@ -91,6 +97,7 @@ public class FriendsActivity extends AppCompatActivity {
                 });
             }
 
+            AtomicReference<Integer> size = new AtomicReference<>(0);
             // check at first and all time when have trigger event to update friends list
             FriendsController.getUIDFriendsList(friendList ->
                     FriendsController.getUIDFriendsList(friends -> {
@@ -100,11 +107,19 @@ public class FriendsActivity extends AppCompatActivity {
                             Log.d("FriendsActivity", "No friends found");
                         } else {
                             runOnUiThread(() -> {
+                                size.set(friends.size());
+                                if (size.get() >= 0)
+                                    loadingManager.showLoading();
+
                                 for (String id : friends) {
                                     String finalId = id.trim();
                                     UserController.getUserInfoByUID(finalId, user -> {
                                         adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
                                         adapter.notifyDataSetChanged();
+                                        size.getAndSet(size.get() - 1);
+                                        if (size.get() <= 0) {
+                                            loadingManager.hideLoading();
+                                        }
                                     });
                                 }
                             });
