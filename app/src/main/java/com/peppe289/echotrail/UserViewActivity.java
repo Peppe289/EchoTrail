@@ -78,19 +78,6 @@ public class UserViewActivity extends AppCompatActivity {
         UserLinksAdapter adapter = new UserLinksAdapter(this, R.layout.personal_link_row, new ArrayList<>());
         listView.setAdapter(adapter);
 
-        FriendsController.getUIDFriendsList(friends -> {
-            if (friends != null) {
-                for (String fr : friends) {
-                    if (fr.equals(UID)) {
-                        // disable the button if the user is already a friend
-                        sendFriendRequestButton.setIconResource(R.drawable.check_24px);
-                        sendFriendRequestButton.setText("Amico");
-                        sendFriendRequestButton.setEnabled(false);
-                    }
-                }
-            }
-        });
-
         // if the user is already a friend, disable the button
         sendFriendRequestButton.setOnClickListener(v -> {
             FriendsController.requestToBeFriends(UID, success -> {
@@ -122,7 +109,6 @@ public class UserViewActivity extends AppCompatActivity {
                 setTextViewIfNotNull(binding.usernameTextView, userInfo.get("username"));
                 setTextViewIfNotNull(binding.notesRead, userInfo.get("readedNotes"));
                 setTextViewIfNotNull(binding.notesPublished, userInfo.get("notes"));
-                loadingManager.hideLoading();
                 UserController.getUserLinks(UID, links -> {
                     if (links != null) {
                         for (String lk : links) {
@@ -131,6 +117,20 @@ public class UserViewActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            FriendsController.getUIDFriendsList(friends -> {
+                if (friends != null) {
+                    for (String fr : friends) {
+                        if (fr.equals(UID)) {
+                            // disable the button if the user is already a friend
+                            sendFriendRequestButton.setIconResource(R.drawable.check_24px);
+                            sendFriendRequestButton.setText("Amico");
+                            sendFriendRequestButton.setEnabled(false);
+                        }
+                    }
+                }
+                loadingManager.hideLoading();
+            });
         });
     }
 
