@@ -59,7 +59,7 @@ public class UserListFragment extends Fragment {
                     String formattedDate = formatDate(timestamp);
 
                     if (description != null && city != null) {
-                        CardItem cardItem = new CardItem("La tua nota", description, formattedDate, city, null, document.getId());
+                        CardItem cardItem = new CardItem("La tua nota", description, formattedDate, city, null, document.getId(), false);
                         cardItemAdapter.add(cardItem);
                     }
                 }

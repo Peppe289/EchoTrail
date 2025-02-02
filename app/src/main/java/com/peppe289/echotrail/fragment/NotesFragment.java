@@ -136,6 +136,13 @@ public class NotesFragment extends Fragment {
                 String formattedDate = formatTimestamp(timestamp);
                 String username = document.getString("username");
 
+                String isFor = null;
+                try {
+                    // check if is dedicated note.
+                    isFor = document.getString("send_to");
+                } catch (Exception ignore) {
+                }
+
                 if (description != null && city != null) {
                     CardItem noteCard = new CardItem(
                             username == null ? "Anonimo" : username,
@@ -143,7 +150,9 @@ public class NotesFragment extends Fragment {
                             formattedDate,
                             city,
                             username == null ? null : document.getString("userId"),
-                            documentId
+                            documentId,
+                            // check if have this attribute and if is dedicated to the user.
+                            (isFor != null && isFor.compareTo(UserController.getUid()) == 0)
                     );
                     notesAdapter.add(noteCard);
                     loadedNoteIds.add(documentId);

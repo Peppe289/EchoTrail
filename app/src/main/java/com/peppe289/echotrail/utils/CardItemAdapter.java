@@ -57,6 +57,10 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
             viewHolder.city.setText(item.getCity());
             viewHolder.date.setText(item.getDate());
 
+            if (!item.isDedicated()) {
+                viewHolder.dedicatedTag.setVisibility(View.GONE);
+            }
+
             // because MaterialCardView is used for click event,
             // I can't use the setOnItemClickListener in listView.
             // And yeah ignore event and return false not work. DON'T
@@ -122,12 +126,14 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
         final TextView description;
         final TextView city;
         final TextView date;
+        final TextView dedicatedTag;
 
         ViewHolder(View view) {
             title = view.findViewById(R.id.authors);
             description = view.findViewById(R.id.content);
             city = view.findViewById(R.id.city);
             date = view.findViewById(R.id.date);
+            dedicatedTag = view.findViewById(R.id.is_dedicata);
         }
     }
 }

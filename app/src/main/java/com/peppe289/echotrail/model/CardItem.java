@@ -17,14 +17,20 @@ public class CardItem {
     private final String id;
     @Nullable
     private final String userId;
+    private final boolean isDedicated;
 
-    public CardItem(@NonNull String author, @NonNull String description, @NonNull String date, @NonNull String city, @Nullable String userId, @NonNull String id) {
+    public CardItem(@NonNull String author, @NonNull String description, @NonNull String date, @NonNull String city, @Nullable String userId, @NonNull String id, boolean isDedicated) {
         this.author = author;
         this.description = description;
         this.date = date;
         this.city = city;
         this.userId = userId;
         this.id = id;
+        this.isDedicated = isDedicated;
+    }
+
+    public boolean isDedicated() {
+        return isDedicated;
     }
 
     public @NotNull String getId() {

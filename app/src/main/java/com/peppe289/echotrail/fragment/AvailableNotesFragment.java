@@ -13,6 +13,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.UserViewActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.CardItem;
 import com.peppe289.echotrail.utils.CardItemAdapter;
@@ -83,6 +84,13 @@ public class AvailableNotesFragment extends Fragment {
                 String formattedDate = formatDate(timestamp);
                 String username = document.getString("username");
 
+                String isFor = null;
+                try {
+                    // check if is dedicated note.
+                   isFor = document.getString("send_to");
+                } catch (Exception ignore) {
+                }
+
                 if (description != null && city != null) {
                     CardItem cardItem = new CardItem(
                             username == null ? "Anonimo" : username,
@@ -90,7 +98,9 @@ public class AvailableNotesFragment extends Fragment {
                             formattedDate,
                             city,
                             username == null ? null : document.getString("userId"),
-                            document.getId()
+                            document.getId(),
+                            // check if have this attribute and if is dedicated to the user.
+                            (isFor != null && isFor.compareTo(UserController.getUid()) == 0)
                     );
                     cardItemAdapter.add(cardItem);
                 }
