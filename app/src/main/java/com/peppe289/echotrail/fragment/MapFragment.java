@@ -274,6 +274,13 @@ public class MapFragment extends Fragment {
                 // Skip if coordinates are null or note belongs to the current user
                 if (coordinates == null || userID.equals(noteUserID)) continue;
 
+                try {
+                    // this note isn't for me, skip...
+                    String isFor = documentSnapshot.getString("send_to");
+                    if (isFor != null && !isFor.equals(userID)) continue;
+                } catch (Exception ignored) {
+                }
+
                 GeoPoint noteLocation = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
 
                 mapHelper.addMarker(noteLocation, documentSnapshot.getId(), (markerCounter, point) -> {
