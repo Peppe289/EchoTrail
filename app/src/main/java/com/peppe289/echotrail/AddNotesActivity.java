@@ -18,12 +18,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
+import com.peppe289.echotrail.model.FriendItem;
 import com.peppe289.echotrail.utils.LocationHelper;
 
 import org.osmdroid.util.GeoPoint;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AddNotesActivity extends AppCompatActivity {
 
@@ -31,6 +33,7 @@ public class AddNotesActivity extends AppCompatActivity {
     private boolean canPush = true;
     private LocationHelper locationHelper;
     private SwitchMaterial switchAnonymous;
+    private FriendItem friendItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,12 @@ public class AddNotesActivity extends AppCompatActivity {
 
             return insets;
         });
+
+        if (getIntent().getExtras() != null) {
+            friendItem = new FriendItem();
+            friendItem.setName(getIntent().getExtras().getString("friendName"));
+            friendItem.setUid(getIntent().getExtras().getString("friendId"));
+        }
 
         locationHelper = new LocationHelper(this);
         if (!locationHelper.locationPermissionIsGranted(this)) {
@@ -92,6 +101,10 @@ public class AddNotesActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+        if (friendItem != null) {
+            toolbar.setTitle("Per: " + friendItem.getName());
         }
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -141,6 +154,10 @@ public class AddNotesActivity extends AppCompatActivity {
                     // save username only if the user is not anonymous
                     if (!switchAnonymous.isChecked())
                         data.put("username", username);
+
+                    if (friendItem != null) {
+                        data.put("send_to", friendItem.getUid());
+                    }
 
                     NotesController.saveNote(data, () -> {
                         Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();

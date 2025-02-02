@@ -67,6 +67,13 @@ public class NotesController {
         } catch (Exception ignored) {
         }
 
+        try {
+            String sendTo = (String) data.get("send_to");
+            if (sendTo != null && !sendTo.isEmpty())
+                noteData.put("send_to", sendTo);
+        } catch (Exception ignored) {
+        }
+
         // Add optional geolocation data if available
         if (data.get("latitude") != null && data.get("longitude") != null) {
             Double latitude = (Double) data.get("latitude");

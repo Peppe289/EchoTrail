@@ -20,6 +20,7 @@ import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
 import com.peppe289.echotrail.model.FriendItem;
 import com.peppe289.echotrail.utils.FriendsCustomAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
+import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,6 +52,16 @@ public class FriendsActivity extends AppCompatActivity {
         listView = findViewById(R.id.friend_list);
         adapter = new FriendsCustomAdapter(this, R.layout.friend_item, new ArrayList<>());
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            FriendItem friendItem = adapter.getItem(position);
+            if (friendItem != null) {
+                MoveActivity.addActivity(this, AddNotesActivity.class, intent -> {
+                    intent.putExtra("friendId", friendItem.getUid());
+                    intent.putExtra("friendName", friendItem.getName());
+                });
+            }
+        });
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {

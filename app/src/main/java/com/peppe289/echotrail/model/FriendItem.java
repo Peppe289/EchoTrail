@@ -8,6 +8,9 @@ public class FriendItem {
     private boolean isFriend;
     private String uid;
 
+    public FriendItem() {
+    }
+
     public FriendItem(String name, boolean onPendingRequest, boolean isFriend, String uid) {
         this.name = name;
         this.onPendingRequest = onPendingRequest;

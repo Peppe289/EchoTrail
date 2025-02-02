@@ -12,12 +12,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
-        android:theme="@style/ThemeOverlay.Material3.Toolbar.Surface"
         app:navigationIcon="@drawable/arrow_back_24px"
         app:menu="@menu/add_notes_menu"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
