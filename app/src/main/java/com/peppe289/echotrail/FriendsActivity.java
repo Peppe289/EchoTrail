@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.dao.user.FriendsDAO;
 import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
 import com.peppe289.echotrail.model.FriendItem;
 import com.peppe289.echotrail.utils.ErrorType;
@@ -87,9 +88,18 @@ public class FriendsActivity extends AppCompatActivity {
 
             @Override
             public void onRemoveClick(String friendId, int position, boolean isFriends) {
-                FriendsController.removeFriend(friendId, () -> {
-                    adapter.remove(adapter.getItem(position));
-                    adapter.notifyDataSetChanged();
+                FriendsController.removeFriend(friendId, new FriendsDAO.RemoveFriendCallback() {
+                    @Override
+                    public void onFriendRemoved() {
+                        adapter.remove(adapter.getItem(position));
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
+                        Toast.makeText(FriendsActivity.this,
+                                error.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
         });
@@ -109,30 +119,33 @@ public class FriendsActivity extends AppCompatActivity {
 
             AtomicReference<Integer> size = new AtomicReference<>(0);
             // check at first and all time when have trigger event to update friends list
-            FriendsController.getUIDFriendsList(friendList ->
-                    FriendsController.getUIDFriendsList(friends -> {
-                        // is better if I clean the list before retrieve the new data
-                        adapter.clear();
-                        if (friends != null) {
-                            runOnUiThread(() -> {
-                                size.set(friends.size());
-                                if (size.get() >= 0)
-                                    loadingManager.showLoading();
+            FriendsController.getUIDFriendsList(friendList -> {
+                FriendsController.getUIDFriendsList(friends -> {
+                    if (friends != null) {
+                        runOnUiThread(() -> {
+                            size.set(friends.size());
+                            if (size.get() > 0)
+                                loadingManager.showLoading();
+                            else
+                                loadingManager.hideLoading();
 
-                                for (String id : friends) {
-                                    String finalId = id.trim();
-                                    UserController.getUserInfoByUID(finalId, user -> {
-                                        adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
-                                        adapter.notifyDataSetChanged();
-                                        size.getAndSet(size.get() - 1);
-                                        if (size.get() <= 0) {
-                                            loadingManager.hideLoading();
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }));
+                            for (String id : friends) {
+                                String finalId = id.trim();
+                                UserController.getUserInfoByUID(finalId, user -> {
+                                    adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
+                                    adapter.notifyDataSetChanged();
+                                    size.getAndSet(size.get() - 1);
+                                    if (size.get() <= 0) {
+                                        loadingManager.hideLoading();
+                                    }
+                                    adapter.remove(finalId, true);
+                                });
+                            }
+                        });
+                    }
+                });
+                loadingManager.showLoading();
+            });
         });
     }
 

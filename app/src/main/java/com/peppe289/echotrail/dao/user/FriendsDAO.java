@@ -1,16 +1,15 @@
 package com.peppe289.echotrail.dao.user;
 
-import android.util.Log;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.*;
 import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.exceptions.FriendCollectionException;
+import com.peppe289.echotrail.exceptions.FriendNotFoundException;
+import com.peppe289.echotrail.utils.ControllerCallback;
+import com.peppe289.echotrail.utils.ErrorType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FriendsDAO {
     private final FirebaseFirestore db;
@@ -78,12 +77,12 @@ public class FriendsDAO {
      * @param friendID The ID of the user whose friend request is being rejected.
      * @param callback The callback to be invoked upon completion.
      */
-    public void rejectRequest(String friendID, RemoveFriendCallback callback) {
+    public void rejectRequest(String friendID, ControllerCallback<String, Exception> callback) {
         db.collection("friends")
                 .document(friendID + "_" + userDAO.getUid())
                 .delete()
-                .addOnSuccessListener(aVoid -> callback.onFriendRemoved())
-                .addOnFailureListener(e -> callback.onFriendRemoved());
+                .addOnSuccessListener(aVoid -> callback.onSuccess(friendID))
+                .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
     /**
@@ -94,7 +93,7 @@ public class FriendsDAO {
      * @param friendID The ID of the friend to be removed.
      * @param callback The callback to be invoked upon completion.
      */
-    public void removeFriend(String friendID, RemoveFriendCallback callback) {
+    public void removeFriend(String friendID, ControllerCallback<String, Exception> callback) {
         String uid = userDAO.getUid();
 
         db.collection("users").document(uid)
@@ -107,14 +106,14 @@ public class FriendsDAO {
                                 friends.remove(odioJava);
                                 db.collection("users").document(uid)
                                         .update("friends", friends)
-                                        .addOnSuccessListener(aVoid -> callback.onFriendRemoved())
-                                        .addOnFailureListener(e -> callback.onFriendRemoved());
+                                        .addOnSuccessListener(aVoid -> callback.onSuccess(friendID))
+                                        .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
                                 return;
                             }
                         }
                     }
-                    callback.onFriendRemoved();
-                }).addOnFailureListener(e -> callback.onFriendRemoved());
+                    callback.onError(new FriendNotFoundException());
+                }).addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
     public void searchPendingRequests(GetFriendsCallback callback) {
@@ -133,129 +132,154 @@ public class FriendsDAO {
                         callback.onFriendsRetrieved(pendingRequest);
                 })
                 .addOnFailureListener(e -> {
-                        if (callback != null) callback.onFriendsRetrieved(null);
+                    if (callback != null) callback.onFriendsRetrieved(null);
                 });
     }
 
     /**
      * Synchronizes the user's friends list with the database.
-     * This method is used to ensure that the user's friends list is up-to-date.
+     * Ensures that:
+     * - Friend requests are checked for acceptance.
+     * - Friends who removed the user are also removed.
+     * - Pending friend requests are NOT deleted until the sender sees they were accepted.
      *
-     * @param runnable The callback to be invoked upon completion
-     *                 if the friend is accepted, add him to my friend list!!!
-     *
+     * @param runnable The callback to be invoked upon completion.
      */
     public void synchronizeFriendsList(Runnable runnable) {
-        // just ignore the user which send me the request.
-        // we need later
-        List<String> ignoreList = new ArrayList<>();
+        String myUid = userDAO.getUid();
+        Set<String> ignoreList = new HashSet<>();
+        List<Task<Void>> pendingTasks = new ArrayList<>();
 
-        // this snippet is used to check if my friends request are accepted!!
-        db.collection("friends")
-                // get all friends pending request
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    for (DocumentSnapshot document : documentSnapshot) {
-                        String documentId = document.getId();
-                        if (documentId.startsWith(userDAO.getUid() + "_")) {
-                            // the name of request id should be: myID_friendID
-                            // take the friendID and check if he accepts the request (he has me in his friend list)
-                            String friendID = documentId.substring(userDAO.getUid().length() + 1).trim();
-                            checkIfFriendIsAccepted(friendID, runnable);
-                        }
+        // Fetch all friend requests
+        db.collection("friends").get().addOnSuccessListener(requestsSnapshot -> {
+            for (DocumentSnapshot document : requestsSnapshot) {
+                String documentId = document.getId();
 
+                if (documentId.startsWith(myUid + "_")) {
+                    // Request sent by me (format: myID_friendID)
+                    String friendID = documentId.substring(myUid.length() + 1).trim();
+                    pendingTasks.add(checkIfFriendIsAccepted(friendID, true)); // Now deletes request after acceptance
+                }
 
-                        // this request is for me, i can ignore this.
-                        if (documentId.endsWith("_" + userDAO.getUid())) {
-                            // the name of request id should be: friendID_myID
-                            // add this to ignore list
-                            ignoreList.add(documentId.substring(0, documentId.length() - (userDAO.getUid().length() + 1)));
-                        }
+                if (documentId.endsWith("_" + myUid)) {
+                    // Request received (format: friendID_myID) → This means a friend request is pending
+                    String friendID = documentId.substring(0, documentId.length() - (myUid.length() + 1));
+                    ignoreList.add(friendID);
+                }
+            }
+
+            // Fetch my friends list
+            db.collection("users").document(myUid).get().addOnSuccessListener(userSnapshot -> {
+                List<String> myFriends = (List<String>) userSnapshot.get("friends");
+                if (myFriends == null || myFriends.isEmpty()) {
+                    Tasks.whenAllComplete(pendingTasks).addOnCompleteListener(task -> runnable.run());
+                    return;
+                }
+
+                for (String friendID : new ArrayList<>(myFriends)) {
+                    if (ignoreList.contains(friendID)) {
+                        // Friend request is pending, do nothing
+                        continue;
                     }
 
-                    // remove friends if he removed me from his friend list!!!
-                    // strunz e merd.
-                    db.collection("users")
-                            .document(userDAO.getUid())
-                            .get()
-                            .addOnSuccessListener(documentSnapshot1 -> {
-                                List<String> friends = (List<String>) documentSnapshot1.get("friends");
-                                if (friends == null)
-                                    return;
-                                for (String brother : friends) {
+                    pendingTasks.add(db.collection("users").document(friendID).get().continueWithTask(task -> {
+                        if (!task.isSuccessful() || !task.getResult().exists()) {
+                            return removeFriend(friendID);
+                        }
 
-                                    boolean checkThisStrunz = true;
+                        List<String> friendFriends = (List<String>) task.getResult().get("friends");
+                        if (friendFriends == null || !friendFriends.contains(myUid)) {
+                            return removeFriend(friendID);
+                        }
 
-                                    for (String ignore : ignoreList) {
-                                        if (ignore.compareTo(brother) == 0) {
-                                            checkThisStrunz = false;
-                                            break;
-                                        }
-                                    }
+                        return Tasks.forResult(null); // No need to remove
+                    }));
+                }
 
-                                    if (!checkThisStrunz)
-                                        continue;
-
-                                    db.collection("users")
-                                            .document(brother)
-                                            .get().addOnSuccessListener(brotherData -> {
-                                                List<String> brotherFriends = (List<String>) brotherData.get("friends");
-                                                // my bro don't have friends, also removed me.
-                                                if (brotherFriends == null) {
-                                                    // sei rimasto solo stronzo
-                                                    removeFriend(brother, () -> {
-                                                    });
-                                                    return;
-                                                }
-                                                boolean remove = true;
-                                                for (String fr : brotherFriends) {
-                                                    // my friend have me in his friend list, so I can't remove him.
-                                                    // ti amo pasticcino <3
-                                                    if (fr.compareTo(userDAO.getUid()) == 0) {
-                                                        remove = false;
-                                                        break;
-                                                    }
-                                                }
-
-                                                if (remove) {
-                                                    removeFriend(brother, () -> {
-                                                    });
-                                                }
-                                                runnable.run();
-                                            });
-                                }
-                            });
-
-                    runnable.run();
-                }).addOnFailureListener(e -> runnable.run());
+                // Execute the callback once all tasks are completed
+                Tasks.whenAllComplete(pendingTasks).addOnCompleteListener(task -> runnable.run());
+            });
+        }).addOnFailureListener(e -> runnable.run());
     }
 
     /**
-     * Check if the friend is accepted.
+     * Checks if a friend request has been accepted and adds them as a friend if so.
+     * If accepted, the request is deleted from the "friends" collection.
      *
-     * @param friendID check if the friend is accepted
-     * @param runnable callback to be invoked upon completion
-     *                 if the friend is accepted, add him to my friend list!!!
+     * @param friendID      The friend's user ID.
+     * @param deleteRequest If true, deletes the friend request after acceptance.
+     * @return A Firestore Task to track completion.
      */
-    private void checkIfFriendIsAccepted(String friendID, Runnable runnable) {
-        getUIDFriendsList(friendID, friends -> {
-            if (friends != null) {
-                for (String fr : friends) {
-                    if (fr.compareTo(userDAO.getUid()) == 0) {
-                        // I'm in his friend list, so I can add him to my friend list
-                        db.collection("users")
-                                .document(userDAO.getUid())
-                                .update("friends", FieldValue.arrayUnion(friendID))
-                                .addOnSuccessListener(unused -> {
-                                   db.collection("friends")
-                                           .document(userDAO.getUid() + "_" + friendID)
-                                           .delete().addOnSuccessListener(unused1 -> runnable.run());
-                                });
-                        return; // well if I'm checked I can stop the loop.
-                    }
-                }
+    private Task<Void> checkIfFriendIsAccepted(String friendID, boolean deleteRequest) {
+        DocumentReference friendRef = db.collection("users").document(friendID);
+        return friendRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful() || !task.getResult().exists()) {
+                return Tasks.forResult(null);
             }
+
+            List<String> friendFriends = (List<String>) task.getResult().get("friends");
+            if (friendFriends != null && friendFriends.contains(userDAO.getUid())) {
+                Task<Void> addFriendTask = addFriend(friendID);
+
+                if (deleteRequest) {
+                    return addFriendTask.continueWithTask(t -> deleteFriendRequest(friendID));
+                }
+
+                return addFriendTask;
+            }
+
+            return Tasks.forResult(null);
         });
+    }
+
+    /**
+     * Removes a friend from the user's friend list.
+     *
+     * @param friendID The ID of the friend to remove.
+     * @return A Firestore Task to track completion.
+     */
+    private Task<Void> removeFriend(String friendID) {
+        DocumentReference userRef = db.collection("users").document(userDAO.getUid());
+        return userRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful()) return Tasks.forException(task.getException());
+            List<String> friends = (List<String>) task.getResult().get("friends");
+            if (friends == null || !friends.contains(friendID)) return Tasks.forResult(null);
+
+            friends.remove(friendID);
+            return userRef.update("friends", friends);
+        });
+    }
+
+    /**
+     * Adds a friend to the user's friend list.
+     *
+     * @param friendID The ID of the friend to add.
+     * @return A Firestore Task to track completion.
+     */
+    private Task<Void> addFriend(String friendID) {
+        DocumentReference userRef = db.collection("users").document(userDAO.getUid());
+        return userRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful()) return Tasks.forException(task.getException());
+            List<String> friends = (List<String>) task.getResult().get("friends");
+            if (friends == null) friends = new ArrayList<>();
+
+            if (!friends.contains(friendID)) {
+                friends.add(friendID);
+                return userRef.update("friends", friends);
+            }
+            return Tasks.forResult(null);
+        });
+    }
+
+    /**
+     * Deletes the friend request from the "friends" collection.
+     *
+     * @param friendID The ID of the friend whose request should be deleted.
+     * @return A Firestore Task to track completion.
+     */
+    private Task<Void> deleteFriendRequest(String friendID) {
+        DocumentReference requestRef = db.collection("friends").document(userDAO.getUid() + "_" + friendID);
+        return requestRef.delete();
     }
 
     public void getUIDFriendsList(GetFriendsCallback callback) {
@@ -294,5 +318,7 @@ public class FriendsDAO {
 
     public interface RemoveFriendCallback {
         void onFriendRemoved();
+
+        void onError(ErrorType error);
     }
 }

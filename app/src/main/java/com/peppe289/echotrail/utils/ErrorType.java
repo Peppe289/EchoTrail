@@ -14,6 +14,9 @@ public enum ErrorType {
     INVALID_PASSWORD_ERROR(1008, R.string.error_invalid_password),
     INVALID_CREDENTIALS_ERROR(1009, R.string.error_invalid_credentials),
     ACCEPT_FRIEND_REQUEST_ERROR(1010, R.string.error_accept_friend_request),
+    REJECT_FRIEND_REQUEST_ERROR(1011, R.string.error_reject_friend_request),
+    REMOVE_FRIEND_ERROR(1012, R.string.error_remove_friend),
+    FRIEND_NOT_FOUND_ERROR(1013, R.string.error_friend_not_found),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;
