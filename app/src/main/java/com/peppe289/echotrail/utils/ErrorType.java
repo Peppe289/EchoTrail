@@ -8,6 +8,10 @@ public enum ErrorType {
     POSITION_MOCK_ERROR(1002, R.string.error_mock_location),
     CANNOT_OPEN_LINK_ERROR(1003, R.string.error_cannot_open_link),
     SEND_FRIEND_REQUEST_ERROR(1004, R.string.error_send_friend_request),
+    INVALID_DATA_ERROR(1005, R.string.error_invalid_data),
+    INVALID_USERNAME_ERROR(1006, R.string.error_invalid_username),
+    INVALID_EMAIL_ERROR(1007, R.string.error_invalid_email),
+    INVALID_PASSWORD_ERROR(1008, R.string.error_invalid_password),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;

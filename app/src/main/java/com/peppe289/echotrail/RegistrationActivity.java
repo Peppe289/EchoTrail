@@ -15,6 +15,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityRegistrationBinding;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.FormValidator;
 import com.peppe289.echotrail.utils.MoveActivity;
 
@@ -98,11 +99,11 @@ public class RegistrationActivity extends AppCompatActivity {
                 UserController.register(email, password, username, this::handleRegistrationResponse);
             } catch (Exception e) {
                 // Handle any error during the registration process
-                handleError(e);
+                handleError();
                 progressBar.setVisibility(ProgressBar.GONE);
             }
         } else {
-            showToast("Dati non validi");
+            showToast(ErrorType.INVALID_DATA_ERROR.getMessage(getApplicationContext()));
         }
     }
 
@@ -119,19 +120,16 @@ public class RegistrationActivity extends AppCompatActivity {
             MoveActivity.rebaseActivity(this, DispatcherActivity.class, null);
         } else {
             // Show error message if registration fails
-            showToast("Errore durante la registrazione");
+            handleError();
         }
     }
 
     /**
      * Handles errors during the registration process by logging the error
      * and showing a generic error message to the user.
-     *
-     * @param e the exception encountered during the registration process.
      */
-    private void handleError(Exception e) {
-        Log.e("RegistrazioneActivity", "Errore durante la registrazione", e);
-        showToast("Si è verificato un errore. Riprova più tardi.");
+    private void handleError() {
+        showToast(ErrorType.UNKNOWN_ERROR.getMessage(getApplicationContext()));
     }
 
     /**
@@ -156,21 +154,21 @@ public class RegistrationActivity extends AppCompatActivity {
                 usernameEditText,
                 usernameLayout,
                 FormValidator::isValidUsername,
-                "Il campo username è obbligatorio."
+                ErrorType.INVALID_USERNAME_ERROR.getMessage(getApplicationContext())
         );
 
         isValid &= FormValidator.validateField(
                 emailEditText,
                 emailLayout,
                 FormValidator::isValidEmail,
-                "Inserisci un'email valida."
+                ErrorType.INVALID_EMAIL_ERROR.getMessage(getApplicationContext())
         );
 
         isValid &= FormValidator.validateField(
                 passwordEditText,
                 passwordLayout,
                 FormValidator::isValidPassword,
-                "La password deve avere almeno 6 caratteri."
+                ErrorType.INVALID_PASSWORD_ERROR.getMessage(getApplicationContext())
         );
 
         return isValid;
