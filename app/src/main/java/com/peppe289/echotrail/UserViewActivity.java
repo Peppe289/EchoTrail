@@ -21,6 +21,7 @@ import com.google.android.material.button.MaterialButton;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.UserLinksAdapter;
 
@@ -85,7 +86,7 @@ public class UserViewActivity extends AppCompatActivity {
                     sendFriendRequestButton.setIconResource(R.drawable.check_24px);
                     sendFriendRequestButton.setText("Richiesta inviata!");
                 } else {
-                    Toast.makeText(this, "Errore nell'invio della richiesta di amicizia!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, ErrorType.SEND_FRIEND_REQUEST_ERROR.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -98,7 +99,7 @@ public class UserViewActivity extends AppCompatActivity {
                     i.setData(Uri.parse(link));
                     startActivity(i);
                 } catch (Exception e) {
-                    Toast.makeText(this, "Nessuna app in grado di aprire il link!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, ErrorType.CANNOT_OPEN_LINK_ERROR.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
                 }
             }
         });

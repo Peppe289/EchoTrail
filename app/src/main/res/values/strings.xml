@@ -5,6 +5,8 @@
     <string name="error_location_permission">Permesso GPS negato</string>
     <string name="error_mock_location">Rimuovi la posizione fittizia</string>
     <string name="error_unknown">Errore sconosciuto</string>
+    <string name="error_cannot_open_link">Impossibile aprire il link</string>
+    <string name="error_send_friend_request">Errore nell\'invio della richiesta</string>
     <!-- General -->
 
     <string name="note">Note</string>

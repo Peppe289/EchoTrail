@@ -6,6 +6,8 @@ import android.content.Context;
 public enum ErrorType {
     POSITION_PERMISSION_ERROR(1001, R.string.error_location_permission),
     POSITION_MOCK_ERROR(1002, R.string.error_mock_location),
+    CANNOT_OPEN_LINK_ERROR(1003, R.string.error_cannot_open_link),
+    SEND_FRIEND_REQUEST_ERROR(1004, R.string.error_send_friend_request),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;
