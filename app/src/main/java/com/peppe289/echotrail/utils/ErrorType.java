@@ -13,6 +13,7 @@ public enum ErrorType {
     INVALID_EMAIL_ERROR(1007, R.string.error_invalid_email),
     INVALID_PASSWORD_ERROR(1008, R.string.error_invalid_password),
     INVALID_CREDENTIALS_ERROR(1009, R.string.error_invalid_credentials),
+    ACCEPT_FRIEND_REQUEST_ERROR(1010, R.string.error_accept_friend_request),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;

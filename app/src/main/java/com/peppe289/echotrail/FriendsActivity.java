@@ -17,6 +17,7 @@ import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
 import com.peppe289.echotrail.model.FriendItem;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.FriendsCustomAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -78,7 +79,8 @@ public class FriendsActivity extends AppCompatActivity {
                         fi.setFriend(true);
                         adapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(FriendsActivity.this, "Errore durante l'accettazione dell'amicizia", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FriendsActivity.this,
+                                ErrorType.ACCEPT_FRIEND_REQUEST_ERROR.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

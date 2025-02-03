@@ -7,6 +7,7 @@
     <string name="error_unknown">Errore sconosciuto</string>
     <string name="error_cannot_open_link">Impossibile aprire il link</string>
     <string name="error_send_friend_request">Errore nell\'invio della richiesta</string>
+    <string name="error_accept_friend_request">Errore nell\'accettazione della richiesta</string>
     <string name="error_invalid_data">Dati non validi</string>
     <string name="error_invalid_username">Username non valido</string>
     <string name="error_invalid_email">Email non valida</string>
