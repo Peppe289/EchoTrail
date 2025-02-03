@@ -20,12 +20,14 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.dao.user.FriendsDAO;
 import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.UserLinksAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserViewActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
@@ -119,18 +121,27 @@ public class UserViewActivity extends AppCompatActivity {
                 });
             }
 
-            FriendsController.getUIDFriendsList(friends -> {
-                if (friends != null) {
-                    for (String fr : friends) {
-                        if (fr.equals(UID)) {
-                            // disable the button if the user is already a friend
-                            sendFriendRequestButton.setIconResource(R.drawable.check_24px);
-                            sendFriendRequestButton.setText("Amico");
-                            sendFriendRequestButton.setEnabled(false);
+            FriendsController.getUIDFriendsList(new FriendsDAO.GetFriendsCallback() {
+
+                @Override
+                public void onFriendsRetrieved(List<String> friends) {
+                    if (friends != null) {
+                        for (String fr : friends) {
+                            if (fr.equals(UID)) {
+                                // disable the button if the user is already a friend
+                                sendFriendRequestButton.setIconResource(R.drawable.check_24px);
+                                sendFriendRequestButton.setText("Amico");
+                                sendFriendRequestButton.setEnabled(false);
+                            }
                         }
                     }
+                    loadingManager.hideLoading();
                 }
-                loadingManager.hideLoading();
+
+                @Override
+                public void onError(ErrorType error) {
+                    Toast.makeText(getApplicationContext(), error.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                }
             });
         });
     }

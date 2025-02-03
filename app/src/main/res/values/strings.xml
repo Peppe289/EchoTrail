@@ -11,6 +11,7 @@
     <string name="error_reject_friend_request">Errore nel rifiutare la richiesta</string>
     <string name="error_remove_friend">Errore nel rimuovere l\'amico</string>
     <string name="error_friend_not_found">Amico non trovato</string>
+    <string name="error_get_pending_requests">Errore nel recupero delle richieste</string>
     <string name="error_invalid_data">Dati non validi</string>
     <string name="error_invalid_username">Username non valido</string>
     <string name="error_invalid_email">Email non valida</string>

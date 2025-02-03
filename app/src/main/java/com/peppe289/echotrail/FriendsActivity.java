@@ -24,7 +24,7 @@ import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
 public class FriendsActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
@@ -104,48 +104,38 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
-        FriendsController.searchPendingRequests(pendingFriends -> {
-            if (pendingFriends != null) {
+        loadFriendsList();
+    }
+
+    private void loadFriendsList() {
+        FriendsController.loadFriends(getApplicationContext(), new FriendsController.FriendsCallback() {
+            @Override
+            public void onPreExecute() {
+                loadingManager.showLoading();
+            }
+
+            @Override
+            public void onSuccess(List<FriendItem> friends) {
+                adapter.clear();
                 runOnUiThread(() -> {
-                    for (String id : pendingFriends) {
-                        String finalId = id.trim();
-                        UserController.getUserInfoByUID(finalId, user -> {
-                            adapter.add(new FriendItem((String) user.get("username"), true, false, finalId));
-                            adapter.notifyDataSetChanged();
-                        });
+                    for (FriendItem fr: friends) {
+                        adapter.add(fr);
+                        if (fr.isFriend())
+                            adapter.remove(fr.getUid(), true);
                     }
+
+                    loadingManager.hideLoading();
+                    adapter.notifyDataSetChanged();
                 });
             }
 
-            AtomicReference<Integer> size = new AtomicReference<>(0);
-            // check at first and all time when have trigger event to update friends list
-            FriendsController.getUIDFriendsList(friendList -> {
-                FriendsController.getUIDFriendsList(friends -> {
-                    if (friends != null) {
-                        runOnUiThread(() -> {
-                            size.set(friends.size());
-                            if (size.get() > 0)
-                                loadingManager.showLoading();
-                            else
-                                loadingManager.hideLoading();
-
-                            for (String id : friends) {
-                                String finalId = id.trim();
-                                UserController.getUserInfoByUID(finalId, user -> {
-                                    adapter.add(new FriendItem((String) user.get("username"), false, true, finalId));
-                                    adapter.notifyDataSetChanged();
-                                    size.getAndSet(size.get() - 1);
-                                    if (size.get() <= 0) {
-                                        loadingManager.hideLoading();
-                                    }
-                                    adapter.remove(finalId, true);
-                                });
-                            }
-                        });
-                    }
+            @Override
+            public void onError(String errorMessage) {
+                runOnUiThread(() -> {
+                    Toast.makeText(FriendsActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    loadingManager.hideLoading();
                 });
-                loadingManager.showLoading();
-            });
+            }
         });
     }
 

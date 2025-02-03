@@ -10,6 +10,7 @@ import com.peppe289.echotrail.utils.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FriendsDAO {
     private final FirebaseFirestore db;
@@ -115,24 +116,24 @@ public class FriendsDAO {
                 }).addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
-    public void searchPendingRequests(GetFriendsCallback callback) {
+    public void searchPendingRequests(ControllerCallback<List<String>, Exception> callback) {
         db.collection("friends")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    List<String> pendingRequest = new ArrayList<>();
-                    for (DocumentSnapshot document : querySnapshot.getDocuments()) {
-                        String documentId = document.getId();
-                        if (documentId.endsWith("_" + userDAO.getUid())) {
-                            pendingRequest.add(documentId.substring(0, documentId.length() - (userDAO.getUid().length() + 1)));
-                        }
+                    if (querySnapshot == null) {
+                        callback.onSuccess(null);
+                        return;
                     }
 
-                    if (callback != null)
-                        callback.onFriendsRetrieved(pendingRequest);
+                    List<String> pendingRequest = querySnapshot.getDocuments().stream()
+                            .map(DocumentSnapshot::getId) // Map each DocumentSnapshot to its ID
+                            .filter(documentId -> documentId.endsWith("_" + userDAO.getUid())) // Filter out requests sent by the user
+                            .map(documentId -> documentId.substring(0, documentId.length() - (userDAO.getUid().length() + 1))) // Process the ID further
+                            .collect(Collectors.toList());
+
+                    callback.onSuccess(pendingRequest);
                 })
-                .addOnFailureListener(e -> {
-                    if (callback != null) callback.onFriendsRetrieved(null);
-                });
+                .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
     /**
@@ -309,6 +310,7 @@ public class FriendsDAO {
 
     public interface GetFriendsCallback {
         void onFriendsRetrieved(List<String> friends);
+        void onError(ErrorType error);
     }
 
     public interface AddFriendCallback {
