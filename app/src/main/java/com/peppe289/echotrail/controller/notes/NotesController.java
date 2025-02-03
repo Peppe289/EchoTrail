@@ -4,6 +4,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
+import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -120,6 +121,6 @@ public class NotesController {
         /**
          * Called when the note has been successfully saved.
          */
-        void onSavedNote();
+        void onSavedNote(ErrorType errorType);
     }
 }

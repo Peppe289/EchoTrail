@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
+import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.List;
 import java.util.Map;
@@ -52,10 +53,11 @@ public class NotesDAO {
                 .add(noteData)
                 .addOnSuccessListener(documentReference -> {
                     String noteId = documentReference.getId();
-                    callback.onSavedNote();
+                    callback.onSavedNote(null);
                     UserController.updateNotesList(noteId);
                 })
-                .addOnFailureListener(e -> Log.e("NotesDAO", "Error saving note: " + e.getMessage()));
+                .addOnFailureListener(e ->
+                        callback.onSavedNote(ErrorType.UNKNOWN_ERROR));
     }
 
     /**

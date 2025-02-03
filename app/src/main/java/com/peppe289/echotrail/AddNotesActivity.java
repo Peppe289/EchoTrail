@@ -161,11 +161,15 @@ public class AddNotesActivity extends AppCompatActivity {
                         data.put("send_to", friendItem.getUid());
                     }
 
-                    NotesController.saveNote(data, () -> {
-                        Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+                    NotesController.saveNote(data, (errorType) -> {
                         // like mutex to avoid multiple click on save button.
                         canPush = true;
-                        finish();
+                        if (errorType == null) {
+                            Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                        }
                     });
                 });
 
