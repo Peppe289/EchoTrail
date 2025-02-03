@@ -57,9 +57,6 @@ public class NotesController {
         // Add mandatory fields
         noteData.put("userId", UserController.getUid());
         noteData.put("content", data.get("content"));
-        UserController.getUsername((username) -> {
-
-        });
 
         try {
             String username = (String) data.get("username");
