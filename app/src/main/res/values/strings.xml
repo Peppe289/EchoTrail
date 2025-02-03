@@ -11,6 +11,7 @@
     <string name="error_invalid_username">Username non valido</string>
     <string name="error_invalid_email">Email non valida</string>
     <string name="error_invalid_password">La password deve avere almeno 6 caratteri</string>
+    <string name="error_invalid_credentials">Password o email errati</string>
     <!-- General -->
 
     <string name="note">Note</string>

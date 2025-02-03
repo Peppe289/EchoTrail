@@ -12,6 +12,7 @@ public enum ErrorType {
     INVALID_USERNAME_ERROR(1006, R.string.error_invalid_username),
     INVALID_EMAIL_ERROR(1007, R.string.error_invalid_email),
     INVALID_PASSWORD_ERROR(1008, R.string.error_invalid_password),
+    INVALID_CREDENTIALS_ERROR(1009, R.string.error_invalid_credentials),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;

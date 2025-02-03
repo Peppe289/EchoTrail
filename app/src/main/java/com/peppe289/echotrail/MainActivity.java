@@ -17,6 +17,7 @@ import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.util.Objects;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 if (result) {
                     MoveActivity.rebaseActivity(this, DispatcherActivity.class, null);
                 } else {
-                    passwordLayout.setError("Email o password errati");
+                    passwordLayout.setError(ErrorType.INVALID_CREDENTIALS_ERROR.getMessage(getApplicationContext()));
                 }
                 progressBar.setVisibility(View.GONE);
             });
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         String email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
         if (TextUtils.isEmpty(email) || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailLayout.setError("Inserisci un'email valida.");
+            emailLayout.setError(ErrorType.INVALID_EMAIL_ERROR.getMessage(getApplicationContext()));
             isValid = false;
         } else {
             emailLayout.setError(null);
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         String password = Objects.requireNonNull(passwordEditText.getText()).toString();
         if (TextUtils.isEmpty(password) || password.length() < 6) {
-            passwordLayout.setError("La password deve avere almeno 6 caratteri.");
+            passwordLayout.setError(ErrorType.INVALID_PASSWORD_ERROR.getMessage(getApplicationContext()));
             isValid = false;
         } else {
             passwordLayout.setError(null);
