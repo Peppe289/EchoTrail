@@ -57,16 +57,15 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void acceptRequest(String friendID, AddFriendCallback callback) {
-        // Add friend to user's friend list
-        db.collection("friends")
-                .document(userDAO.getUid() + "_" + friendID)
-                .delete()
-                .addOnSuccessListener(aVoid ->
-                        db.collection("users")
-                                .document(userDAO.getUid())
-                                .update("friends", FieldValue.arrayUnion(friendID))
-                                .addOnSuccessListener(aVoid1 ->
-                                        callback.onFriendAdded(true)))
+        WriteBatch batch = db.batch();
+
+        DocumentReference requestRef = db.collection("friends").document(userDAO.getUid() + "_" + friendID);
+        DocumentReference userRef = db.collection("users").document(userDAO.getUid());
+        batch.delete(requestRef);
+        batch.update(userRef, "friends", FieldValue.arrayUnion(friendID));
+
+        batch.commit()
+                .addOnSuccessListener(aVoid -> callback.onFriendAdded(true))
                 .addOnFailureListener(e -> callback.onFriendAdded(false));
     }
 
