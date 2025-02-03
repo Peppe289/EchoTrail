@@ -67,7 +67,8 @@ public class AddNotesActivity extends AppCompatActivity {
 
         locationHelper = new LocationHelper(this);
         if (!locationHelper.locationPermissionIsGranted(this)) {
-            Toast.makeText(AddNotesActivity.this, "Permesso alla posizone non concesso!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddNotesActivity.this,
+                    ErrorType.POSITION_PERMISSION_ERROR.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
             finish();
         }
 
