@@ -250,7 +250,8 @@ public class MapFragment extends Fragment {
                                 "Per utilizzare l'applicazione non è sufficiente utilizzare il permesso di localizzazione approssimativa.");
                         bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());
                     } else {
-                        Toast.makeText(requireContext(), "Permesso di localizzazione non concesso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(),
+                                ErrorType.POSITION_PERMISSION_ERROR.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                     }
                 }
         );
