@@ -116,10 +116,6 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
         void onClick(String userID);
     }
 
-    public interface CardClickExtendsCallback {
-        void onClick(String userID);
-    }
-
     // ViewHolder class
     static class ViewHolder {
         final TextView title;
