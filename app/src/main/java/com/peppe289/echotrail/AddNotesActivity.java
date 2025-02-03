@@ -19,6 +19,7 @@ import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
 import com.peppe289.echotrail.model.FriendItem;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LocationHelper;
 
 import org.osmdroid.util.GeoPoint;
@@ -170,8 +171,8 @@ public class AddNotesActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLocationError(String error) {
-                Toast.makeText(AddNotesActivity.this, error, Toast.LENGTH_SHORT).show();
+            public void onLocationError(ErrorType errorType) {
+                Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -29,10 +29,7 @@ import com.peppe289.echotrail.NotesListActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.utils.LocationHelper;
-import com.peppe289.echotrail.utils.MapHelper;
-import com.peppe289.echotrail.utils.MoveActivity;
-import com.peppe289.echotrail.utils.SuggestionsAdapter;
+import com.peppe289.echotrail.utils.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,8 +101,8 @@ public class MapFragment extends Fragment {
             }
 
             @Override
-            public void onLocationError(String error) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+            public void onLocationError(ErrorType errorType) {
+                Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
         }), 0, 5, TimeUnit.SECONDS);
     }
@@ -313,8 +310,8 @@ public class MapFragment extends Fragment {
                         }
 
                         @Override
-                        public void onLocationError(String error) {
-                            Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                        public void onLocationError(ErrorType errorType) {
+                            Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -378,8 +375,8 @@ public class MapFragment extends Fragment {
             }
 
             @Override
-            public void onLocationError(String error) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+            public void onLocationError(ErrorType errorType) {
+                Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                 mapHelper.setDefaultCenter(); // Set default position.
             }
         });

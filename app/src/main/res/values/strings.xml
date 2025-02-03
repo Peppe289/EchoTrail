@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">EchoTrail</string>
+
+    <!-- Error message -->
+    <string name="error_location_permission">Permesso GPS negato</string>
+    <string name="error_mock_location">Rimuovi la posizione fittizia</string>
+    <string name="error_unknown">Errore sconosciuto</string>
+    <!-- General -->
+
     <string name="note">Note</string>
     <string name="impostazioni">Impostazioni</string>
     <string name="mappa">Mappa</string>

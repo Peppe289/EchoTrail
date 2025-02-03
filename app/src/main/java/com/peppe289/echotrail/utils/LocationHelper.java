@@ -106,7 +106,7 @@ public class LocationHelper {
      */
     public void getCurrentLocation(Context context, Activity activity, @NonNull LocationCallback locationCallback) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            locationCallback.onLocationError("Location permission not granted.");
+            locationCallback.onLocationError(ErrorType.POSITION_PERMISSION_ERROR);
             return;
         }
 
@@ -115,9 +115,9 @@ public class LocationHelper {
                 GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                 locationCallback.onLocationUpdated(startPoint);
             } else {
-                locationCallback.onLocationError("Location not found.");
+                throw new RuntimeException("Position not found");
             }
-        }).addOnFailureListener(e -> locationCallback.onLocationError("Failed to get location: " + e.getMessage()));
+        }).addOnFailureListener(e -> locationCallback.onLocationError(ErrorType.UNKNOWN_ERROR));
     }
 
     /**
@@ -140,6 +140,6 @@ public class LocationHelper {
          *
          * @param error a descriptive error message
          */
-        void onLocationError(String error);
+        void onLocationError(ErrorType error);
     }
 }
