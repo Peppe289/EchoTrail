@@ -1,7 +1,6 @@
 package com.peppe289.echotrail;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -94,9 +93,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
         FriendsController.searchPendingRequests(pendingFriends -> {
-            if (pendingFriends == null) {
-                Log.d("FriendsActivity", "No pending requests found");
-            } else {
+            if (pendingFriends != null) {
                 runOnUiThread(() -> {
                     for (String id : pendingFriends) {
                         String finalId = id.trim();
@@ -114,9 +111,7 @@ public class FriendsActivity extends AppCompatActivity {
                     FriendsController.getUIDFriendsList(friends -> {
                         // is better if I clean the list before retrieve the new data
                         adapter.clear();
-                        if (friends == null) {
-                            Log.d("FriendsActivity", "No friends found");
-                        } else {
+                        if (friends != null) {
                             runOnUiThread(() -> {
                                 size.set(friends.size());
                                 if (size.get() >= 0)
