@@ -8,18 +8,15 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.peppe289.echotrail.R;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import java.util.List;
 
 public class UserLinksAdapter extends ArrayAdapter<String> {
 
     private final LayoutInflater inflater;
-    private final List<String> links;
 
     public UserLinksAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
         super(context, resource, objects);
-        links = objects;
         inflater = LayoutInflater.from(context);
     }
 
