@@ -14,7 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
-import com.peppe289.echotrail.model.CardItem;
+import com.peppe289.echotrail.model.NoteItem;
 import com.peppe289.echotrail.utils.CardItemAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
 
@@ -59,8 +59,8 @@ public class UserListFragment extends Fragment {
                     String formattedDate = formatDate(timestamp);
 
                     if (description != null && city != null) {
-                        CardItem cardItem = new CardItem("La tua nota", description, formattedDate, city, null, document.getId(), false);
-                        cardItemAdapter.add(cardItem);
+                        NoteItem noteItem = new NoteItem("La tua nota", description, formattedDate, city, null, document.getId(), false);
+                        cardItemAdapter.add(noteItem);
                     }
                 }
             }

@@ -13,7 +13,7 @@ import com.peppe289.echotrail.UserViewActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
-import com.peppe289.echotrail.model.CardItem;
+import com.peppe289.echotrail.model.NoteItem;
 import com.peppe289.echotrail.utils.CardItemAdapter;
 import com.peppe289.echotrail.utils.CardListView;
 import com.peppe289.echotrail.utils.LoadingManager;
@@ -144,7 +144,7 @@ public class NotesFragment extends Fragment {
                 }
 
                 if (description != null && city != null) {
-                    CardItem noteCard = new CardItem(
+                    NoteItem noteCard = new NoteItem(
                             username == null ? "Anonimo" : username,
                             description,
                             formattedDate,
@@ -161,9 +161,9 @@ public class NotesFragment extends Fragment {
         }
 
         // Rimuove gli elementi non più presenti nel `querySnapshot`
-        Iterator<CardItem> iterator = notesAdapter.getItems().iterator();
+        Iterator<NoteItem> iterator = notesAdapter.getItems().iterator();
         while (iterator.hasNext()) {
-            CardItem item = iterator.next();
+            NoteItem item = iterator.next();
             if (!currentNoteIds.contains(item.getId())) {
                 iterator.remove();
                 loadedNoteIds.remove(item.getId());

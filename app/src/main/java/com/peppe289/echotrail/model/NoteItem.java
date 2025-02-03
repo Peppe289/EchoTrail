@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-public class CardItem {
+public class NoteItem {
     @NonNull
     private final String author;
     @NonNull
@@ -19,7 +19,7 @@ public class CardItem {
     private final String userId;
     private final boolean isDedicated;
 
-    public CardItem(@NonNull String author, @NonNull String description, @NonNull String date, @NonNull String city, @Nullable String userId, @NonNull String id, boolean isDedicated) {
+    public NoteItem(@NonNull String author, @NonNull String description, @NonNull String date, @NonNull String city, @Nullable String userId, @NonNull String id, boolean isDedicated) {
         this.author = author;
         this.description = description;
         this.date = date;

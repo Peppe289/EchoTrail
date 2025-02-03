@@ -15,7 +15,7 @@ import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
-import com.peppe289.echotrail.model.CardItem;
+import com.peppe289.echotrail.model.NoteItem;
 import com.peppe289.echotrail.utils.CardItemAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
@@ -92,7 +92,7 @@ public class AvailableNotesFragment extends Fragment {
                 }
 
                 if (description != null && city != null) {
-                    CardItem cardItem = new CardItem(
+                    NoteItem noteItem = new NoteItem(
                             username == null ? "Anonimo" : username,
                             description,
                             formattedDate,
@@ -102,7 +102,7 @@ public class AvailableNotesFragment extends Fragment {
                             // check if have this attribute and if is dedicated to the user.
                             (isFor != null && isFor.compareTo(UserController.getUid()) == 0)
                     );
-                    cardItemAdapter.add(cardItem);
+                    cardItemAdapter.add(noteItem);
                 }
             }
 

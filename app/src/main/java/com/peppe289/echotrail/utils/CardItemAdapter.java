@@ -13,17 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.card.MaterialCardView;
 import com.peppe289.echotrail.R;
-import com.peppe289.echotrail.model.CardItem;
+import com.peppe289.echotrail.model.NoteItem;
 
 import java.util.List;
 
-public class CardItemAdapter extends ArrayAdapter<CardItem> {
+public class CardItemAdapter extends ArrayAdapter<NoteItem> {
     private final LayoutInflater inflater;
-    private final List<CardItem> items;
+    private final List<NoteItem> items;
     @Nullable
     private final CardClickCallback callback;
 
-    public CardItemAdapter(@NonNull Context context, int resourceId, @NonNull List<CardItem> objects, @Nullable CardClickCallback callback) {
+    public CardItemAdapter(@NonNull Context context, int resourceId, @NonNull List<NoteItem> objects, @Nullable CardClickCallback callback) {
         super(context, resourceId, objects);
         inflater = LayoutInflater.from(context);
         this.items = objects;
@@ -31,7 +31,7 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
     }
 
     @Override
-    public void add(@Nullable CardItem object) {
+    public void add(@Nullable NoteItem object) {
         super.add(object);
         // add here isn't necessary because from default the add function add item to the list
         //items.add(object);
@@ -50,7 +50,7 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
         }
 
         // Bind the data
-        CardItem item = getItem(position);
+        NoteItem item = getItem(position);
         if (item != null) {
             viewHolder.title.setText(item.getAuthor());
             viewHolder.description.setText(item.getDescription());
@@ -102,12 +102,12 @@ public class CardItemAdapter extends ArrayAdapter<CardItem> {
         }
     }
 
-    public List<CardItem> getItems() {
+    public List<NoteItem> getItems() {
         return items;
     }
 
     @Override
-    public void remove(@Nullable CardItem object) {
+    public void remove(@Nullable NoteItem object) {
         super.remove(object);
         items.remove(object);
     }
