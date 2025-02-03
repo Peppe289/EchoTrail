@@ -345,8 +345,9 @@ public class MapFragment extends Fragment {
             }
 
             @Override
-            public void onErrorMessage(String error) {
-                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show());
+            public void onErrorMessage(ErrorType errorType) {
+                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
+                        errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show());
             }
         }), 300, TimeUnit.MILLISECONDS);
     }

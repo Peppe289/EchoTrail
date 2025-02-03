@@ -207,7 +207,7 @@ public class MapHelper {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                callback.onErrorMessage("Errore nella richiesta");
+                callback.onErrorMessage(ErrorType.UNKNOWN_ERROR);
             }
 
             @Override
@@ -217,7 +217,7 @@ public class MapHelper {
                     try {
                         callback.onFetchSuggestions(responseBody);
                     } catch (Exception e) {
-                        callback.onErrorMessage("Errore nel parsing della risposta");
+                        callback.onErrorMessage(ErrorType.UNKNOWN_ERROR);
                     }
                 }
             }
@@ -226,7 +226,7 @@ public class MapHelper {
 
     public interface OnFetchSuggestions {
         void onFetchSuggestions(String responseBody) throws JSONException;
-        void onErrorMessage(String error);
+        void onErrorMessage(ErrorType errorType);
     }
 
     /**
