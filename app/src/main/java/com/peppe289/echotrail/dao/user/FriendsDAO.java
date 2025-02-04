@@ -87,33 +87,17 @@ public class FriendsDAO {
 
     /**
      * Removes a friend from the user's friend list.
-     * PLEASE DON'T TRY TO "OPTIMIZE" THIS METHOD BY REWORKING THE FOR LOOP! I LOST 3 DAY TO UNDERSTAND WHY IT DOESN'T WORK!
-     * I HATE JAVA! For remove this object from array need the right instance of the object, not only the same value...
      *
-     * @param friendID The ID of the friend to be removed.
+     * @param pointerString The ID of the friend to be removed.
      * @param callback The callback to be invoked upon completion.
      */
-    public void removeFriend(String friendID, ControllerCallback<String, Exception> callback) {
+    public void removeFriend(String pointerString, ControllerCallback<String, Exception> callback) {
         String uid = userDAO.getUid();
 
         db.collection("users").document(uid)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    List<String> friends = (List<String>) documentSnapshot.get("friends");
-                    if (friends != null) {
-                        for (String odioJava : friends) {
-                            if (odioJava.trim().compareTo(friendID.trim()) == 0) {
-                                friends.remove(odioJava);
-                                db.collection("users").document(uid)
-                                        .update("friends", friends)
-                                        .addOnSuccessListener(aVoid -> callback.onSuccess(friendID))
-                                        .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
-                                return;
-                            }
-                        }
-                    }
-                    callback.onError(new FriendNotFoundException());
-                }).addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
+                .update("friends", FieldValue.arrayRemove(pointerString))
+                .addOnSuccessListener(aVoid -> callback.onSuccess(pointerString))
+                .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
     public void searchPendingRequests(ControllerCallback<List<String>, Exception> callback) {

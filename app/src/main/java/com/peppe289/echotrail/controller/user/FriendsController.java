@@ -55,7 +55,7 @@ public class FriendsController {
                 }
 
                 // Recupero lista amici
-                friendsDAO.getUIDFriendsList(UserController.getUid(), new FriendsDAO.GetFriendsCallback() {
+                FriendsController.getUIDFriendsList(new FriendsDAO.GetFriendsCallback() {
                     @Override
                     public void onFriendsRetrieved(List<String> friends) {
                         if (friends != null) {
@@ -70,6 +70,7 @@ public class FriendsController {
                                 });
                             }
                         }
+                        callback.onSuccess(friendItems);
                     }
 
                     @Override
@@ -127,18 +128,34 @@ public class FriendsController {
             }
         };
 
-        friendsDAO.removeFriend(friendID, new ControllerCallback<String, Exception>() {
+        FriendsController.getUIDFriendsList(new FriendsDAO.GetFriendsCallback() {
             @Override
-            public void onSuccess(String result) {
-                // at last the first request work.
-                atLastOne.set(true);
-                friendsDAO.rejectRequest(friendID, controllerCallback);
+            public void onFriendsRetrieved(List<String> friends) {
+                if (friends != null) {
+                    for (String friend : friends) {
+                        if (friend.trim().compareTo(friendID.trim()) == 0) {
+                            friendsDAO.removeFriend(friendID, new ControllerCallback<String, Exception>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    // at last, the first request work.
+                                    atLastOne.set(true);
+                                    friendsDAO.rejectRequest(friendID, controllerCallback);
+                                }
+
+                                @Override
+                                public void onError(Exception error) {
+                                    // also if removeFriend fail, I run anyway rejectRequest
+                                    friendsDAO.rejectRequest(friendID, controllerCallback);
+                                }
+                            });
+                        }
+                    }
+                }
             }
 
             @Override
-            public void onError(Exception error) {
-                // also if removeFriend fail, I run anyway rejectRequest
-                friendsDAO.rejectRequest(friendID, controllerCallback);
+            public void onError(ErrorType error) {
+
             }
         });
     }
