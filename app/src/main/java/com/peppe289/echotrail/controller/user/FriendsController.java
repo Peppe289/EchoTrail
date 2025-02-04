@@ -55,7 +55,7 @@ public class FriendsController {
                 }
 
                 // Recupero lista amici
-                friendsDAO.getUIDFriendsList(new FriendsDAO.GetFriendsCallback() {
+                friendsDAO.getUIDFriendsList(UserController.getUid(), new FriendsDAO.GetFriendsCallback() {
                     @Override
                     public void onFriendsRetrieved(List<String> friends) {
                         if (friends != null) {
@@ -144,6 +144,20 @@ public class FriendsController {
     }
 
     public static void getUIDFriendsList(FriendsDAO.GetFriendsCallback callback) {
-        friendsDAO.getUIDFriendsList(callback);
+        friendsDAO.synchronizeFriendsList(new ControllerCallback<Void, Exception>() {
+            @Override
+            public void onSuccess(Void result) {
+                friendsDAO.getUIDFriendsList(UserController.getUid(), callback);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                if (error instanceof FriendNotFoundException) {
+                    callback.onError(ErrorType.GET_FRIENDS_ERROR);
+                } else {
+                    callback.onError(ErrorType.UNKNOWN_ERROR);
+                }
+            }
+        });
     }
 }

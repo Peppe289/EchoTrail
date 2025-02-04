@@ -143,9 +143,9 @@ public class FriendsDAO {
      * - Friends who removed the user are also removed.
      * - Pending friend requests are NOT deleted until the sender sees they were accepted.
      *
-     * @param runnable The callback to be invoked upon completion.
+     * @param callback The callback to be invoked upon completion.
      */
-    public void synchronizeFriendsList(Runnable runnable) {
+    public void synchronizeFriendsList(ControllerCallback<Void, Exception> callback) {
         String myUid = userDAO.getUid();
         Set<String> ignoreList = new HashSet<>();
         List<Task<Void>> pendingTasks = new ArrayList<>();
@@ -172,7 +172,9 @@ public class FriendsDAO {
             db.collection("users").document(myUid).get().addOnSuccessListener(userSnapshot -> {
                 List<String> myFriends = (List<String>) userSnapshot.get("friends");
                 if (myFriends == null || myFriends.isEmpty()) {
-                    Tasks.whenAllComplete(pendingTasks).addOnCompleteListener(task -> runnable.run());
+                    Tasks.whenAllComplete(pendingTasks)
+                            .addOnCompleteListener(task -> callback.onSuccess(null))
+                            .addOnFailureListener(e -> callback.onError(new Exception()));
                     return;
                 }
 
@@ -197,9 +199,11 @@ public class FriendsDAO {
                 }
 
                 // Execute the callback once all tasks are completed
-                Tasks.whenAllComplete(pendingTasks).addOnCompleteListener(task -> runnable.run());
+                Tasks.whenAllComplete(pendingTasks)
+                        .addOnCompleteListener(task -> callback.onSuccess(null))
+                        .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
             });
-        }).addOnFailureListener(e -> runnable.run());
+        }).addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
     /**
@@ -280,11 +284,6 @@ public class FriendsDAO {
     private Task<Void> deleteFriendRequest(String friendID) {
         DocumentReference requestRef = db.collection("friends").document(userDAO.getUid() + "_" + friendID);
         return requestRef.delete();
-    }
-
-    public void getUIDFriendsList(GetFriendsCallback callback) {
-        // Synchronize the friend list before getting it
-        synchronizeFriendsList(() -> getUIDFriendsList(UserController.getUid(), callback));
     }
 
     /**
