@@ -18,6 +18,7 @@
     <string name="error_invalid_email">Email non valida</string>
     <string name="error_invalid_password">La password deve avere almeno 6 caratteri</string>
     <string name="error_invalid_credentials">Password o email errati</string>
+    <string name="error_save_note_failed">Errore nel salvataggio della nota</string>
     <!-- General -->
 
     <string name="note">Note</string>

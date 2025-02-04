@@ -7,6 +7,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
+import com.peppe289.echotrail.exceptions.NoteCollectionException;
+import com.peppe289.echotrail.utils.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.List;
@@ -48,16 +50,15 @@ public class NotesDAO {
      * @param noteData a {@link Map} containing the note's data (e.g., title, content, metadata)
      * @param callback a callback instance to notify when the save operation is complete
      */
-    public void saveNote(Map<String, Object> noteData, NotesController.SaveNoteCallback callback) {
+    public void saveNote(Map<String, Object> noteData, ControllerCallback<String, Exception> callback) {
         db.collection("notes")
                 .add(noteData)
                 .addOnSuccessListener(documentReference -> {
                     String noteId = documentReference.getId();
-                    callback.onSavedNote(null);
-                    UserController.updateNotesList(noteId);
+                    callback.onSuccess(noteId);
                 })
                 .addOnFailureListener(e ->
-                        callback.onSavedNote(ErrorType.UNKNOWN_ERROR));
+                        callback.onError(new NoteCollectionException()));
     }
 
     /**

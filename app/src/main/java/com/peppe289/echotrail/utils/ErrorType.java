@@ -19,6 +19,7 @@ public enum ErrorType {
     FRIEND_NOT_FOUND_ERROR(1013, R.string.error_friend_not_found),
     GET_PENDING_REQUESTS_ERROR(1014, R.string.error_get_pending_requests),
     GET_FRIENDS_ERROR(1015, R.string.error_get_friends),
+    SAVE_NOTE_FAILED(1016, R.string.error_save_note_failed),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;

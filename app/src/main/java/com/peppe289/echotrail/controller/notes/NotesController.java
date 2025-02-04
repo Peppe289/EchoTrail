@@ -4,6 +4,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
+import com.peppe289.echotrail.utils.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
@@ -88,7 +89,18 @@ public class NotesController {
         noteData.put("city", data.get("city"));
 
         // Save the note through NotesDAO
-        notesDAO.saveNote(noteData, callback);
+        notesDAO.saveNote(noteData, new ControllerCallback<String, Exception>() {
+            @Override
+            public void onSuccess(String noteId) {
+                callback.onSavedNote(null);
+                UserController.updateNotesList(noteId);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                callback.onSavedNote(ErrorType.SAVE_NOTE_FAILED);
+            }
+        });
     }
 
     public static void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
