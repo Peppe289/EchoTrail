@@ -143,10 +143,6 @@ public class FriendsController {
         });
     }
 
-    public static void getUIDFriendsList(String userID, FriendsDAO.GetFriendsCallback callback) {
-        friendsDAO.getUIDFriendsList(userID, callback);
-    }
-
     public static void getUIDFriendsList(FriendsDAO.GetFriendsCallback callback) {
         friendsDAO.getUIDFriendsList(callback);
     }
