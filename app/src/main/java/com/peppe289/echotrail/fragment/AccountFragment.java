@@ -127,42 +127,10 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
                 email.setText(headers.get("email"));
             });
 
-            List<String> notesWritten = new ArrayList<>();
-            List<String> notesReaded = new ArrayList<>();
-
-            UserController.getUserNotesList(new UserDAO.NotesListCallback() {
-                @Override
-                public void onComplete(QuerySnapshot userNotes) {
-                    if (userNotes != null && !userNotes.isEmpty()) {
-                        for (DocumentSnapshot document : userNotes) {
-                            if (document != null) notesWritten.add(document.getId());
-                        }
-                    }
-                    publishedNotes.setText(String.valueOf(notesWritten.size()));
-
-                    UserController.getReadedNotesList(new UserDAO.NotesListCallback() {
-                        @Override
-                        public void onComplete(QuerySnapshot notes) {
-                            if (notes != null && !notes.isEmpty()) {
-                                for (DocumentSnapshot document : notes) {
-                                    if (document != null) notesReaded.add(document.getId());
-                                }
-                            }
-                            readedNotes.setText(String.valueOf(notesReaded.size()));
-                            loadingManager.hideLoading();
-                        }
-
-                        @Override
-                        public void onError(ErrorType errorType) {
-                            Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
-                            loadingManager.hideLoading();
-                        }
-                    });
-                }
-
-                @Override
-                public void onError(ErrorType errorType) {
-                    Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+            UserController.getUserInfoByUID(UserController.getUid(), userInfo -> {
+                if (userInfo != null) {
+                    publishedNotes.setText(String.valueOf(userInfo.getNotes().size()));
+                    readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
                     loadingManager.hideLoading();
                 }
             });

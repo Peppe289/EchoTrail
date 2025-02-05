@@ -109,9 +109,9 @@ public class UserViewActivity extends AppCompatActivity {
 
         UserController.getUserInfoByUID(UID, userInfo -> {
             if (userInfo != null) {
-                setTextViewIfNotNull(binding.usernameTextView, userInfo.get("username"));
-                setTextViewIfNotNull(binding.notesRead, userInfo.get("readedNotes"));
-                setTextViewIfNotNull(binding.notesPublished, userInfo.get("notes"));
+                setTextViewIfNotNull(binding.usernameTextView, userInfo.getUsername());
+                setTextViewIfNotNull(binding.notesRead, userInfo.getReadedNotes().size());
+                setTextViewIfNotNull(binding.notesPublished, userInfo.getNotes().size());
                 UserController.getUserLinks(UID, links -> {
                     if (links != null) {
                         for (String lk : links) {

@@ -5,6 +5,7 @@ import com.peppe289.echotrail.dao.user.FriendsDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.FriendNotFoundException;
 import com.peppe289.echotrail.model.FriendItem;
+import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
@@ -44,11 +45,16 @@ public class FriendsController {
                 if (pendingFriends != null) {
                     for (String id : pendingFriends) {
                         String finalId = id.trim();
-                        userDAO.getUserInfoByUID(finalId, new UserDAO.GetUserInfoCallBack() {
+                        userDAO.getUserInfo(finalId, new ControllerCallback<User, Exception>() {
                             @Override
-                            public void onComplete(HashMap<String, Object> userData) {
-                                friendItems.add(new FriendItem((String) userData.get("username"), true, false, finalId));
+                            public void onSuccess(User userData) {
+                                friendItems.add(new FriendItem(userData.getUsername(), true, false, finalId));
                                 callback.onSuccess(friendItems);
+                            }
+
+                            @Override
+                            public void onError(Exception error) {
+                                // TODO: handle error.
                             }
                         });
                     }
@@ -61,11 +67,16 @@ public class FriendsController {
                         if (friends != null) {
                             for (String id : friends) {
                                 String finalId = id.trim();
-                                userDAO.getUserInfoByUID(finalId, new UserDAO.GetUserInfoCallBack() {
+                                userDAO.getUserInfo(finalId, new ControllerCallback<User, Exception>() {
                                     @Override
-                                    public void onComplete(HashMap<String, Object> userData) {
-                                        friendItems.add(new FriendItem((String) userData.get("username"), false, true, finalId));
+                                    public void onSuccess(User userData) {
+                                        friendItems.add(new FriendItem(userData.getUsername(), false, true, finalId));
                                         callback.onSuccess(friendItems);
+                                    }
+
+                                    @Override
+                                    public void onError(Exception error) {
+
                                     }
                                 });
                             }

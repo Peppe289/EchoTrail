@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
+import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
@@ -43,28 +44,6 @@ public class UserDAO {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> callback.onComplete(task.isSuccessful()));
     }
 
-    public void getUserLinks(UserLinksCallback callback) {
-        getUserLinks(getUid(), callback);
-    }
-
-    public void getUserLinks(String userID, UserLinksCallback callback) {
-        db.collection("users")
-                .document(userID)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        try {
-                            /* consider this always as list of string. */
-                            @SuppressWarnings("unchecked")
-                            List<String> links = (List<String>) documentSnapshot.get("links");
-                            callback.onComplete(links);
-                        } catch (Exception ignored) {
-                            callback.onComplete(null);
-                        }
-                    }
-                });
-    }
-
     public void signUp(String email, String password, String username, SignUpCallback callback) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> db.collection("users").document(getUid()).set(new HashMap<String, Object>() {{
             put("username", username);
@@ -95,26 +74,6 @@ public class UserDAO {
                 .update("links", FieldValue.arrayRemove(link));
     }
 
-    public void getReadedNotesList(ControllerCallback<List<String>, Exception> callback) {
-        try {
-            db.collection("users")
-                    .document(getUid())
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                                /* consider this always as a list of string. */
-                                @SuppressWarnings("unchecked")
-                                List<String> notesID = (List<String>) documentSnapshot.get("readedNotes");
-                                callback.onSuccess(notesID);
-                        } else {
-                            callback.onSuccess(null);
-                        }
-                    });
-        } catch (Exception ignored) {
-            callback.onError(new UserCollectionException());
-        }
-    }
-
     public void signOut() {
         auth.signOut();
     }
@@ -127,46 +86,19 @@ public class UserDAO {
         return Objects.requireNonNull(auth.getCurrentUser()).getUid();
     }
 
-    public void getUsername(UpdateUsernameViewCallback callback) {
-        db.collection("users").document(getUid()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                callback.onComplete(Objects.requireNonNull(task.getResult()).getString("username"));
-            }
-        });
+    public void getUserInfo(String uid, ControllerCallback<User, Exception> callback) {
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    User user = snapshot.toObject(User.class);
+                    callback.onSuccess(user);
+                }).addOnFailureListener(snapshot ->
+                        callback.onError(new UserCollectionException()));
     }
 
     public void setUsername(String username) {
         db.collection("users").document(getUid()).update("username", username);
-    }
-
-    public void getUserInfoByUID(String UID, GetUserInfoCallBack callback) {
-        HashMap<String, Object> userInfo = new HashMap<>();
-        try {
-            db.collection("users")
-                    .document(UID)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            try {
-                                /* consider this always as list of string. */
-                                @SuppressWarnings("unchecked")
-                                List<String> notesID = (List<String>) documentSnapshot.get("notes");
-                                /* consider this always as list of string. */
-                                @SuppressWarnings("unchecked")
-                                List<String> readedNotesID = (List<String>) documentSnapshot.get("readedNotes");
-                                userInfo.put("notes", notesID == null ? 0 : notesID.size());
-                                userInfo.put("readedNotes", readedNotesID == null ? 0 : readedNotesID.size());
-                                userInfo.put("username", documentSnapshot.getString("username"));
-                                userInfo.put("links", documentSnapshot.get("links"));
-                                callback.onComplete(userInfo);
-                            } catch (Exception ignored) {
-                                callback.onComplete(null);
-                            }
-                        }
-                    });
-        } catch (Exception ignored) {
-            callback.onComplete(null);
-        }
     }
 
     public void getEmail(UpdateEmailViewCallback callback) {
@@ -174,44 +106,10 @@ public class UserDAO {
         callback.onComplete(email);
     }
 
-    public void getUserNotesList(ControllerCallback<List<String>, Exception> callback) {
-        try {
-            db.collection("users")
-                    .document(getUid())
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                                /* consider this always as a list of string. */
-                                @SuppressWarnings("unchecked")
-                                List<String> notesID = (List<String>) documentSnapshot.get("notes");
-                                callback.onSuccess(notesID);
-                        }
-                    });
-        } catch (Exception ignored) {
-            callback.onError(new UserCollectionException());
-        }
-    }
-
     public void setDefaultAnonymousPreference(boolean isAnonymous) {
         db.collection("users")
                 .document(getUid())
                 .update("anonymousByDefault", isAnonymous);
-    }
-
-    public void getDefaultAnonymousPreference(SettingsPreferencesToggle callback) {
-        db.collection("users")
-                .document(getUid())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        try {
-                            boolean isAnonymous = Boolean.TRUE.equals(documentSnapshot.getBoolean("anonymousByDefault"));
-                            callback.onComplete(isAnonymous);
-                        } catch (Exception ignored) {
-                            callback.onComplete(false);
-                        }
-                    }
-                });
     }
 
     public interface SignUpCallback {
@@ -244,6 +142,6 @@ public class UserDAO {
     }
 
     public interface GetUserInfoCallBack {
-        void onComplete(HashMap<String, Object> userInfo);
+        void onComplete(User user);
     }
 }
