@@ -5,12 +5,9 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.*;
 import com.peppe289.echotrail.controller.callback.FriendsCallback;
 import com.peppe289.echotrail.exceptions.FriendCollectionException;
-import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
-import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class FriendsDAO {
