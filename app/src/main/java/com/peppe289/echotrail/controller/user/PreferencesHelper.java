@@ -5,6 +5,8 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
+import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
 
@@ -38,19 +40,37 @@ public class PreferencesHelper {
      * @param callback A callback to be invoked once the data is retrieved and stored.
      *                 The callback receives a map containing the keys "username" and "email".
      */
-    private static void loadUserHeaders(Context context, UserController.UserHeadersCallback callback) {
-        UserController.getUsername(name -> UserController.getEmail(emailStr -> {
-            updateName(context, name);
-            updateEmail(context, emailStr);
+    private static void loadUserHeaders(Context context, ControllerCallback<HashMap<String, String>, ErrorType> callback) {
+        UserController.getUsername(new ControllerCallback<String, ErrorType>() {
+            @Override
+            public void onSuccess(String name) {
+                UserController.getEmail(new ControllerCallback<String, ErrorType>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        updateName(context, name);
+                        updateEmail(context, result);
 
-            if (callback != null) {
-                // Provide the retrieved data to the callback.
-                callback.onComplete(new HashMap<>(2) {{
-                    put("username", name);
-                    put("email", emailStr);
-                }});
+                        if (callback != null) {
+                            // Provide the retrieved data to the callback.
+                            callback.onSuccess(new HashMap<>(2) {{
+                                put("username", name);
+                                put("email", result);
+                            }});
+                        }
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
+                        // TODO: handler error
+                    }
+                });
             }
-        }));
+
+            @Override
+            public void onError(ErrorType error) {
+                // TODO: handler error
+            }
+        });
     }
 
     /**
@@ -111,7 +131,7 @@ public class PreferencesHelper {
      * @param callback A callback to be invoked once the data is available.
      *                 The callback receives a map containing the keys "username" and "email".
      */
-    public static void checkOnPreferences(Context context, UserController.UserHeadersCallback callback) {
+    public static void checkOnPreferences(Context context, ControllerCallback<HashMap<String, String>, ErrorType> callback) {
         @Nullable String username = retrieveName(context);
         @Nullable String email = retrieveEmail(context);
 
@@ -120,7 +140,7 @@ public class PreferencesHelper {
             loadUserHeaders(context, callback);
         } else if (callback != null) {
             // Invoke the callback with the data from shared preferences.
-            callback.onComplete(new HashMap<>(2) {{
+            callback.onSuccess(new HashMap<>(2) {{
                 put("username", username);
                 put("email", email);
             }});
