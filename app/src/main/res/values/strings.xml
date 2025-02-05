@@ -22,7 +22,6 @@
     <string name="error_save_note_failed">Errore nel salvataggio della nota</string>
     <string name="error_get_user_read_notes">Errore nel recupero delle note lette</string>
     <string name="error_get_user_notes">Errore nel recupero delle note</string>
-    <string name="error_get_notes_failed">Errore nel recupero delle note</string>
     <!-- General -->
 
     <string name="note">Note</string>
