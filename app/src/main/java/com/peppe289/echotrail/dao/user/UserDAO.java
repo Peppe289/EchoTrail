@@ -1,6 +1,8 @@
 package com.peppe289.echotrail.dao.user;
 
+import android.icu.text.IDNA;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -40,14 +42,23 @@ public class UserDAO {
      * @param password The user's password.
      * @param callback The callback to be invoked upon completion.
      */
-    public void signIn(String email, String password, SignInCallback callback) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> callback.onComplete(task.isSuccessful()));
+    public void signIn(String email, String password, UserCallback<Void, Exception> callback) {
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(result ->
+                        callback.onSuccess(null))
+                .addOnFailureListener(callback::onError);
     }
 
-    public void signUp(String email, String password, String username, SignUpCallback callback) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> db.collection("users").document(getUid()).set(new HashMap<String, Object>() {{
-            put("username", username);
-        }}).addOnCompleteListener(task1 -> callback.onComplete(task.isSuccessful() && task1.isSuccessful())));
+    public void signUp(String email, String password, String username, UserCallback<Void, Exception> callback) {
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task ->
+                        db.collection("users")
+                                .document(getUid())
+                                .update("username", username)
+                                .addOnCompleteListener(task1 ->
+                                        callback.onSuccess(null))
+                                .addOnFailureListener(callback::onError))
+                .addOnFailureListener(callback::onError);
     }
 
     public void updateNotesList(String noteId) {
@@ -101,47 +112,17 @@ public class UserDAO {
         db.collection("users").document(getUid()).update("username", username);
     }
 
-    public void getEmail(UpdateEmailViewCallback callback) {
-        String email = Objects.requireNonNull(auth.getCurrentUser()).getEmail();
-        callback.onComplete(email);
+    public void getEmail(UserCallback<String, Exception> callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null)
+            callback.onSuccess(user.getEmail());
+        else
+            callback.onError(new UserCollectionException());
     }
 
     public void setDefaultAnonymousPreference(boolean isAnonymous) {
         db.collection("users")
                 .document(getUid())
                 .update("anonymousByDefault", isAnonymous);
-    }
-
-    public interface SignUpCallback {
-        void onComplete(boolean success);
-    }
-
-    public interface SignInCallback {
-        void onComplete(boolean success);
-    }
-
-    public interface UpdateUsernameViewCallback {
-        void onComplete(String name);
-    }
-
-    public interface UpdateEmailViewCallback {
-        void onComplete(String email);
-    }
-
-    public interface NotesListCallback {
-        void onComplete(QuerySnapshot notes);
-        void onError(ErrorType errorType);
-    }
-
-    public interface SettingsPreferencesToggle {
-        void onComplete(boolean isAnonymous);
-    }
-
-    public interface UserLinksCallback {
-        void onComplete(List<String> links);
-    }
-
-    public interface GetUserInfoCallBack {
-        void onComplete(User user);
     }
 }

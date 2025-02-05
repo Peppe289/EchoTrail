@@ -1,14 +1,18 @@
 package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
+import com.peppe289.echotrail.exceptions.UserStateException;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -53,7 +57,7 @@ public class UserController {
      * Logs in a user using their email and password.
      * <p>
      * This method ensures no user is already logged in before initiating the login process.
-     * On successful login, it invokes the provided {@link UserDAO.SignInCallback}.
+     * On successful login, it invokes the provided {@link ControllerCallback}.
      * </p>
      *
      * @param email    The user's email address.
@@ -62,17 +66,27 @@ public class UserController {
      * @throws UserStateException       if a user is already logged in.
      * @throws IllegalArgumentException if the provided callback is {@code null}.
      */
-    public static void login(String email, String password, UserDAO.SignInCallback callback) {
+    public static void login(String email, String password, ControllerCallback<Void, ErrorType> callback) {
         validateCallback(callback);
 
         if (!isLoggedIn()) {
-            userDAO.signIn(email, password, callback);
+            userDAO.signIn(email, password, new UserCallback<Void, Exception>() {
+                @Override
+                public void onSuccess(Void result) {
+                    callback.onSuccess(null);
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    callback.onError(ErrorType.UNKNOWN_ERROR);
+                }
+            });
         } else {
             throw new UserStateException("User is already signed in.");
         }
     }
 
-    public static void getReadedNotesList(UserDAO.NotesListCallback callback) {
+    public static void getReadedNotesList(ControllerCallback<QuerySnapshot, ErrorType> callback) {
         userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User user) {
@@ -99,7 +113,7 @@ public class UserController {
      * Registers a new user with the provided credentials and username.
      * <p>
      * Ensures no user is logged in before attempting to register a new account.
-     * On successful registration, invokes the provided {@link UserDAO.SignUpCallback}.
+     * On successful registration, invokes the provided {@link ControllerCallback}.
      * </p>
      *
      * @param email    The user's email address.
@@ -109,11 +123,21 @@ public class UserController {
      * @throws UserStateException       if a user is already logged in.
      * @throws IllegalArgumentException if the provided callback is {@code null}.
      */
-    public static void register(String email, String password, String username, UserDAO.SignUpCallback callback) {
+    public static void register(String email, String password, String username, ControllerCallback<Void, ErrorType> callback) {
         validateCallback(callback);
 
         if (!isLoggedIn()) {
-            userDAO.signUp(email, password, username, callback);
+            userDAO.signUp(email, password, username, new UserCallback<Void, Exception>() {
+                @Override
+                public void onSuccess(Void result) {
+                    callback.onSuccess(null);
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    callback.onError(ErrorType.UNKNOWN_ERROR);
+                }
+            });
         } else {
             throw new UserStateException("User is already signed in.");
         }
@@ -154,15 +178,15 @@ public class UserController {
         }
     }
 
-    public static void getUserLinks(UserDAO.UserLinksCallback callback) {
+    public static void getUserLinks(ControllerCallback<List<String>, ErrorType> callback) {
         getUserLinks(getUid(), callback);
     }
 
-    public static void getUserLinks(String userID, UserDAO.UserLinksCallback callback) {
+    public static void getUserLinks(String userID, ControllerCallback<List<String>, ErrorType> callback) {
         userDAO.getUserInfo(userID, new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User user) {
-                callback.onComplete(user.getLinks());
+                callback.onSuccess(user.getLinks());
             }
 
             @Override
@@ -176,13 +200,12 @@ public class UserController {
      * Retrieves the username of the authenticated user.
      *
      * @param callback A callback to handle the retrieved username.
-     * @throws UserStateException if no user is logged in.
      */
-    public static void getUsername(UserDAO.UpdateUsernameViewCallback callback) {
+    public static void getUsername(ControllerCallback<String, ErrorType> callback) {
         userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User result) {
-                callback.onComplete(result.getUsername());
+                callback.onSuccess(result.getUsername());
             }
 
             @Override
@@ -197,15 +220,15 @@ public class UserController {
         userDAO.setDefaultAnonymousPreference(isChecked);
     }
 
-    public static void getDefaultAnonymousPreference(Context context, UserDAO.SettingsPreferencesToggle callback) {
+    public static void getDefaultAnonymousPreference(Context context, ControllerCallback<Boolean, ErrorType> callback) {
         boolean defaultPref = PreferencesHelper.getAnonymousPreferences(context);
         // preload info, if not in preferences
-        callback.onComplete(defaultPref);
+        callback.onSuccess(defaultPref);
 
         userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User result) {
-                callback.onComplete(result.isAnonymousByDefault());
+                callback.onSuccess(result.isAnonymousByDefault());
             }
 
             @Override
@@ -220,14 +243,19 @@ public class UserController {
      * Retrieves the email of the authenticated user.
      *
      * @param callback A callback to handle the retrieved email.
-     * @throws UserStateException if no user is logged in.
      */
-    public static void getEmail(UserDAO.UpdateEmailViewCallback callback) {
-        if (isLoggedIn()) {
-            userDAO.getEmail(callback);
-        } else {
-            throw new UserStateException("User is not signed in.");
-        }
+    public static void getEmail(ControllerCallback<String, ErrorType> callback) {
+        userDAO.getEmail(new UserCallback<String, Exception>() {
+            @Override
+            public void onSuccess(String result) {
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                callback.onError(ErrorType.UNKNOWN_ERROR);
+            }
+        });
     }
 
     /**
@@ -238,13 +266,22 @@ public class UserController {
      * @param callback A callback to handle the retrieved headers.
      * @throws UserStateException if no user is logged in.
      */
-    public static void getUserHeadersFromPreferences(Context context, UserHeadersCallback callback) {
+    public static void getUserHeadersFromPreferences(Context context, ControllerCallback<HashMap<String, String>, ErrorType> callback) {
         if (isLoggedIn()) {
             // make 2 time. the first help in use case like start up op application (retrieve from preferences if isn't empty)
             // the second help in case of change from database (update preferences) in async way
             PreferencesHelper.checkOnPreferences(context, callback);
-            updateUserHeadersToPreferences(context, el ->
-                    PreferencesHelper.checkOnPreferences(context, callback));
+            updateUserHeadersToPreferences(context, new ControllerCallback<HashMap<String, String>, ErrorType>() {
+                @Override
+                public void onSuccess(HashMap<String, String> result) {
+                    PreferencesHelper.checkOnPreferences(context, callback);
+                }
+
+                @Override
+                public void onError(ErrorType error) {
+                    callback.onError(ErrorType.UNKNOWN_ERROR);
+                }
+            });
         } else {
             throw new UserStateException("User is not signed in.");
         }
@@ -263,7 +300,7 @@ public class UserController {
      * @param context The application context to access shared preferences.
      * @throws UserStateException if no user is logged in.
      */
-    public static void updateUserHeadersToPreferences(Context context, UserHeadersCallback callback) {
+    public static void updateUserHeadersToPreferences(Context context, ControllerCallback<HashMap<String, String>, ErrorType> callback) {
         String username;
 
         if (!isLoggedIn()) {
@@ -271,20 +308,36 @@ public class UserController {
         }
 
         username = PreferencesHelper.retrieveName(context);
-        getUsername(usernameDB -> {
-            if (!Objects.equals(usernameDB, username)) {
-                PreferencesHelper.updateName(context, usernameDB);
+        getUsername(new ControllerCallback<String, ErrorType>() {
+            @Override
+            public void onSuccess(String usernameDB) {
+                if (!Objects.equals(usernameDB, username)) {
+                    PreferencesHelper.updateName(context, usernameDB);
+                }
+
+                String email = PreferencesHelper.retrieveEmail(context);
+                getEmail(new ControllerCallback<String, ErrorType>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        if (!Objects.equals(email, result)) {
+                            PreferencesHelper.updateEmail(context, result);
+                        }
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
+                        // TODO: handle error
+                    }
+                });
+
+                // Make sure the user is in shared preferences
+                PreferencesHelper.checkOnPreferences(context, callback);
             }
 
-            String email = PreferencesHelper.retrieveEmail(context);
-            getEmail(emailDB -> {
-                if (!Objects.equals(email, emailDB)) {
-                    PreferencesHelper.updateEmail(context, emailDB);
-                }
-            });
-
-            // Make sure the user is in shared preferences
-            PreferencesHelper.checkOnPreferences(context, callback);
+            @Override
+            public void onError(ErrorType error) {
+                // TODO: handle error
+            }
         });
     }
 
@@ -294,7 +347,7 @@ public class UserController {
      * @param callback A callback to handle the retrieved notes list.
      * @throws UserStateException if no user is logged in.
      */
-    public static void getUserNotesList(UserDAO.NotesListCallback callback) {
+    public static void getUserNotesList(ControllerCallback<QuerySnapshot, ErrorType> callback) {
         if (isLoggedIn())
             userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
                 @Override
@@ -314,11 +367,11 @@ public class UserController {
             callback.onError(ErrorType.USER_NOT_LOGGED_IN_ERROR);
     }
 
-    public static void getUserInfoByUID(String uid, UserDAO.GetUserInfoCallBack callback) {
+    public static void getUserInfoByUID(String uid, ControllerCallback<User, ErrorType> callback) {
         userDAO.getUserInfo(uid, new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User result) {
-                callback.onComplete(result);
+                callback.onSuccess(result);
             }
 
             @Override
@@ -351,22 +404,6 @@ public class UserController {
     private static void validateCallback(Object callback) {
         if (callback == null) {
             throw new IllegalArgumentException("Callback cannot be null.");
-        }
-    }
-
-    /**
-     * Callback interface for receiving user header data.
-     */
-    public interface UserHeadersCallback {
-        void onComplete(HashMap<String, String> headers);
-    }
-
-    /**
-     * Exception class for handling user state-related errors.
-     */
-    public static class UserStateException extends RuntimeException {
-        public UserStateException(String message) {
-            super(message);
         }
     }
 }

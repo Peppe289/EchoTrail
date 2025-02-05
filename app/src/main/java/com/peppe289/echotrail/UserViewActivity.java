@@ -22,6 +22,7 @@ import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
+import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.UserLinksAdapter;
@@ -110,41 +111,57 @@ public class UserViewActivity extends AppCompatActivity {
         });
 
 
-        UserController.getUserInfoByUID(UID, userInfo -> {
-            if (userInfo != null) {
-                setTextViewIfNotNull(binding.usernameTextView, userInfo.getUsername());
-                setTextViewIfNotNull(binding.notesRead, userInfo.getReadedNotes().size());
-                setTextViewIfNotNull(binding.notesPublished, userInfo.getNotes().size());
-                UserController.getUserLinks(UID, links -> {
-                    if (links != null) {
-                        for (String lk : links) {
-                            adapter.add(lk);
+        UserController.getUserInfoByUID(UID, new ControllerCallback<User, ErrorType>() {
+            @Override
+            public void onSuccess(User userInfo) {
+                if (userInfo != null) {
+                    setTextViewIfNotNull(binding.usernameTextView, userInfo.getUsername());
+                    setTextViewIfNotNull(binding.notesRead, userInfo.getReadedNotes().size());
+                    setTextViewIfNotNull(binding.notesPublished, userInfo.getNotes().size());
+                    UserController.getUserLinks(UID, new ControllerCallback<>() {
+                        @Override
+                        public void onSuccess(List<String> result) {
+                            if (result != null) {
+                                for (String lk : result) {
+                                    adapter.add(lk);
+                                }
+                            }
                         }
+
+                        @Override
+                        public void onError(ErrorType error) {
+                            // TODO: handle error
+                        }
+                    });
+                }
+
+                FriendsController.getUIDFriendsList(new ControllerCallback<List<String>, ErrorType>() {
+                    @Override
+                    public void onSuccess(List<String> friends) {
+                        if (friends != null) {
+                            for (String fr : friends) {
+                                if (fr.equals(UID)) {
+                                    // disable the button if the user is already a friend
+                                    sendFriendRequestButton.setIconResource(R.drawable.check_24px);
+                                    sendFriendRequestButton.setText("Amico");
+                                    sendFriendRequestButton.setEnabled(false);
+                                }
+                            }
+                        }
+                        loadingManager.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
+                        Toast.makeText(getApplicationContext(), error.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
-            FriendsController.getUIDFriendsList(new ControllerCallback<List<String>, ErrorType>() {
-                @Override
-                public void onSuccess(List<String> friends) {
-                    if (friends != null) {
-                        for (String fr : friends) {
-                            if (fr.equals(UID)) {
-                                // disable the button if the user is already a friend
-                                sendFriendRequestButton.setIconResource(R.drawable.check_24px);
-                                sendFriendRequestButton.setText("Amico");
-                                sendFriendRequestButton.setEnabled(false);
-                            }
-                        }
-                    }
-                    loadingManager.hideLoading();
-                }
-
-                @Override
-                public void onError(ErrorType error) {
-                    Toast.makeText(getApplicationContext(), error.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
-                }
-            });
+            @Override
+            public void onError(ErrorType error) {
+                /// TODO: handle error
+            }
         });
     }
 

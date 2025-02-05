@@ -14,6 +14,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.R;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
@@ -49,9 +50,9 @@ public class UserListFragment extends Fragment {
         listView.setAdapter(cardItemAdapter);
         loadingManager.showLoading();
 
-        UserController.getUserNotesList(new UserDAO.NotesListCallback() {
+        UserController.getUserNotesList(new ControllerCallback<QuerySnapshot, ErrorType>() {
             @Override
-            public void onComplete(QuerySnapshot querySnapshot) {
+            public void onSuccess(QuerySnapshot querySnapshot) {
                 if (querySnapshot == null || querySnapshot.isEmpty()) {
                     TextView textView = binding.textListEmpty;
                     textView.setVisibility(View.VISIBLE);
