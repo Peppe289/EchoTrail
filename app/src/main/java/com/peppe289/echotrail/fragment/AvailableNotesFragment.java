@@ -17,7 +17,6 @@ import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.NoteItem;
 import com.peppe289.echotrail.utils.CardItemAdapter;
