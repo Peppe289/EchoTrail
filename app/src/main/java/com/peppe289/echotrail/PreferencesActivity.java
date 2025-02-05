@@ -11,8 +11,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPreferencesBinding;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 
 public class PreferencesActivity extends AppCompatActivity {
@@ -56,10 +58,19 @@ public class PreferencesActivity extends AppCompatActivity {
     private void setUpToggle() {
         SwitchMaterial anonymousSwitch = binding.switchAnonymousToggle;
         // set default value in view
-        UserController.getDefaultAnonymousPreference(binding.getRoot().getContext(), (isChecked) -> {
-            anonymousSwitch.setChecked(isChecked);
-            loadingManager.hideLoading();
-        });
+        UserController.getDefaultAnonymousPreference(binding.getRoot().getContext(),
+                new ControllerCallback<Boolean, ErrorType>() {
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        anonymousSwitch.setChecked(result);
+                        loadingManager.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
+                        anonymousSwitch.setChecked(false);
+                    }
+                });
         // add action listener
         anonymousSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> UserController.setDefaultAnonymousPreference(binding.getRoot().getContext(), isChecked));
     }

@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityRegistrationBinding;
 import com.peppe289.echotrail.utils.ErrorType;
@@ -96,7 +97,17 @@ public class RegistrationActivity extends AppCompatActivity {
                 String password = Objects.requireNonNull(passwordEditText.getText()).toString().trim();
                 String username = Objects.requireNonNull(usernameEditText.getText()).toString().trim();
                 // Submit the registration data to the server
-                UserController.register(email, password, username, this::handleRegistrationResponse);
+                UserController.register(email, password, username, new ControllerCallback<Void, ErrorType>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        handleRegistrationResponse(true);
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
+                        handleRegistrationResponse(false);
+                    }
+                });
             } catch (Exception e) {
                 // Handle any error during the registration process
                 handleError();

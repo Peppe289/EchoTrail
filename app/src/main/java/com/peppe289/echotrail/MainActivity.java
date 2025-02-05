@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseApp;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
@@ -71,14 +72,21 @@ public class MainActivity extends AppCompatActivity {
     protected void verifyLoginOnSubmit() {
         if (validateInputs()) {
             progressBar.setVisibility(View.VISIBLE);
-            UserController.login(Objects.requireNonNull(emailEditText.getText()).toString(), Objects.requireNonNull(passwordEditText.getText()).toString(), (result) -> {
-                if (result) {
-                    MoveActivity.rebaseActivity(this, DispatcherActivity.class, null);
-                } else {
-                    passwordLayout.setError(ErrorType.INVALID_CREDENTIALS_ERROR.getMessage(getApplicationContext()));
-                }
-                progressBar.setVisibility(View.GONE);
-            });
+            UserController.login(
+                    Objects.requireNonNull(emailEditText.getText()).toString(),
+                    Objects.requireNonNull(passwordEditText.getText())
+                            .toString(), new ControllerCallback<Void, ErrorType>() {
+                        @Override
+                        public void onSuccess(Void result) {
+                            MoveActivity.rebaseActivity(getApplication(), DispatcherActivity.class, null);
+                        }
+
+                        @Override
+                        public void onError(ErrorType error) {
+                            passwordLayout.setError(ErrorType.INVALID_CREDENTIALS_ERROR.getMessage(getApplicationContext()));
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
         }
     }
 

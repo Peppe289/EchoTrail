@@ -28,9 +28,9 @@ import com.peppe289.echotrail.AddNotesActivity;
 import com.peppe289.echotrail.FriendsActivity;
 import com.peppe289.echotrail.NotesListActivity;
 import com.peppe289.echotrail.R;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.utils.*;
 
 import org.json.JSONArray;
@@ -264,9 +264,9 @@ public class MapFragment extends Fragment {
     // Fetch notes and add markers
     @SuppressLint("NewApi")
     private void fetchNotes() {
-        NotesController.getAllNotes(new UserDAO.NotesListCallback() {
+        NotesController.getAllNotes(new ControllerCallback<QuerySnapshot, ErrorType>() {
             @Override
-            public void onComplete(QuerySnapshot querySnapshot) {
+            public void onSuccess(QuerySnapshot querySnapshot) {
 
                 if (querySnapshot == null || querySnapshot.isEmpty()) return;
                 for (DocumentSnapshot documentSnapshot : querySnapshot) {

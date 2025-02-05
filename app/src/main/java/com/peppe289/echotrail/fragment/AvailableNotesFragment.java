@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.UserViewActivity;
 import com.peppe289.echotrail.R;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
@@ -74,9 +75,9 @@ public class AvailableNotesFragment extends Fragment {
             }
         }
 
-        NotesController.getNotes(this.noteIDs, new UserDAO.NotesListCallback() {
+        NotesController.getNotes(this.noteIDs, new ControllerCallback<QuerySnapshot, ErrorType>() {
             @Override
-            public void onComplete(QuerySnapshot notes) {
+            public void onSuccess(QuerySnapshot notes) {
                 if (notes == null || notes.isEmpty()) {
                     TextView textView = binding.textListEmpty;
                     textView.setVisibility(View.VISIBLE);

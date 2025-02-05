@@ -13,8 +13,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPersonalInfoBinding;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.UserLinksAdapter;
 
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private OnAccountEditedListener listener;
     private ListView linksView;
     private UserLinksAdapter userLinksAdapter;
-    private List<String> links;
     private LinearLayout addLinkLayout;
 
     @Override
@@ -80,8 +81,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
         listener = AccountEditNotifier.getInstance().getListener();
         addLinkLayout = findViewById(R.id.add_link);
         linksView = findViewById(R.id.links_list);
-        links = new ArrayList<>();
-        userLinksAdapter = new UserLinksAdapter(this, R.layout.personal_link_row, links);
+        userLinksAdapter = new UserLinksAdapter(this, R.layout.personal_link_row, new ArrayList<>());
         linksView.setAdapter(userLinksAdapter);
         linksView.setOnItemClickListener((parent, view, position, id) ->
                 showCustomDialog("Eliminare?", "Stai per eliminare questo link dal tuo account. Sei sicuro?",
@@ -93,19 +93,35 @@ public class PersonalInfoActivity extends AppCompatActivity {
                             }
                         }, "Annulla", "Elimina"));
 
-        UserController.getUserLinks(links -> {
-            if (links != null) {
-                for (String link : links) {
-                    userLinksAdapter.add(link);
+        UserController.getUserLinks(new ControllerCallback<List<String>, ErrorType>() {
+            @Override
+            public void onSuccess(List<String> result) {
+                if (result != null) {
+                    for (String link : result) {
+                        userLinksAdapter.add(link);
+                    }
                 }
+            }
+
+            @Override
+            public void onError(ErrorType error) {
+                // TODO: handle error.
             }
         });
     }
 
     private void loadDefaultValue() {
-        UserController.getUsername(username -> {
-            currentUsername = username;
-            usernameEditText.setText(username);
+        UserController.getUsername(new ControllerCallback<String, ErrorType>() {
+            @Override
+            public void onSuccess(String result) {
+                currentUsername = result;
+                usernameEditText.setText(result);
+            }
+
+            @Override
+            public void onError(ErrorType error) {
+                // TODO: handle error.
+            }
         });
     }
 

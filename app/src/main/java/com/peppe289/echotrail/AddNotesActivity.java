@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
@@ -79,7 +80,18 @@ public class AddNotesActivity extends AppCompatActivity {
 
     private void setUpAnonymousUserOptions() {
         switchAnonymous = binding.switchAnonymous;
-        UserController.getDefaultAnonymousPreference(binding.getRoot().getContext(), switchAnonymous::setChecked);
+        UserController.getDefaultAnonymousPreference(binding.getRoot().getContext(),
+                new ControllerCallback<Boolean, ErrorType>() {
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        switchAnonymous.setChecked(result);
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
+                        switchAnonymous.setChecked(false);
+                    }
+                });
     }
 
     private void setupFocusOnTextArea() {
@@ -152,25 +164,33 @@ public class AddNotesActivity extends AppCompatActivity {
                 data.put("city", LocationHelper.getCityName(AddNotesActivity.this, location.getLatitude(),
                         location.getLongitude()));
 
-                UserController.getUsername(username -> {
-                    // save username only if the user is not anonymous
-                    if (!switchAnonymous.isChecked())
-                        data.put("username", username);
+                UserController.getUsername(new ControllerCallback<String, ErrorType>() {
+                    @Override
+                    public void onSuccess(String username) {
+                        // save username only if the user is not anonymous
+                        if (!switchAnonymous.isChecked())
+                            data.put("username", username);
 
-                    if (friendItem != null) {
-                        data.put("send_to", friendItem.getUid());
+                        if (friendItem != null) {
+                            data.put("send_to", friendItem.getUid());
+                        }
+
+                        NotesController.saveNote(data, (errorType) -> {
+                            // like mutex to avoid multiple click on save button.
+                            canPush = true;
+                            if (errorType == null) {
+                                Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
 
-                    NotesController.saveNote(data, (errorType) -> {
-                        // like mutex to avoid multiple click on save button.
-                        canPush = true;
-                        if (errorType == null) {
-                            Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else {
-                            Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    @Override
+                    public void onError(ErrorType error) {
+                        // TODO: handle error
+                    }
                 });
 
             }

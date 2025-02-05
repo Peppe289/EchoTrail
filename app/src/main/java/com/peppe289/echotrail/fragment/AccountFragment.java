@@ -15,22 +15,19 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.MainActivity;
 import com.peppe289.echotrail.NotesListActivity;
 import com.peppe289.echotrail.PersonalInfoActivity;
 import com.peppe289.echotrail.PreferencesActivity;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
+import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -122,16 +119,32 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
     private void fetchInfo() {
         requireActivity().runOnUiThread(() -> {
             // load user headers (name and email) from the cache if possible.
-            UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
-                username.setText(headers.get("username"));
-                email.setText(headers.get("email"));
+            UserController.getUserHeadersFromPreferences(requireContext(), new ControllerCallback<HashMap<String, String>, ErrorType>() {
+                @Override
+                public void onSuccess(HashMap<String, String> result) {
+                    username.setText(result.get("username"));
+                    email.setText(result.get("email"));
+                }
+
+                @Override
+                public void onError(ErrorType error) {
+                    // TODO: handle error
+                }
             });
 
-            UserController.getUserInfoByUID(UserController.getUid(), userInfo -> {
-                if (userInfo != null) {
-                    publishedNotes.setText(String.valueOf(userInfo.getNotes().size()));
-                    readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
-                    loadingManager.hideLoading();
+            UserController.getUserInfoByUID(UserController.getUid(), new ControllerCallback<User, ErrorType>() {
+                @Override
+                public void onSuccess(User userInfo) {
+                    if (userInfo != null) {
+                        publishedNotes.setText(String.valueOf(userInfo.getNotes().size()));
+                        readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
+                        loadingManager.hideLoading();
+                    }
+                }
+
+                @Override
+                public void onError(ErrorType error) {
+                    // TODO: handle error
                 }
             });
         });
