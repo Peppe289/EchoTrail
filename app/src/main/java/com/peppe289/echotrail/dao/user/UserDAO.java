@@ -5,6 +5,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.exceptions.UserCollectionException;
+import com.peppe289.echotrail.utils.ControllerCallback;
+import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -92,25 +95,23 @@ public class UserDAO {
                 .update("links", FieldValue.arrayRemove(link));
     }
 
-    public void getReadedNotesList(NotesListCallback callback) {
+    public void getReadedNotesList(ControllerCallback<List<String>, Exception> callback) {
         try {
             db.collection("users")
                     .document(getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            try {
-                                /* consider this always as list of string. */
+                                /* consider this always as a list of string. */
                                 @SuppressWarnings("unchecked")
                                 List<String> notesID = (List<String>) documentSnapshot.get("readedNotes");
-                                NotesController.getNotes(notesID, callback);
-                            } catch (Exception ignored) {
-                                callback.onComplete(null);
-                            }
+                                callback.onSuccess(notesID);
+                        } else {
+                            callback.onSuccess(null);
                         }
                     });
         } catch (Exception ignored) {
-            callback.onComplete(null);
+            callback.onError(new UserCollectionException());
         }
     }
 
@@ -173,25 +174,21 @@ public class UserDAO {
         callback.onComplete(email);
     }
 
-    public void getUserNotesList(NotesListCallback callback) {
+    public void getUserNotesList(ControllerCallback<List<String>, Exception> callback) {
         try {
             db.collection("users")
                     .document(getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            try {
-                                /* consider this always as list of string. */
+                                /* consider this always as a list of string. */
                                 @SuppressWarnings("unchecked")
                                 List<String> notesID = (List<String>) documentSnapshot.get("notes");
-                                NotesController.getNotes(notesID, callback);
-                            } catch (Exception ignored) {
-                                callback.onComplete(null);
-                            }
+                                callback.onSuccess(notesID);
                         }
                     });
         } catch (Exception ignored) {
-            callback.onComplete(null);
+            callback.onError(new UserCollectionException());
         }
     }
 
@@ -235,6 +232,7 @@ public class UserDAO {
 
     public interface NotesListCallback {
         void onComplete(QuerySnapshot notes);
+        void onError(ErrorType errorType);
     }
 
     public interface SettingsPreferencesToggle {

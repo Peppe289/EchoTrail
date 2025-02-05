@@ -2,9 +2,14 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 
+import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.dao.user.UserDAO;
+import com.peppe289.echotrail.exceptions.UserCollectionException;
+import com.peppe289.echotrail.utils.ControllerCallback;
+import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -69,7 +74,19 @@ public class UserController {
     }
 
     public static void getReadedNotesList(UserDAO.NotesListCallback callback) {
-        userDAO.getReadedNotesList(callback);
+        userDAO.getReadedNotesList(new ControllerCallback<List<String>, Exception>() {
+            @Override
+            public void onSuccess(List<String> result) {
+                NotesController.getNotes(result, callback);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                if (error instanceof UserCollectionException)
+                    callback.onError(ErrorType.GET_USER_READ_NOTES_ERROR);
+            }
+        });
+        //NotesController.getNotes(notesID, callback);
     }
 
     public static void updateNotesList(String noteId) {
@@ -256,11 +273,23 @@ public class UserController {
      * @throws UserStateException if no user is logged in.
      */
     public static void getUserNotesList(UserDAO.NotesListCallback callback) {
-        if (isLoggedIn()) {
-            userDAO.getUserNotesList(callback);
-        } else {
-            throw new UserStateException("User is not signed in.");
-        }
+        if (isLoggedIn())
+            userDAO.getUserNotesList(new ControllerCallback<List<String>, Exception>() {
+                @Override
+                public void onSuccess(List<String> result) {
+                    NotesController.getNotes(result, callback);
+                }
+
+                @Override
+                public void onError(Exception error) {
+                    if (error instanceof UserCollectionException)
+                        callback.onError(ErrorType.GET_USER_NOTES_ERROR);
+                    else
+                        callback.onError(ErrorType.UNKNOWN_ERROR);
+                }
+            });
+        else
+            callback.onError(ErrorType.USER_NOT_LOGGED_IN_ERROR);
     }
 
     public static void getUserInfoByUID(String UID, UserDAO.GetUserInfoCallBack callback){
