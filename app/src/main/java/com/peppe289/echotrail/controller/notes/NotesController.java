@@ -2,10 +2,10 @@ package com.peppe289.echotrail.controller.notes;
 
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.peppe289.echotrail.controller.callback.NotesCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
-import com.peppe289.echotrail.utils.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
@@ -90,7 +90,7 @@ public class NotesController {
         noteData.put("city", data.get("city"));
 
         // Save the note through NotesDAO
-        notesDAO.saveNote(noteData, new ControllerCallback<String, Exception>() {
+        notesDAO.saveNote(noteData, new NotesCallback<String, Exception>() {
             @Override
             public void onSuccess(String noteId) {
                 callback.onSavedNote(null);
@@ -105,7 +105,7 @@ public class NotesController {
     }
 
     public static void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
-        notesDAO.getNotes(notesID, new ControllerCallback<QuerySnapshot, Exception>() {
+        notesDAO.getNotes(notesID, new NotesCallback<QuerySnapshot, Exception>() {
             @Override
             public void onSuccess(QuerySnapshot result) {
                 callback.onComplete(result);
@@ -131,7 +131,7 @@ public class NotesController {
      * @param callback A callback invoked with the list of notes retrieved.
      */
     public static void getAllNotes(UserDAO.NotesListCallback callback) {
-        notesDAO.getAllNotes(new ControllerCallback<QuerySnapshot, Exception>() {
+        notesDAO.getAllNotes(new NotesCallback<QuerySnapshot, Exception>() {
             @Override
             public void onSuccess(QuerySnapshot result) {
                 callback.onComplete(result);

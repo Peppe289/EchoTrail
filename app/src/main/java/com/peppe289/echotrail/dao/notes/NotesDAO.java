@@ -1,17 +1,12 @@
 package com.peppe289.echotrail.dao.notes;
 
-import android.util.Log;
-
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.peppe289.echotrail.controller.notes.NotesController;
-import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.controller.callback.NotesCallback;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.NoteCollectionException;
-import com.peppe289.echotrail.utils.ControllerCallback;
-import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +47,7 @@ public class NotesDAO {
      * @param noteData a {@link Map} containing the note's data (e.g., title, content, metadata)
      * @param callback a callback instance to notify when the save operation is complete
      */
-    public void saveNote(Map<String, Object> noteData, ControllerCallback<String, Exception> callback) {
+    public void saveNote(Map<String, Object> noteData, NotesCallback<String, Exception> callback) {
         db.collection("notes")
                 .add(noteData)
                 .addOnSuccessListener(documentReference -> {
@@ -73,7 +68,7 @@ public class NotesDAO {
      * @param notesID  a {@link List} of note document IDs to fetch
      * @param callback a callback instance to handle the retrieved notes
      */
-    public void getNotes(List<String> notesID, ControllerCallback<QuerySnapshot, Exception> callback) {
+    public void getNotes(List<String> notesID, NotesCallback<QuerySnapshot, Exception> callback) {
         db.collection("notes")
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
@@ -89,7 +84,7 @@ public class NotesDAO {
      *
      * @param callback a callback instance to handle the retrieved notes
      */
-    public void getAllNotes(ControllerCallback<QuerySnapshot, Exception> callback) {
+    public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback) {
         db.collection("notes")
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
