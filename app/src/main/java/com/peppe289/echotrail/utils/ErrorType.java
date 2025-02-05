@@ -20,6 +20,10 @@ public enum ErrorType {
     GET_PENDING_REQUESTS_ERROR(1014, R.string.error_get_pending_requests),
     GET_FRIENDS_ERROR(1015, R.string.error_get_friends),
     SAVE_NOTE_FAILED(1016, R.string.error_save_note_failed),
+    GET_USER_READ_NOTES_ERROR(1017, R.string.error_get_user_read_notes),
+    USER_NOT_LOGGED_IN_ERROR(1018, R.string.error_user_not_logged_in),
+    GET_USER_NOTES_ERROR(1019, R.string.error_get_user_notes),
+    GET_NOTES_FAILED(1020, R.string.error_get_notes_failed),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;
