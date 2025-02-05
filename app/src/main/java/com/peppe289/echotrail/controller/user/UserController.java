@@ -1,11 +1,11 @@
 package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
+import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.model.User;
-import com.peppe289.echotrail.utils.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     public static void getReadedNotesList(UserDAO.NotesListCallback callback) {
-        userDAO.getUserInfo(getUid(), new ControllerCallback<>() {
+        userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User user) {
                 NotesController.getNotes(user.getReadedNotes(), callback);
@@ -85,7 +85,6 @@ public class UserController {
                     callback.onError(ErrorType.GET_USER_READ_NOTES_ERROR);
             }
         });
-        //NotesController.getNotes(notesID, callback);
     }
 
     public static void updateNotesList(String noteId) {
@@ -160,7 +159,7 @@ public class UserController {
     }
 
     public static void getUserLinks(String userID, UserDAO.UserLinksCallback callback) {
-        userDAO.getUserInfo(userID, new ControllerCallback<>() {
+        userDAO.getUserInfo(userID, new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User user) {
                 callback.onComplete(user.getLinks());
@@ -180,7 +179,7 @@ public class UserController {
      * @throws UserStateException if no user is logged in.
      */
     public static void getUsername(UserDAO.UpdateUsernameViewCallback callback) {
-        userDAO.getUserInfo(getUid(), new ControllerCallback<>() {
+        userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User result) {
                 callback.onComplete(result.getUsername());
@@ -203,7 +202,7 @@ public class UserController {
         // preload info, if not in preferences
         callback.onComplete(defaultPref);
 
-        userDAO.getUserInfo(getUid(), new ControllerCallback<>() {
+        userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User result) {
                 callback.onComplete(result.isAnonymousByDefault());
@@ -297,7 +296,7 @@ public class UserController {
      */
     public static void getUserNotesList(UserDAO.NotesListCallback callback) {
         if (isLoggedIn())
-            userDAO.getUserInfo(getUid(), new ControllerCallback<>() {
+            userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
                 @Override
                 public void onSuccess(User result) {
                     NotesController.getNotes(result.getNotes(), callback);
@@ -316,7 +315,7 @@ public class UserController {
     }
 
     public static void getUserInfoByUID(String uid, UserDAO.GetUserInfoCallBack callback) {
-        userDAO.getUserInfo(uid, new ControllerCallback<>() {
+        userDAO.getUserInfo(uid, new UserCallback<User, Exception>() {
             @Override
             public void onSuccess(User result) {
                 callback.onComplete(result);

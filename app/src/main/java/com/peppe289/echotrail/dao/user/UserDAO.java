@@ -4,10 +4,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.peppe289.echotrail.controller.notes.NotesController;
+import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.model.User;
-import com.peppe289.echotrail.utils.ControllerCallback;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public class UserDAO {
         return Objects.requireNonNull(auth.getCurrentUser()).getUid();
     }
 
-    public void getUserInfo(String uid, ControllerCallback<User, Exception> callback) {
+    public void getUserInfo(String uid, UserCallback<User, Exception> callback) {
         db.collection("users")
                 .document(uid)
                 .get()
