@@ -1,6 +1,7 @@
 package com.peppe289.echotrail.controller.notes;
 
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
@@ -104,7 +105,17 @@ public class NotesController {
     }
 
     public static void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
-        notesDAO.getNotes(notesID, callback);
+        notesDAO.getNotes(notesID, new ControllerCallback<QuerySnapshot, Exception>() {
+            @Override
+            public void onSuccess(QuerySnapshot result) {
+                callback.onComplete(result);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                callback.onError(ErrorType.GET_NOTES_FAILED);
+            }
+        });
     }
 
     public static void updateReadNotesList(String noteId) {
@@ -120,7 +131,17 @@ public class NotesController {
      * @param callback A callback invoked with the list of notes retrieved.
      */
     public static void getAllNotes(UserDAO.NotesListCallback callback) {
-        notesDAO.getAllNotes(callback);
+        notesDAO.getAllNotes(new ControllerCallback<QuerySnapshot, Exception>() {
+            @Override
+            public void onSuccess(QuerySnapshot result) {
+                callback.onComplete(result);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                callback.onError(ErrorType.GET_NOTES_FAILED);
+            }
+        });
     }
 
     /**

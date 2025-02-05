@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.Timestamp;
@@ -12,12 +13,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.UserViewActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.NoteItem;
-import com.peppe289.echotrail.utils.CardItemAdapter;
-import com.peppe289.echotrail.utils.CardListView;
-import com.peppe289.echotrail.utils.LoadingManager;
-import com.peppe289.echotrail.utils.MoveActivity;
+import com.peppe289.echotrail.utils.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -88,13 +87,21 @@ public class NotesFragment extends Fragment {
 
     private void fetchNotesFromDatabase() {
         // Recupera le note dal database utilizzando UserDAO
-        UserController.getReadedNotesList(querySnapshot -> {
-            if (querySnapshot == null || querySnapshot.isEmpty()) {
-                handleEmptyNoteList();
-                return;
+        UserController.getReadedNotesList(new UserDAO.NotesListCallback() {
+            @Override
+            public void onComplete(QuerySnapshot querySnapshot) {
+                if (querySnapshot == null || querySnapshot.isEmpty()) {
+                    handleEmptyNoteList();
+                    return;
+                }
+
+                updateNoteList(querySnapshot);
             }
 
-            updateNoteList(querySnapshot);
+            @Override
+            public void onError(ErrorType errorType) {
+                Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

@@ -16,12 +16,15 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.MainActivity;
 import com.peppe289.echotrail.NotesListActivity;
 import com.peppe289.echotrail.PersonalInfoActivity;
 import com.peppe289.echotrail.PreferencesActivity;
 import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
+import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
 
@@ -118,7 +121,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
 
     private void fetchInfo() {
         requireActivity().runOnUiThread(() -> {
-            // load user headers (name and email) from cache if possible.
+            // load user headers (name and email) from the cache if possible.
             UserController.getUserHeadersFromPreferences(requireContext(), headers -> {
                 username.setText(headers.get("username"));
                 email.setText(headers.get("email"));
@@ -127,24 +130,41 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
             List<String> notesWritten = new ArrayList<>();
             List<String> notesReaded = new ArrayList<>();
 
-            UserController.getUserNotesList(querySnapshot -> {
-                if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                    for (DocumentSnapshot document : querySnapshot) {
-                        if (document != null) notesWritten.add(document.getId());
-                    }
-                }
-                publishedNotes.setText(String.valueOf(notesWritten.size()));
-
-                UserController.getReadedNotesList(querySnapshot2 -> {
-                    if (querySnapshot2 != null && !querySnapshot2.isEmpty()) {
-                        for (DocumentSnapshot document : querySnapshot2) {
-                            if (document != null) notesReaded.add(document.getId());
+            UserController.getUserNotesList(new UserDAO.NotesListCallback() {
+                @Override
+                public void onComplete(QuerySnapshot userNotes) {
+                    if (userNotes != null && !userNotes.isEmpty()) {
+                        for (DocumentSnapshot document : userNotes) {
+                            if (document != null) notesWritten.add(document.getId());
                         }
                     }
-                    readedNotes.setText(String.valueOf(notesReaded.size()));
+                    publishedNotes.setText(String.valueOf(notesWritten.size()));
 
+                    UserController.getReadedNotesList(new UserDAO.NotesListCallback() {
+                        @Override
+                        public void onComplete(QuerySnapshot notes) {
+                            if (notes != null && !notes.isEmpty()) {
+                                for (DocumentSnapshot document : notes) {
+                                    if (document != null) notesReaded.add(document.getId());
+                                }
+                            }
+                            readedNotes.setText(String.valueOf(notesReaded.size()));
+                            loadingManager.hideLoading();
+                        }
+
+                        @Override
+                        public void onError(ErrorType errorType) {
+                            Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+                            loadingManager.hideLoading();
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(ErrorType errorType) {
+                    Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                     loadingManager.hideLoading();
-                });
+                }
             });
         });
     }

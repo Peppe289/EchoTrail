@@ -2,8 +2,10 @@ package com.peppe289.echotrail.dao.notes;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
@@ -71,11 +73,11 @@ public class NotesDAO {
      * @param notesID  a {@link List} of note document IDs to fetch
      * @param callback a callback instance to handle the retrieved notes
      */
-    public void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
+    public void getNotes(List<String> notesID, ControllerCallback<QuerySnapshot, Exception> callback) {
         db.collection("notes")
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
-                .addOnSuccessListener(callback::onComplete);
+                .addOnSuccessListener(callback::onSuccess);
     }
 
     /**
@@ -87,9 +89,9 @@ public class NotesDAO {
      *
      * @param callback a callback instance to handle the retrieved notes
      */
-    public void getAllNotes(UserDAO.NotesListCallback callback) {
+    public void getAllNotes(ControllerCallback<QuerySnapshot, Exception> callback) {
         db.collection("notes")
                 .get()
-                .addOnSuccessListener(callback::onComplete);
+                .addOnSuccessListener(callback::onSuccess);
     }
 }
