@@ -229,7 +229,7 @@ public class FriendsDAO {
     private Task<Void> removeFriend(String friendID) {
         DocumentReference userRef = db.collection("users").document(userDAO.getUid());
         return userRef.get().continueWithTask(task -> {
-            if (!task.isSuccessful()) return Tasks.forException(task.getException());
+            if (!task.isSuccessful()) return Tasks.forException(Objects.requireNonNull(task.getException()));
             List<String> friends = (List<String>) task.getResult().get("friends");
             if (friends == null || !friends.contains(friendID)) return Tasks.forResult(null);
 
@@ -247,7 +247,7 @@ public class FriendsDAO {
     private Task<Void> addFriend(String friendID) {
         DocumentReference userRef = db.collection("users").document(userDAO.getUid());
         return userRef.get().continueWithTask(task -> {
-            if (!task.isSuccessful()) return Tasks.forException(task.getException());
+            if (!task.isSuccessful()) return Tasks.forException(Objects.requireNonNull(task.getException()));
             List<String> friends = (List<String>) task.getResult().get("friends");
             if (friends == null) friends = new ArrayList<>();
 
