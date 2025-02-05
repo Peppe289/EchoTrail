@@ -113,7 +113,7 @@ public class NotesController {
 
             @Override
             public void onError(Exception error) {
-                callback.onError(ErrorType.GET_NOTES_FAILED);
+                callback.onError(ErrorType.GET_USER_NOTES_ERROR);
             }
         });
     }
@@ -139,7 +139,7 @@ public class NotesController {
 
             @Override
             public void onError(Exception error) {
-                callback.onError(ErrorType.GET_NOTES_FAILED);
+                callback.onError(ErrorType.GET_USER_NOTES_ERROR);
             }
         });
     }
