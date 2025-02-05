@@ -2,6 +2,7 @@ package com.peppe289.echotrail.controller.notes;
 
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.NotesCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.notes.NotesDAO;
@@ -104,11 +105,11 @@ public class NotesController {
         });
     }
 
-    public static void getNotes(List<String> notesID, UserDAO.NotesListCallback callback) {
+    public static void getNotes(List<String> notesID, ControllerCallback<QuerySnapshot, ErrorType> callback) {
         notesDAO.getNotes(notesID, new NotesCallback<QuerySnapshot, Exception>() {
             @Override
             public void onSuccess(QuerySnapshot result) {
-                callback.onComplete(result);
+                callback.onSuccess(result);
             }
 
             @Override
@@ -125,16 +126,16 @@ public class NotesController {
     /**
      * Retrieves all notes available in the backend database.
      * <p>
-     * The retrieved notes are provided via the callback interface {@link UserDAO.NotesListCallback}.
+     * The retrieved notes are provided via the callback interface {@link ControllerCallback}.
      * </p>
      *
      * @param callback A callback invoked with the list of notes retrieved.
      */
-    public static void getAllNotes(UserDAO.NotesListCallback callback) {
+    public static void getAllNotes(ControllerCallback<QuerySnapshot, ErrorType> callback) {
         notesDAO.getAllNotes(new NotesCallback<QuerySnapshot, Exception>() {
             @Override
             public void onSuccess(QuerySnapshot result) {
-                callback.onComplete(result);
+                callback.onSuccess(result);
             }
 
             @Override
