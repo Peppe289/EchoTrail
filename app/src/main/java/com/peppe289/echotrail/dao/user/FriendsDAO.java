@@ -3,13 +3,14 @@ package com.peppe289.echotrail.dao.user;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.*;
-import com.peppe289.echotrail.controller.user.UserController;
+import com.peppe289.echotrail.controller.callback.FriendsCallback;
 import com.peppe289.echotrail.exceptions.FriendCollectionException;
-import com.peppe289.echotrail.exceptions.FriendNotFoundException;
-import com.peppe289.echotrail.utils.ControllerCallback;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
+import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class FriendsDAO {
@@ -33,7 +34,7 @@ public class FriendsDAO {
      * @param friendId The ID of the user to whom the friend request is sent.
      * @param callback The callback to be invoked upon completion.
      */
-    public void requestToBeFriends(String friendId, AddFriendCallback callback) {
+    public void requestToBeFriends(String friendId, FriendsCallback<Void, Exception> callback) {
         String currentUserId = userDAO.getUid();
         String friendshipId = currentUserId + "_" + friendId;
 
@@ -45,8 +46,8 @@ public class FriendsDAO {
         db.collection("friends")
                 .document(friendshipId)
                 .set(data, SetOptions.merge()) // Usa merge per non sovrascrivere altri campi
-                .addOnSuccessListener(aVoid -> callback.onFriendAdded(true))
-                .addOnFailureListener(e -> callback.onFriendAdded(false));
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
 
@@ -57,7 +58,7 @@ public class FriendsDAO {
      * @param friendID The ID of the user whose friend request is being accepted.
      * @param callback The callback to be invoked upon completion.
      */
-    public void acceptRequest(String friendID, AddFriendCallback callback) {
+    public void acceptRequest(String friendID, FriendsCallback<Void, Exception> callback) {
         WriteBatch batch = db.batch();
 
         DocumentReference requestRef = db.collection("friends").document(userDAO.getUid() + "_" + friendID);
@@ -66,8 +67,8 @@ public class FriendsDAO {
         batch.update(userRef, "friends", FieldValue.arrayUnion(friendID));
 
         batch.commit()
-                .addOnSuccessListener(aVoid -> callback.onFriendAdded(true))
-                .addOnFailureListener(e -> callback.onFriendAdded(false));
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
     /**
@@ -77,7 +78,7 @@ public class FriendsDAO {
      * @param friendID The ID of the user whose friend request is being rejected.
      * @param callback The callback to be invoked upon completion.
      */
-    public void rejectRequest(String friendID, ControllerCallback<String, Exception> callback) {
+    public void rejectRequest(String friendID, FriendsCallback<String, Exception> callback) {
         db.collection("friends")
                 .document(friendID + "_" + userDAO.getUid())
                 .delete()
@@ -91,7 +92,7 @@ public class FriendsDAO {
      * @param pointerString The ID of the friend to be removed.
      * @param callback The callback to be invoked upon completion.
      */
-    public void removeFriend(String pointerString, ControllerCallback<String, Exception> callback) {
+    public void removeFriend(String pointerString, FriendsCallback<String, Exception> callback) {
         String uid = userDAO.getUid();
 
         db.collection("users").document(uid)
@@ -100,7 +101,7 @@ public class FriendsDAO {
                 .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
-    public void searchPendingRequests(ControllerCallback<List<String>, Exception> callback) {
+    public void searchPendingRequests(FriendsCallback<List<String>, Exception> callback) {
         db.collection("friends")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -129,7 +130,7 @@ public class FriendsDAO {
      *
      * @param callback The callback to be invoked upon completion.
      */
-    public void synchronizeFriendsList(ControllerCallback<Void, Exception> callback) {
+    public void synchronizeFriendsList(FriendsCallback<Void, Exception> callback) {
         String myUid = userDAO.getUid();
         Set<String> ignoreList = new HashSet<>();
         List<Task<Void>> pendingTasks = new ArrayList<>();
@@ -276,33 +277,18 @@ public class FriendsDAO {
      * @param userID   The ID of the user whose friends are to be retrieved.
      * @param callback The callback to be invoked upon completion.
      */
-    public void getUIDFriendsList(String userID, GetFriendsCallback callback) {
+    public void getUIDFriendsList(String userID, FriendsCallback<List<String>, Exception> callback) {
         db.collection("users")
                 .document(userID)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots == null) {
-                        callback.onFriendsRetrieved(null);
+                        callback.onSuccess(null);
                     } else {
                         List<String> friends = (List<String>) queryDocumentSnapshots.get("friends");
-                        callback.onFriendsRetrieved(friends);
+                        callback.onSuccess(friends);
                     }
                 })
-                .addOnFailureListener(e -> callback.onFriendsRetrieved(null));
-    }
-
-    public interface GetFriendsCallback {
-        void onFriendsRetrieved(List<String> friends);
-        void onError(ErrorType error);
-    }
-
-    public interface AddFriendCallback {
-        void onFriendAdded(boolean success);
-    }
-
-    public interface RemoveFriendCallback {
-        void onFriendRemoved();
-
-        void onError(ErrorType error);
+                .addOnFailureListener(e -> callback.onError(new UserCollectionException()));
     }
 }

@@ -13,9 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.FriendsController;
-import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.dao.user.FriendsDAO;
 import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
 import com.peppe289.echotrail.model.FriendItem;
 import com.peppe289.echotrail.utils.ErrorType;
@@ -73,24 +72,29 @@ public class FriendsActivity extends AppCompatActivity {
         adapter.setCallback(new FriendsCustomAdapter.OnFriendCallback() {
             @Override
             public void onAllowClick(String friendId, int position) {
-                FriendsController.acceptRequest(friendId, success -> {
-                    if (success) {
+                FriendsController.acceptRequest(friendId, new ControllerCallback<Void, ErrorType>() {
+                    @Override
+                    public void onSuccess(Void result) {
                         FriendItem fi = adapter.getItem(position);
                         fi.setOnPendingRequest(false);
                         fi.setFriend(true);
                         adapter.notifyDataSetChanged();
-                    } else {
+                    }
+
+                    @Override
+                    public void onError(ErrorType error) {
                         Toast.makeText(FriendsActivity.this,
-                                ErrorType.ACCEPT_FRIEND_REQUEST_ERROR.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                                ErrorType.ACCEPT_FRIEND_REQUEST_ERROR
+                                        .getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
             public void onRemoveClick(String friendId, int position, boolean isFriends) {
-                FriendsController.removeFriend(friendId, new FriendsDAO.RemoveFriendCallback() {
+                FriendsController.removeFriend(friendId, new ControllerCallback<Void, ErrorType>() {
                     @Override
-                    public void onFriendRemoved() {
+                    public void onSuccess(Void result) {
                         adapter.remove(adapter.getItem(position));
                         adapter.notifyDataSetChanged();
                     }
@@ -108,17 +112,14 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     private void loadFriendsList() {
-        FriendsController.loadFriends(getApplicationContext(), new FriendsController.FriendsCallback() {
-            @Override
-            public void onPreExecute() {
-                loadingManager.showLoading();
-            }
+        loadingManager.showLoading();
 
+        FriendsController.loadFriends(new ControllerCallback<List<FriendItem>, ErrorType>() {
             @Override
             public void onSuccess(List<FriendItem> friends) {
                 adapter.clear();
                 runOnUiThread(() -> {
-                    for (FriendItem fr: friends) {
+                    for (FriendItem fr : friends) {
                         adapter.add(fr);
                         if (fr.isFriend())
                             adapter.remove(fr.getUid(), true);
@@ -130,9 +131,9 @@ public class FriendsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(String errorMessage) {
+            public void onError(ErrorType errorType) {
                 runOnUiThread(() -> {
-                    Toast.makeText(FriendsActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FriendsActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
                     loadingManager.hideLoading();
                 });
             }
