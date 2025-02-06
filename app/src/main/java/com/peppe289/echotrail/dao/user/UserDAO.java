@@ -109,7 +109,8 @@ public class UserDAO {
     }
 
     public String getUid() {
-        return Objects.requireNonNull(auth.getCurrentUser()).getUid();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        return firebaseUser != null ? firebaseUser.getUid() : "";
     }
 
     public void getUserInfo(String uid, UserCallback<User, Exception> callback) {
