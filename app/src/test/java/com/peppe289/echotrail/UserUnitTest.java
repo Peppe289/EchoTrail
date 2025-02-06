@@ -1,7 +1,11 @@
 package com.peppe289.echotrail;
 
+import com.peppe289.echotrail.controller.callback.ControllerCallback;
+import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
+import com.peppe289.echotrail.exceptions.UserCollectionException;
+import com.peppe289.echotrail.utils.ErrorType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,9 +26,13 @@ public class UserUnitTest {
         Mockito.doAnswer(invocation -> {
             String email = invocation.getArgument(0);
             String pwd = invocation.getArgument(1);
-            UserDAO.SignInCallback callback = invocation.getArgument(2);
+            UserCallback<Void, Exception> callback = invocation.getArgument(2);
             // Simulazione del risultato basato su credenziali fisse
-            callback.onComplete(email.equals("correct@email.com") && pwd.equals("correctPassword"));
+            if (email.equals("correct@email.com") && pwd.equals("correctPassword")) {
+                callback.onSuccess(null);
+            } else {
+                callback.onError(new UserCollectionException());
+            }
             return null;
         }).when(userDAO).signIn(any(), any(), any());
         UserController.init(userDAO);
@@ -32,11 +40,31 @@ public class UserUnitTest {
 
     @Test
     public void shouldLoginSuccessfully_whenCredentialsAreCorrect() {
-        UserController.login("correct@email.com", "correctPassword", Assert::assertTrue);
+        UserController.login("correct@email.com", "correctPassword", new ControllerCallback<Void, ErrorType>() {
+            @Override
+            public void onSuccess(Void result) {
+                Assert.assertTrue(true);
+            }
+
+            @Override
+            public void onError(ErrorType error) {
+                Assert.fail();
+            }
+        });
     }
 
     @Test
     public void shouldFailToLogin_whenPasswordIsIncorrect() {
-        UserController.login("correct@email.com", "wrongPassword", Assert::assertFalse);
+        UserController.login("correct@email.com", "wrongPassword", new ControllerCallback<Void, ErrorType>() {
+            @Override
+            public void onSuccess(Void result) {
+                Assert.fail();
+            }
+
+            @Override
+            public void onError(ErrorType error) {
+                Assert.assertEquals(ErrorType.UNKNOWN_ERROR, error);
+            }
+        });
     }
 }
