@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.model.User;
@@ -26,13 +27,27 @@ public class UserDAO {
 
     private final FirebaseAuth auth;
     private final FirebaseFirestore db;
+    private static UserDAO instance;
+
+    @TestOnly
+    public UserDAO(FirebaseAuth auth, FirebaseFirestore db) {
+        this.auth = auth;
+        this.db = db;
+    }
 
     /**
      * Constructor for UserDAO. Initializes FirebaseAuth and FirebaseFirestore instances.
      */
-    public UserDAO() {
+    private UserDAO() {
         this.auth = FirebaseAuth.getInstance();
         this.db = FirebaseFirestore.getInstance();
+    }
+
+    public static synchronized UserDAO getInstance() {
+        if (instance == null) {
+            instance = new UserDAO();
+        }
+        return instance;
     }
 
     /**

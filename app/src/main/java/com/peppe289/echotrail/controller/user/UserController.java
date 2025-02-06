@@ -46,7 +46,7 @@ public class UserController {
      * Initializes the {@link UserDAO} instance for user-related operations.
      */
     public static void init() {
-        init(new UserDAO());
+        init(UserDAO.getInstance());
     }
 
     public static void init(UserDAO userDAO) {

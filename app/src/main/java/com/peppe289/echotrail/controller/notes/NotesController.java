@@ -30,7 +30,7 @@ public class NotesController {
     private static NotesDAO notesDAO;
 
     public static void init() {
-        init(new NotesDAO());
+        init(NotesDAO.getInstance());
     }
 
     public static void init(NotesDAO notesDAO) {

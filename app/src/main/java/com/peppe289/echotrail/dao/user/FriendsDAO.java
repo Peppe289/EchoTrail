@@ -3,6 +3,7 @@ package com.peppe289.echotrail.dao.user;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.*;
+import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.FriendsCallback;
 import com.peppe289.echotrail.exceptions.FriendCollectionException;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
@@ -13,15 +14,24 @@ import java.util.stream.Collectors;
 public class FriendsDAO {
     private final FirebaseFirestore db;
     private final UserDAO userDAO;
+    private static FriendsDAO instance;
 
-    public FriendsDAO() {
-        this.userDAO = new UserDAO();
+    @TestOnly
+    public FriendsDAO(UserDAO userDAO, FirebaseFirestore fb) {
+        this.userDAO = userDAO;
+        this.db = fb;
+    }
+
+    private FriendsDAO() {
+        this.userDAO = UserDAO.getInstance();
         this.db = FirebaseFirestore.getInstance();
     }
 
-    public FriendsDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-        this.db = FirebaseFirestore.getInstance();
+    public static synchronized FriendsDAO getInstance() {
+        if (instance == null) {
+            instance = new FriendsDAO();
+        }
+        return instance;
     }
 
     /**

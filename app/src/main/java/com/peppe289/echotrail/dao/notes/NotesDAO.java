@@ -3,6 +3,7 @@ package com.peppe289.echotrail.dao.notes;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.NotesCallback;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.NoteCollectionException;
@@ -32,9 +33,22 @@ public class NotesDAO {
      * The Firestore database instance used for accessing and managing notes.
      */
     private final FirebaseFirestore db;
+    private static NotesDAO instance;
 
-    public NotesDAO() {
+    @TestOnly
+    private NotesDAO(FirebaseFirestore db) {
+        this.db = db;
+    }
+
+    private NotesDAO() {
         this.db = FirebaseFirestore.getInstance();
+    }
+
+    public static synchronized NotesDAO getInstance() {
+        if (instance == null) {
+            instance = new NotesDAO();
+        }
+        return instance;
     }
 
     /**

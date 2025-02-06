@@ -19,8 +19,8 @@ public class FriendsController {
     private static UserDAO userDAO;
 
     public static void init() {
-        friendsDAO = new FriendsDAO();
-        userDAO = new UserDAO();
+        friendsDAO = FriendsDAO.getInstance();
+        userDAO = UserDAO.getInstance();
     }
 
     public static void init(FriendsDAO friendsDAO) {
