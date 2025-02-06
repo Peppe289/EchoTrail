@@ -16,6 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 
+import com.peppe289.echotrail.controller.callback.LocationCallback;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
@@ -104,42 +105,19 @@ public class LocationHelper {
      * @param activity         the activity context for the location client
      * @param locationCallback the callback to handle location updates or errors
      */
-    public void getCurrentLocation(Context context, Activity activity, @NonNull LocationCallback locationCallback) {
+    public void getCurrentLocation(Context context, Activity activity, @NonNull LocationCallback<GeoPoint, ErrorType> locationCallback) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            locationCallback.onLocationError(ErrorType.POSITION_PERMISSION_ERROR);
+            locationCallback.onError(ErrorType.POSITION_PERMISSION_ERROR);
             return;
         }
 
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener(activity, location -> {
             if (location != null) {
                 GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                locationCallback.onLocationUpdated(startPoint);
+                locationCallback.onSuccess(startPoint);
             } else {
                 throw new RuntimeException("Position not found");
             }
-        }).addOnFailureListener(e -> locationCallback.onLocationError(ErrorType.UNKNOWN_ERROR));
-    }
-
-    /**
-     * A callback interface for handling location updates and errors.
-     * <p>
-     * Implement this interface to define custom behavior for successful location retrievals
-     * and error handling scenarios.
-     * </p>
-     */
-    public interface LocationCallback {
-        /**
-         * Called when the location is successfully retrieved.
-         *
-         * @param location a {@link GeoPoint} representing the user's current location
-         */
-        void onLocationUpdated(GeoPoint location);
-
-        /**
-         * Called when an error occurs while retrieving the location.
-         *
-         * @param error a descriptive error message
-         */
-        void onLocationError(ErrorType error);
+        }).addOnFailureListener(e -> locationCallback.onError(ErrorType.UNKNOWN_ERROR));
     }
 }

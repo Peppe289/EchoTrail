@@ -29,6 +29,7 @@ import com.peppe289.echotrail.FriendsActivity;
 import com.peppe289.echotrail.NotesListActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
+import com.peppe289.echotrail.controller.callback.LocationCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.utils.*;
@@ -96,14 +97,14 @@ public class MapFragment extends Fragment {
     }
 
     private void startUpdateGPS() {
-        sUpdateGPS = esUpdateGPS.scheduleWithFixedDelay(() -> locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
+        sUpdateGPS = esUpdateGPS.scheduleWithFixedDelay(() -> locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<>() {
             @Override
-            public void onLocationUpdated(GeoPoint location) {
+            public void onSuccess(GeoPoint location) {
                 mapHelper.setMapCenter(location, false);
             }
 
             @Override
-            public void onLocationError(ErrorType errorType) {
+            public void onError(ErrorType errorType) {
                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
         }), 0, 5, TimeUnit.SECONDS);
@@ -297,9 +298,9 @@ public class MapFragment extends Fragment {
                         // No relevant markers
                         if (nearbyMarkers.isEmpty()) return true;
 
-                        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
+                        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<GeoPoint, ErrorType>() {
                             @Override
-                            public void onLocationUpdated(GeoPoint currentLocation) {
+                            public void onSuccess(GeoPoint currentLocation) {
                                 List<String> readyToSeeIDs = nearbyMarkers.stream()
                                         .filter(entry -> MapHelper.arePointsClose(currentLocation, entry.getKey(), MapHelper.MarkerDistance.CLOSE))
                                         .flatMap(entry -> entry.getValue().stream()) // Flatten IDs
@@ -316,7 +317,7 @@ public class MapFragment extends Fragment {
                             }
 
                             @Override
-                            public void onLocationError(ErrorType errorType) {
+                            public void onError(ErrorType errorType) {
                                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -381,14 +382,14 @@ public class MapFragment extends Fragment {
 
     // Set default location
     private void setCurrentLocation() {
-        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationHelper.LocationCallback() {
+        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<>() {
             @Override
-            public void onLocationUpdated(GeoPoint location) {
+            public void onSuccess(GeoPoint location) {
                 mapHelper.setMapCenter(location);
             }
 
             @Override
-            public void onLocationError(ErrorType errorType) {
+            public void onError(ErrorType errorType) {
                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                 mapHelper.setDefaultCenter(); // Set default position.
             }

@@ -16,6 +16,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
+import com.peppe289.echotrail.controller.callback.LocationCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
@@ -156,9 +157,9 @@ public class AddNotesActivity extends AppCompatActivity {
 
         data.put("content", note);
 
-        locationHelper.getCurrentLocation(this, this, new LocationHelper.LocationCallback() {
+        locationHelper.getCurrentLocation(this, this, new LocationCallback<>() {
             @Override
-            public void onLocationUpdated(GeoPoint location) {
+            public void onSuccess(GeoPoint location) {
                 data.put("latitude", location.getLatitude());
                 data.put("longitude", location.getLongitude());
                 data.put("city", LocationHelper.getCityName(AddNotesActivity.this, location.getLatitude(),
@@ -196,8 +197,8 @@ public class AddNotesActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLocationError(ErrorType errorType) {
-                Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+            public void onError(ErrorType error) {
+
             }
         });
     }
