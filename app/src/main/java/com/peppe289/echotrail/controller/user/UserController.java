@@ -69,21 +69,17 @@ public class UserController {
     public static void login(String email, String password, ControllerCallback<Void, ErrorType> callback) {
         validateCallback(callback);
 
-        if (!isLoggedIn()) {
-            userDAO.signIn(email, password, new UserCallback<Void, Exception>() {
-                @Override
-                public void onSuccess(Void result) {
-                    callback.onSuccess(null);
-                }
+        userDAO.signIn(email, password, new UserCallback<Void, Exception>() {
+            @Override
+            public void onSuccess(Void result) {
+                callback.onSuccess(null);
+            }
 
-                @Override
-                public void onError(Exception error) {
-                    callback.onError(ErrorType.UNKNOWN_ERROR);
-                }
-            });
-        } else {
-            throw new UserStateException("User is already signed in.");
-        }
+            @Override
+            public void onError(Exception error) {
+                callback.onError(ErrorType.UNKNOWN_ERROR);
+            }
+        });
     }
 
     public static void getReadedNotesList(ControllerCallback<QuerySnapshot, ErrorType> callback) {
