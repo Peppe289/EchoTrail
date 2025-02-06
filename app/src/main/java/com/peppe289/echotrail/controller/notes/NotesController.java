@@ -132,6 +132,10 @@ public class NotesController {
      * @param callback A callback invoked with the list of notes retrieved.
      */
     public static void getAllNotes(ControllerCallback<QuerySnapshot, ErrorType> callback) {
+        getAllNotes(callback, false);
+    }
+
+    public static void getAllNotes(ControllerCallback<QuerySnapshot, ErrorType> callback, boolean listen) {
         notesDAO.getAllNotes(new NotesCallback<QuerySnapshot, Exception>() {
             @Override
             public void onSuccess(QuerySnapshot result) {
@@ -142,7 +146,7 @@ public class NotesController {
             public void onError(Exception error) {
                 callback.onError(ErrorType.GET_USER_NOTES_ERROR);
             }
-        });
+        }, listen);
     }
 
     /**

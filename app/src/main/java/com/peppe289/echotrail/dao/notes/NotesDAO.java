@@ -1,8 +1,7 @@
 package com.peppe289.echotrail.dao.notes;
 
-import com.google.firebase.firestore.FieldPath;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import androidx.annotation.Nullable;
+import com.google.firebase.firestore.*;
 import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.NotesCallback;
 import com.peppe289.echotrail.dao.user.UserDAO;
@@ -102,5 +101,28 @@ public class NotesDAO {
         db.collection("notes")
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
+    }
+
+    /**
+     * Retrieves all notes from the Firestore database using listener on snapshot update.
+     *
+     * @param callback
+     * @param listen for change signature
+     */
+    public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback, boolean listen) {
+        if (listen)
+            db.collection("notes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                    if (error != null) {
+                        callback.onError(error);
+                        return;
+                    }
+
+                    callback.onSuccess(value);
+                }
+            });
+        else
+            getAllNotes(callback);
     }
 }

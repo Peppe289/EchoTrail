@@ -59,7 +59,6 @@ public class MapFragment extends Fragment {
     private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
     // Handlers and helpers
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-    private final ScheduledExecutorService esFetchNotes = Executors.newSingleThreadScheduledExecutor();
     private final ScheduledExecutorService esUpdateGPS = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
     // UI components
@@ -72,7 +71,6 @@ public class MapFragment extends Fragment {
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
-    private ScheduledFuture<?> sFetchNotes;
     private ScheduledFuture<?> sUpdateGPS;
     private boolean isFABOpen = false;
     private ExtendedFloatingActionButton publicNotesBtn;
@@ -90,8 +88,10 @@ public class MapFragment extends Fragment {
         initializeUI(view);
         initializeHelpers();
         requestLocationPermission();
-        startFetchingNotes();
         startUpdateGPS();
+
+        // Fetch notes from Firestore and automatically update the map
+        fetchNotes();
 
         return view;
     }
@@ -110,17 +110,9 @@ public class MapFragment extends Fragment {
         }), 0, 5, TimeUnit.SECONDS);
     }
 
-    private void startFetchingNotes() {
-        sFetchNotes = esFetchNotes.scheduleWithFixedDelay(this::fetchNotes, 0, 4, TimeUnit.SECONDS);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (sFetchNotes != null && !sFetchNotes.isCancelled()) {
-            sFetchNotes.cancel(true);
-        }
-        esFetchNotes.shutdown();
 
         if (sUpdateGPS != null && !sUpdateGPS.isCancelled()) {
             sUpdateGPS.cancel(true);
@@ -262,7 +254,16 @@ public class MapFragment extends Fragment {
         locationHelper.requestLocationPermission(requestPermissionLauncher);
     }
 
-    // Fetch notes and add markers
+    /**
+     * Fetches notes from the Firestore database and adds markers to the map.
+     * <p>
+     *     This method retrieves all notes stored in the database and adds a marker for each note
+     *     to the map. The method also listens for clicks on the markers and launches the
+     *     {@link AvailableNotesFragment} when a marker is clicked.
+     * </p>
+     * This method isn't called periodically, but it triggers the fetch of notes when the
+     * firebase document is updated.
+     */
     @SuppressLint("NewApi")
     private void fetchNotes() {
         NotesController.getAllNotes(new ControllerCallback<QuerySnapshot, ErrorType>() {
@@ -331,7 +332,7 @@ public class MapFragment extends Fragment {
             public void onError(ErrorType errorType) {
                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
-        });
+        }, true);
     }
 
     /**
