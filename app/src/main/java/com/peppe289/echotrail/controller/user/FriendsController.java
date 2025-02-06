@@ -1,5 +1,6 @@
 package com.peppe289.echotrail.controller.user;
 
+import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.dao.user.FriendsDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
@@ -23,6 +24,7 @@ public class FriendsController {
         userDAO = UserDAO.getInstance();
     }
 
+    @TestOnly
     public static void init(FriendsDAO friendsDAO) {
         FriendsController.friendsDAO = friendsDAO;
     }
