@@ -7,6 +7,7 @@ import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.FriendsCallback;
 import com.peppe289.echotrail.exceptions.FriendCollectionException;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
+import com.peppe289.echotrail.utils.FirestoreConstants;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,11 +47,11 @@ public class FriendsDAO {
         String friendshipId = currentUserId + "_" + friendId;
 
         Map<String, Object> data = new HashMap<>();
-        data.put("from", currentUserId);
-        data.put("to", friendId);
-        data.put("date", System.currentTimeMillis());
+        data.put(FirestoreConstants.Friends.FIELD_SENDER, currentUserId);
+        data.put(FirestoreConstants.Friends.FIELD_RECEIVER, friendId);
+        data.put(FirestoreConstants.Friends.FIELD_DATE, System.currentTimeMillis());
 
-        db.collection("friends")
+        db.collection(FirestoreConstants.COLLECTION_FRIENDS)
                 .document(friendshipId)
                 .set(data, SetOptions.merge()) // Usa merge per non sovrascrivere altri campi
                 .addOnSuccessListener(aVoid -> callback.onSuccess(null))
@@ -68,10 +69,10 @@ public class FriendsDAO {
     public void acceptRequest(String friendID, FriendsCallback<Void, Exception> callback) {
         WriteBatch batch = db.batch();
 
-        DocumentReference requestRef = db.collection("friends").document(userDAO.getUid() + "_" + friendID);
-        DocumentReference userRef = db.collection("users").document(userDAO.getUid());
+        DocumentReference requestRef = db.collection(FirestoreConstants.COLLECTION_FRIENDS).document(userDAO.getUid() + "_" + friendID);
+        DocumentReference userRef = db.collection(FirestoreConstants.COLLECTION_USERS).document(userDAO.getUid());
         batch.delete(requestRef);
-        batch.update(userRef, "friends", FieldValue.arrayUnion(friendID));
+        batch.update(userRef, FirestoreConstants.COLLECTION_FRIENDS, FieldValue.arrayUnion(friendID));
 
         batch.commit()
                 .addOnSuccessListener(aVoid -> callback.onSuccess(null))
@@ -86,7 +87,7 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void rejectRequest(String friendID, FriendsCallback<String, Exception> callback) {
-        db.collection("friends")
+        db.collection(FirestoreConstants.COLLECTION_FRIENDS)
                 .document(friendID + "_" + userDAO.getUid())
                 .delete()
                 .addOnSuccessListener(aVoid -> callback.onSuccess(friendID))
@@ -102,14 +103,14 @@ public class FriendsDAO {
     public void removeFriend(String pointerString, FriendsCallback<String, Exception> callback) {
         String uid = userDAO.getUid();
 
-        db.collection("users").document(uid)
-                .update("friends", FieldValue.arrayRemove(pointerString))
+        db.collection(FirestoreConstants.COLLECTION_USERS).document(uid)
+                .update(FirestoreConstants.COLLECTION_FRIENDS, FieldValue.arrayRemove(pointerString))
                 .addOnSuccessListener(aVoid -> callback.onSuccess(pointerString))
                 .addOnFailureListener(e -> callback.onError(new FriendCollectionException()));
     }
 
     public void searchPendingRequests(FriendsCallback<List<String>, Exception> callback) {
-        db.collection("friends")
+        db.collection(FirestoreConstants.COLLECTION_FRIENDS)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (querySnapshot == null) {
@@ -143,7 +144,7 @@ public class FriendsDAO {
         List<Task<Void>> pendingTasks = new ArrayList<>();
 
         // Fetch all friend requests
-        db.collection("friends").get().addOnSuccessListener(requestsSnapshot -> {
+        db.collection(FirestoreConstants.COLLECTION_FRIENDS).get().addOnSuccessListener(requestsSnapshot -> {
             for (DocumentSnapshot document : requestsSnapshot) {
                 String documentId = document.getId();
 
@@ -161,8 +162,8 @@ public class FriendsDAO {
             }
 
             // Fetch my friends list
-            db.collection("users").document(myUid).get().addOnSuccessListener(userSnapshot -> {
-                List<String> myFriends = (List<String>) userSnapshot.get("friends");
+            db.collection(FirestoreConstants.COLLECTION_USERS).document(myUid).get().addOnSuccessListener(userSnapshot -> {
+                List<String> myFriends = (List<String>) userSnapshot.get(FirestoreConstants.COLLECTION_FRIENDS);
                 if (myFriends == null || myFriends.isEmpty()) {
                     Tasks.whenAllComplete(pendingTasks)
                             .addOnCompleteListener(task -> callback.onSuccess(null))
@@ -176,12 +177,12 @@ public class FriendsDAO {
                         continue;
                     }
 
-                    pendingTasks.add(db.collection("users").document(friendID).get().continueWithTask(task -> {
+                    pendingTasks.add(db.collection(FirestoreConstants.COLLECTION_USERS).document(friendID).get().continueWithTask(task -> {
                         if (!task.isSuccessful() || !task.getResult().exists()) {
                             return removeFriend(friendID);
                         }
 
-                        List<String> friendFriends = (List<String>) task.getResult().get("friends");
+                        List<String> friendFriends = (List<String>) task.getResult().get(FirestoreConstants.COLLECTION_FRIENDS);
                         if (friendFriends == null || !friendFriends.contains(myUid)) {
                             return removeFriend(friendID);
                         }
@@ -200,20 +201,20 @@ public class FriendsDAO {
 
     /**
      * Checks if a friend request has been accepted and adds them as a friend if so.
-     * If accepted, the request is deleted from the "friends" collection.
+     * If accepted, the request is deleted from the FirestoreConstants.COLLECTION_FRIENDS collection.
      *
      * @param friendID      The friend's user ID.
      * @param deleteRequest If true, deletes the friend request after acceptance.
      * @return A Firestore Task to track completion.
      */
     private Task<Void> checkIfFriendIsAccepted(String friendID, boolean deleteRequest) {
-        DocumentReference friendRef = db.collection("users").document(friendID);
+        DocumentReference friendRef = db.collection(FirestoreConstants.COLLECTION_USERS).document(friendID);
         return friendRef.get().continueWithTask(task -> {
             if (!task.isSuccessful() || !task.getResult().exists()) {
                 return Tasks.forResult(null);
             }
 
-            List<String> friendFriends = (List<String>) task.getResult().get("friends");
+            List<String> friendFriends = (List<String>) task.getResult().get(FirestoreConstants.COLLECTION_FRIENDS);
             if (friendFriends != null && friendFriends.contains(userDAO.getUid())) {
                 Task<Void> addFriendTask = addFriend(friendID);
 
@@ -235,14 +236,14 @@ public class FriendsDAO {
      * @return A Firestore Task to track completion.
      */
     private Task<Void> removeFriend(String friendID) {
-        DocumentReference userRef = db.collection("users").document(userDAO.getUid());
+        DocumentReference userRef = db.collection(FirestoreConstants.COLLECTION_USERS).document(userDAO.getUid());
         return userRef.get().continueWithTask(task -> {
             if (!task.isSuccessful()) return Tasks.forException(Objects.requireNonNull(task.getException()));
-            List<String> friends = (List<String>) task.getResult().get("friends");
+            List<String> friends = (List<String>) task.getResult().get(FirestoreConstants.COLLECTION_FRIENDS);
             if (friends == null || !friends.contains(friendID)) return Tasks.forResult(null);
 
             friends.remove(friendID);
-            return userRef.update("friends", friends);
+            return userRef.update(FirestoreConstants.COLLECTION_FRIENDS, friends);
         });
     }
 
@@ -253,28 +254,28 @@ public class FriendsDAO {
      * @return A Firestore Task to track completion.
      */
     private Task<Void> addFriend(String friendID) {
-        DocumentReference userRef = db.collection("users").document(userDAO.getUid());
+        DocumentReference userRef = db.collection(FirestoreConstants.COLLECTION_USERS).document(userDAO.getUid());
         return userRef.get().continueWithTask(task -> {
             if (!task.isSuccessful()) return Tasks.forException(Objects.requireNonNull(task.getException()));
-            List<String> friends = (List<String>) task.getResult().get("friends");
+            List<String> friends = (List<String>) task.getResult().get(FirestoreConstants.COLLECTION_FRIENDS);
             if (friends == null) friends = new ArrayList<>();
 
             if (!friends.contains(friendID)) {
                 friends.add(friendID);
-                return userRef.update("friends", friends);
+                return userRef.update(FirestoreConstants.COLLECTION_FRIENDS, friends);
             }
             return Tasks.forResult(null);
         });
     }
 
     /**
-     * Deletes the friend request from the "friends" collection.
+     * Deletes the friend request from the FirestoreConstants.COLLECTION_FRIENDS collection.
      *
      * @param friendID The ID of the friend whose request should be deleted.
      * @return A Firestore Task to track completion.
      */
     private Task<Void> deleteFriendRequest(String friendID) {
-        DocumentReference requestRef = db.collection("friends").document(userDAO.getUid() + "_" + friendID);
+        DocumentReference requestRef = db.collection(FirestoreConstants.COLLECTION_FRIENDS).document(userDAO.getUid() + "_" + friendID);
         return requestRef.delete();
     }
 
@@ -285,14 +286,14 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void getUIDFriendsList(String userID, FriendsCallback<List<String>, Exception> callback) {
-        db.collection("users")
+        db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(userID)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots == null) {
                         callback.onSuccess(null);
                     } else {
-                        List<String> friends = (List<String>) queryDocumentSnapshots.get("friends");
+                        List<String> friends = (List<String>) queryDocumentSnapshots.get(FirestoreConstants.COLLECTION_FRIENDS);
                         callback.onSuccess(friends);
                     }
                 })
