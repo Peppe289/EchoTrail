@@ -154,13 +154,12 @@ public class UserController {
      * Clears associated session data from shared preferences.
      * </p>
      *
-     * @param context The application context used to clear shared preferences.
      * @throws UserStateException if no user is currently logged in.
      */
-    public static void logout(Context context) {
+    public static void logout() {
         if (isLoggedIn()) {
             userDAO.signOut();
-            PreferencesController.clearUserHeaders(context);
+            PreferencesController.clearUserHeaders();
         } else {
             throw new UserStateException("User is not signed in.");
         }
@@ -211,13 +210,13 @@ public class UserController {
         });
     }
 
-    public static void setDefaultAnonymousPreference(Context context, boolean isChecked) {
-        PreferencesController.setAnonymousPreferences(context, isChecked);
+    public static void setDefaultAnonymousPreference(boolean isChecked) {
+        PreferencesController.setAnonymousPreferences(isChecked);
         userDAO.setDefaultAnonymousPreference(isChecked);
     }
 
-    public static void getDefaultAnonymousPreference(Context context, ControllerCallback<Boolean, ErrorType> callback) {
-        boolean defaultPref = PreferencesController.getAnonymousPreferences(context);
+    public static void getDefaultAnonymousPreference(ControllerCallback<Boolean, ErrorType> callback) {
+        boolean defaultPref = PreferencesController.getAnonymousPreferences();
         // preload info, if not in preferences
         callback.onSuccess(defaultPref);
 
@@ -266,11 +265,11 @@ public class UserController {
         if (isLoggedIn()) {
             // make 2 time. the first help in use case like start up op application (retrieve from preferences if isn't empty)
             // the second help in case of change from database (update preferences) in async way
-            PreferencesController.checkOnPreferences(context, callback);
+            PreferencesController.checkOnPreferences(callback);
             updateUserHeadersToPreferences(context, new ControllerCallback<HashMap<String, String>, ErrorType>() {
                 @Override
                 public void onSuccess(HashMap<String, String> result) {
-                    PreferencesController.checkOnPreferences(context, callback);
+                    PreferencesController.checkOnPreferences(callback);
                 }
 
                 @Override
@@ -303,20 +302,20 @@ public class UserController {
             throw new UserStateException("User is not signed in.");
         }
 
-        username = PreferencesController.retrieveName(context);
+        username = PreferencesController.retrieveName();
         getUsername(new ControllerCallback<String, ErrorType>() {
             @Override
             public void onSuccess(String usernameDB) {
                 if (!Objects.equals(usernameDB, username)) {
-                    PreferencesController.updateName(context, usernameDB);
+                    PreferencesController.updateName(usernameDB);
                 }
 
-                String email = PreferencesController.retrieveEmail(context);
+                String email = PreferencesController.retrieveEmail();
                 getEmail(new ControllerCallback<String, ErrorType>() {
                     @Override
                     public void onSuccess(String result) {
                         if (!Objects.equals(email, result)) {
-                            PreferencesController.updateEmail(context, result);
+                            PreferencesController.updateEmail(result);
                         }
                     }
 
@@ -327,7 +326,7 @@ public class UserController {
                 });
 
                 // Make sure the user is in shared preferences
-                PreferencesController.checkOnPreferences(context, callback);
+                PreferencesController.checkOnPreferences(callback);
             }
 
             @Override

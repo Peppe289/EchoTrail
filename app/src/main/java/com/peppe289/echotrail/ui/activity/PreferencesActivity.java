@@ -59,7 +59,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private void setUpToggle() {
         SwitchMaterial anonymousSwitch = binding.switchAnonymousToggle;
         // set default value in view
-        UserController.getDefaultAnonymousPreference(binding.getRoot().getContext(),
+        UserController.getDefaultAnonymousPreference(
                 new ControllerCallback<Boolean, ErrorType>() {
                     @Override
                     public void onSuccess(Boolean result) {
@@ -73,6 +73,7 @@ public class PreferencesActivity extends AppCompatActivity {
                     }
                 });
         // add action listener
-        anonymousSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> UserController.setDefaultAnonymousPreference(binding.getRoot().getContext(), isChecked));
+        anonymousSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                UserController.setDefaultAnonymousPreference(isChecked));
     }
 }

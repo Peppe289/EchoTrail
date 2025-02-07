@@ -17,6 +17,7 @@ import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.FriendsController;
+import com.peppe289.echotrail.controller.user.PreferencesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
 import com.peppe289.echotrail.utils.ErrorType;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         UserController.init();
         NotesController.init();
         FriendsController.init();
+        PreferencesController.init(getApplicationContext());
         FirebaseApp.initializeApp(getApplicationContext());
 
         com.peppe289.echotrail.databinding.ActivityMainBinding binding =

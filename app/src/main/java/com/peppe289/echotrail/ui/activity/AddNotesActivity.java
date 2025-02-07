@@ -81,7 +81,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
     private void setUpAnonymousUserOptions() {
         switchAnonymous = binding.switchAnonymous;
-        UserController.getDefaultAnonymousPreference(binding.getRoot().getContext(),
+        UserController.getDefaultAnonymousPreference(
                 new ControllerCallback<Boolean, ErrorType>() {
                     @Override
                     public void onSuccess(Boolean result) {
