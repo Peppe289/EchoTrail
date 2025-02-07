@@ -23,7 +23,7 @@ import java.util.HashMap;
  *     <li>Clearing stored user data from shared preferences upon request.</li>
  * </ul>
  */
-public class PreferencesHelper {
+public class PreferencesController {
 
     /**
      * Loads the user headers (username and email) from Firebase and stores them in shared preferences.
