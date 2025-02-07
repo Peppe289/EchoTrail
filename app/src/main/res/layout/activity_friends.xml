@@ -6,7 +6,7 @@
                                                    android:layout_height="match_parent"
                                                    android:fitsSystemWindows="true"
                                                    android:id="@+id/notes_list_layout"
-                                                   tools:context=".FriendsActivity">
+                                                   tools:context=".ui.activity.FriendsActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"

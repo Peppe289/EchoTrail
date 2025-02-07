@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
@@ -8,9 +8,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.databinding.ActivityListNotesBinding;
-import com.peppe289.echotrail.fragment.AvailableNotesFragment;
-import com.peppe289.echotrail.fragment.UserListFragment;
+import com.peppe289.echotrail.ui.fragment.AvailableNotesFragment;
+import com.peppe289.echotrail.ui.fragment.UserListFragment;
 
 import java.util.List;
 

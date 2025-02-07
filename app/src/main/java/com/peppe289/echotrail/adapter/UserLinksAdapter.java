@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.utils;
+package com.peppe289.echotrail.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

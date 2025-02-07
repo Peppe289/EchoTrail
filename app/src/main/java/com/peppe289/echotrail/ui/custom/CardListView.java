@@ -1,8 +1,9 @@
-package com.peppe289.echotrail.utils;
+package com.peppe289.echotrail.ui.custom;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import androidx.annotation.Nullable;
+import com.peppe289.echotrail.adapter.CardItemAdapter;
 
 public class CardListView extends android.widget.ListView {
 

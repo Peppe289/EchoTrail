@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
@@ -25,7 +26,7 @@ import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
-import com.peppe289.echotrail.utils.UserLinksAdapter;
+import com.peppe289.echotrail.adapter.UserLinksAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

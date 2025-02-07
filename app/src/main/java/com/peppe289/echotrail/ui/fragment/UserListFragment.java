@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.fragment;
+package com.peppe289.echotrail.ui.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +18,7 @@ import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.NoteItem;
-import com.peppe289.echotrail.utils.CardItemAdapter;
+import com.peppe289.echotrail.adapter.CardItemAdapter;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 

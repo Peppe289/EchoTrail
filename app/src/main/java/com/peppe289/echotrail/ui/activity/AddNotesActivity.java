@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.LocationCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
@@ -28,7 +29,6 @@ import org.osmdroid.util.GeoPoint;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class AddNotesActivity extends AppCompatActivity {
 

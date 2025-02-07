@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.utils;
+package com.peppe289.echotrail.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

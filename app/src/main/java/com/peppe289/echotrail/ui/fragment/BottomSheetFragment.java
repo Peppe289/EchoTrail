@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.fragment;
+package com.peppe289.echotrail.ui.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;

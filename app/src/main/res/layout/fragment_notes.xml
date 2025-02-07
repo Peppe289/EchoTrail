@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <view class="com.peppe289.echotrail.utils.CardListView"
+    <view class="com.peppe289.echotrail.ui.custom.CardListView"
         android:id="@+id/notes_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

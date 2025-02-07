@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
@@ -7,12 +7,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityDispatcherBinding;
-import com.peppe289.echotrail.fragment.AccountFragment;
-import com.peppe289.echotrail.fragment.MapFragment;
-import com.peppe289.echotrail.fragment.NotesFragment;
-import com.peppe289.echotrail.utils.BottomBar;
+import com.peppe289.echotrail.ui.fragment.AccountFragment;
+import com.peppe289.echotrail.ui.fragment.MapFragment;
+import com.peppe289.echotrail.ui.fragment.NotesFragment;
+import com.peppe289.echotrail.ui.utils.BottomBar;
 import org.jetbrains.annotations.NotNull;
 
 /**

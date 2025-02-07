@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.fragment;
+package com.peppe289.echotrail.ui.fragment;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -15,10 +15,10 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
-import com.peppe289.echotrail.MainActivity;
-import com.peppe289.echotrail.NotesListActivity;
-import com.peppe289.echotrail.PersonalInfoActivity;
-import com.peppe289.echotrail.PreferencesActivity;
+import com.peppe289.echotrail.ui.activity.MainActivity;
+import com.peppe289.echotrail.ui.activity.NotesListActivity;
+import com.peppe289.echotrail.ui.activity.PersonalInfoActivity;
+import com.peppe289.echotrail.ui.activity.PreferencesActivity;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;

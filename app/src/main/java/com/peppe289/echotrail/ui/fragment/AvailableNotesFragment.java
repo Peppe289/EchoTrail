@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.fragment;
+package com.peppe289.echotrail.ui.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,14 +12,14 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.peppe289.echotrail.UserViewActivity;
+import com.peppe289.echotrail.ui.activity.UserViewActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.NoteItem;
-import com.peppe289.echotrail.utils.CardItemAdapter;
+import com.peppe289.echotrail.adapter.CardItemAdapter;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;

@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 
@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPreferencesBinding;

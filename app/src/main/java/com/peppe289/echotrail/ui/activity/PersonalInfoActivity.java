@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,11 +13,12 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPersonalInfoBinding;
 import com.peppe289.echotrail.utils.ErrorType;
-import com.peppe289.echotrail.utils.UserLinksAdapter;
+import com.peppe289.echotrail.adapter.UserLinksAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

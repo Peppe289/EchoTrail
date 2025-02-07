@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.utils;
+package com.peppe289.echotrail.ui.utils;
 
 import android.text.TextUtils;
 import android.util.Patterns;

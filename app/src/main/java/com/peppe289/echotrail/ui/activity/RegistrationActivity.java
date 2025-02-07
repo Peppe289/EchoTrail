@@ -1,7 +1,6 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -13,11 +12,12 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityRegistrationBinding;
 import com.peppe289.echotrail.utils.ErrorType;
-import com.peppe289.echotrail.utils.FormValidator;
+import com.peppe289.echotrail.ui.utils.FormValidator;
 import com.peppe289.echotrail.utils.MoveActivity;
 
 import java.util.Objects;

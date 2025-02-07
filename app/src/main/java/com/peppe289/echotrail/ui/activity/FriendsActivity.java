@@ -1,4 +1,4 @@
-package com.peppe289.echotrail;
+package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,12 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
 import com.peppe289.echotrail.model.FriendItem;
 import com.peppe289.echotrail.utils.ErrorType;
-import com.peppe289.echotrail.utils.FriendsCustomAdapter;
+import com.peppe289.echotrail.adapter.FriendsCustomAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.MoveActivity;
 

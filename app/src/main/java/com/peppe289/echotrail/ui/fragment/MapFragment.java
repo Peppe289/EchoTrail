@@ -1,4 +1,4 @@
-package com.peppe289.echotrail.fragment;
+package com.peppe289.echotrail.ui.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -24,9 +24,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.peppe289.echotrail.AddNotesActivity;
-import com.peppe289.echotrail.FriendsActivity;
-import com.peppe289.echotrail.NotesListActivity;
+import com.peppe289.echotrail.ui.activity.AddNotesActivity;
+import com.peppe289.echotrail.ui.activity.FriendsActivity;
+import com.peppe289.echotrail.ui.activity.NotesListActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.LocationCallback;
@@ -34,6 +34,7 @@ import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.utils.*;
 
+import com.peppe289.echotrail.adapter.SuggestionsAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
