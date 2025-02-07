@@ -18,7 +18,7 @@ import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.NoteItem;
 import com.peppe289.echotrail.ui.custom.CardListView;
 import com.peppe289.echotrail.utils.*;
-import com.peppe289.echotrail.adapter.CardItemAdapter;
+import com.peppe289.echotrail.adapter.NoteCustomAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,7 +37,7 @@ public class NotesFragment extends Fragment {
     private final List<String> loadedNoteIds = new ArrayList<>();
     private FragmentNotesBinding viewBinding;
     private ScheduledFuture<?> periodicFetchTask;
-    private CardItemAdapter notesAdapter;
+    private NoteCustomAdapter notesAdapter;
     private LoadingManager loadingIndicator;
 
     @Override
@@ -60,7 +60,7 @@ public class NotesFragment extends Fragment {
     private void initializeUI() {
         // Configurazione del caricamento e dell'adapter per la lista di note
         loadingIndicator = new LoadingManager(viewBinding.getRoot());
-        notesAdapter = new CardItemAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
+        notesAdapter = new NoteCustomAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
                 id -> NavigationHelper.addActivity(requireActivity(), UserViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 

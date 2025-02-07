@@ -18,7 +18,7 @@ import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.NoteItem;
-import com.peppe289.echotrail.adapter.CardItemAdapter;
+import com.peppe289.echotrail.adapter.NoteCustomAdapter;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 
@@ -44,9 +44,9 @@ public class UserListFragment extends Fragment {
         binding = FragmentNotesBinding.bind(view);
         ListView listView = binding.notesList;
         loadingManager = new LoadingManager(binding.getRoot());
-        CardItemAdapter cardItemAdapter = new CardItemAdapter(requireContext(), R.layout.card_item, new ArrayList<>(), null);
+        NoteCustomAdapter noteCustomAdapter = new NoteCustomAdapter(requireContext(), R.layout.card_item, new ArrayList<>(), null);
 
-        listView.setAdapter(cardItemAdapter);
+        listView.setAdapter(noteCustomAdapter);
         loadingManager.showLoading();
 
         UserController.getUserNotesList(new ControllerCallback<QuerySnapshot, ErrorType>() {
@@ -65,7 +65,7 @@ public class UserListFragment extends Fragment {
 
                         if (description != null && city != null) {
                             NoteItem noteItem = new NoteItem("La tua nota", description, formattedDate, city, null, document.getId(), false);
-                            cardItemAdapter.add(noteItem);
+                            noteCustomAdapter.add(noteItem);
                         }
                     }
                 }

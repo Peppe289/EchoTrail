@@ -17,13 +17,13 @@ import com.peppe289.echotrail.model.NoteItem;
 
 import java.util.List;
 
-public class CardItemAdapter extends ArrayAdapter<NoteItem> {
+public class NoteCustomAdapter extends ArrayAdapter<NoteItem> {
     private final LayoutInflater inflater;
     private final List<NoteItem> items;
     @Nullable
     private final CardClickCallback callback;
 
-    public CardItemAdapter(@NonNull Context context, int resourceId, @NonNull List<NoteItem> objects, @Nullable CardClickCallback callback) {
+    public NoteCustomAdapter(@NonNull Context context, int resourceId, @NonNull List<NoteItem> objects, @Nullable CardClickCallback callback) {
         super(context, resourceId, objects);
         inflater = LayoutInflater.from(context);
         this.items = objects;

@@ -19,7 +19,7 @@ import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.NoteItem;
-import com.peppe289.echotrail.adapter.CardItemAdapter;
+import com.peppe289.echotrail.adapter.NoteCustomAdapter;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.NavigationHelper;
@@ -32,7 +32,7 @@ import java.util.Locale;
 
 public class AvailableNotesFragment extends Fragment {
 
-    private CardItemAdapter cardItemAdapter;
+    private NoteCustomAdapter noteCustomAdapter;
     private FragmentNotesBinding binding;
     private LoadingManager loadingManager;
     private List<String> noteIDs;
@@ -49,11 +49,11 @@ public class AvailableNotesFragment extends Fragment {
         binding = FragmentNotesBinding.bind(view);
         ListView listView = binding.notesList;
         loadingManager = new LoadingManager(binding.getRoot());
-        cardItemAdapter = new CardItemAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
+        noteCustomAdapter = new NoteCustomAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
                 id -> NavigationHelper.addActivity(requireActivity(), UserViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 
-        listView.setAdapter(cardItemAdapter);
+        listView.setAdapter(noteCustomAdapter);
 
         return view;
     }
@@ -108,7 +108,7 @@ public class AvailableNotesFragment extends Fragment {
                                 // check if have this attribute and if is dedicated to the user.
                                 (isFor != null && isFor.compareTo(UserController.getUid()) == 0)
                         );
-                        cardItemAdapter.add(noteItem);
+                        noteCustomAdapter.add(noteItem);
                     }
                 }
 
