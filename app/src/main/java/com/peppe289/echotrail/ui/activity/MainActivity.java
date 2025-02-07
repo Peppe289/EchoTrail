@@ -20,7 +20,7 @@ import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
 import com.peppe289.echotrail.utils.ErrorType;
-import com.peppe289.echotrail.utils.MoveActivity;
+import com.peppe289.echotrail.utils.NavigationHelper;
 
 import java.util.Objects;
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         // if the user is already logged (from android sdk) skipp this first page.
         if (UserController.isLoggedIn()) {
-            MoveActivity.rebaseActivity(MainActivity.this, DispatcherActivity.class, null);
+            NavigationHelper.rebaseActivity(MainActivity.this, DispatcherActivity.class, null);
         }
 
         EdgeToEdge.enable(this);
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
 
-        binding.registrationBtn.setOnClickListener(view -> MoveActivity.addActivity(MainActivity.this, RegistrationActivity.class, null));
+        binding.registrationBtn.setOnClickListener(view -> NavigationHelper.addActivity(MainActivity.this, RegistrationActivity.class, null));
         findViewById(R.id.loginBtn).setOnClickListener(view -> verifyLoginOnSubmit());
     }
 
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                             .toString(), new ControllerCallback<Void, ErrorType>() {
                         @Override
                         public void onSuccess(Void result) {
-                            MoveActivity.rebaseActivity(getApplication(), DispatcherActivity.class, null);
+                            NavigationHelper.rebaseActivity(getApplication(), DispatcherActivity.class, null);
                         }
 
                         @Override

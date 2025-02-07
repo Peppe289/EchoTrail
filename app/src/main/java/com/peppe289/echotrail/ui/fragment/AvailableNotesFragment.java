@@ -22,7 +22,7 @@ import com.peppe289.echotrail.model.NoteItem;
 import com.peppe289.echotrail.adapter.CardItemAdapter;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
-import com.peppe289.echotrail.utils.MoveActivity;
+import com.peppe289.echotrail.utils.NavigationHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class AvailableNotesFragment extends Fragment {
         ListView listView = binding.notesList;
         loadingManager = new LoadingManager(binding.getRoot());
         cardItemAdapter = new CardItemAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
-                id -> MoveActivity.addActivity(requireActivity(), UserViewActivity.class,
+                id -> NavigationHelper.addActivity(requireActivity(), UserViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 
         listView.setAdapter(cardItemAdapter);

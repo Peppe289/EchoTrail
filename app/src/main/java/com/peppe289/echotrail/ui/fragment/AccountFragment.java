@@ -25,7 +25,7 @@ import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
-import com.peppe289.echotrail.utils.MoveActivity;
+import com.peppe289.echotrail.utils.NavigationHelper;
 
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -69,7 +69,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
 
         binding.logoutBtn.setOnClickListener(view -> {
             UserController.logout(requireContext());
-            MoveActivity.rebaseActivity(getActivity(), MainActivity.class, null);
+            NavigationHelper.rebaseActivity(getActivity(), MainActivity.class, null);
             Log.i("AccountFragment", "User logged out");
         });
 
@@ -86,9 +86,9 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
             binding.userIcon.setAlpha(1 - percentage);
         });
 
-        binding.mynotes.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), NotesListActivity.class, null));
-        binding.mypreferences.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PreferencesActivity.class, null));
-        binding.personalData.setOnClickListener(view -> MoveActivity.addActivity(requireActivity(), PersonalInfoActivity.class, null));
+        binding.mynotes.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), NotesListActivity.class, null));
+        binding.mypreferences.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), PreferencesActivity.class, null));
+        binding.personalData.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), PersonalInfoActivity.class, null));
 
         binding.idTextView.setText(UserController.getUid());
         binding.copyIdLayout.setOnClickListener(v -> {

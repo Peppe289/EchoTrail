@@ -9,7 +9,7 @@ import android.content.Intent;
  * such as clearing the back stack or preserving the current task.
  */
 @SuppressWarnings("unused")
-public class MoveActivity {
+public class NavigationHelper {
 
     /**
      * Starts a new activity without modifying the current activity stack.

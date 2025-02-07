@@ -21,7 +21,7 @@ import com.peppe289.echotrail.model.FriendItem;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.adapter.FriendsCustomAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
-import com.peppe289.echotrail.utils.MoveActivity;
+import com.peppe289.echotrail.utils.NavigationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class FriendsActivity extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             FriendItem friendItem = adapter.getItem(position);
             if (friendItem != null) {
-                MoveActivity.addActivity(this, AddNotesActivity.class, intent -> {
+                NavigationHelper.addActivity(this, AddNotesActivity.class, intent -> {
                     intent.putExtra("friendId", friendItem.getUid());
                     intent.putExtra("friendName", friendItem.getName());
                 });

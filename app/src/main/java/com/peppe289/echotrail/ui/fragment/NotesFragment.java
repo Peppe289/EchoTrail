@@ -61,7 +61,7 @@ public class NotesFragment extends Fragment {
         // Configurazione del caricamento e dell'adapter per la lista di note
         loadingIndicator = new LoadingManager(viewBinding.getRoot());
         notesAdapter = new CardItemAdapter(requireContext(), R.layout.card_item, new ArrayList<>(),
-                id -> MoveActivity.addActivity(requireActivity(), UserViewActivity.class,
+                id -> NavigationHelper.addActivity(requireActivity(), UserViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 
         CardListView notesListView = viewBinding.notesList;

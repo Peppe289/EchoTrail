@@ -139,8 +139,8 @@ public class MapFragment extends Fragment {
             }
         });
 
-        publicNotesBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), AddNotesActivity.class, null));
-        privateNotesBtn.setOnClickListener(e -> MoveActivity.addActivity(getActivity(), FriendsActivity.class, null));
+        publicNotesBtn.setOnClickListener(e -> NavigationHelper.addActivity(getActivity(), AddNotesActivity.class, null));
+        privateNotesBtn.setOnClickListener(e -> NavigationHelper.addActivity(getActivity(), FriendsActivity.class, null));
 
         // Floating Action Button setup
         addNewNoteFloatingBtn = view.findViewById(R.id.addNewNoteBtn);
@@ -344,7 +344,7 @@ public class MapFragment extends Fragment {
             NotesController.updateReadNotesList(noteID);
         }
 
-        MoveActivity.addActivity(requireActivity(), NotesListActivity.class, intent -> intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs)));
+        NavigationHelper.addActivity(requireActivity(), NotesListActivity.class, intent -> intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs)));
     }
 
     // Handle search query
