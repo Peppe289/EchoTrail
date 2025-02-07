@@ -12,6 +12,7 @@ import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.utils.FirestoreConstants;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,9 +68,9 @@ public class UserDAO {
     public void signUp(String email, String password, String username, UserCallback<Void, Exception> callback) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task ->
-                        db.collection("users")
+                        db.collection(FirestoreConstants.COLLECTION_USERS)
                                 .document(getUid())
-                                .update("username", username)
+                                .update(FirestoreConstants.Users.FIELD_USERNAME, username)
                                 .addOnCompleteListener(task1 ->
                                         callback.onSuccess(null))
                                 .addOnFailureListener(callback::onError))
@@ -77,27 +78,27 @@ public class UserDAO {
     }
 
     public void updateNotesList(String noteId) {
-        db.collection("users")
+        db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
-                .update("notes", FieldValue.arrayUnion(noteId));
+                .update(FirestoreConstants.Users.FIELD_PUBLISHED_NOTES, FieldValue.arrayUnion(noteId));
     }
 
     public void updateReadNotesList(String noteId) {
-        db.collection("users")
+        db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
-                .update("readedNotes", FieldValue.arrayUnion(noteId));
+                .update(FirestoreConstants.Users.FIELD_READED_NOTES, FieldValue.arrayUnion(noteId));
     }
 
     public void updateUserLinks(String link) {
-        db.collection("users")
+        db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
-                .update("links", FieldValue.arrayUnion(link));
+                .update(FirestoreConstants.Users.FIELD_LINKS, FieldValue.arrayUnion(link));
     }
 
     public void removeUserLink(String link) {
-        db.collection("users")
+        db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
-                .update("links", FieldValue.arrayRemove(link));
+                .update(FirestoreConstants.Users.FIELD_LINKS, FieldValue.arrayRemove(link));
     }
 
     public void signOut() {
@@ -114,7 +115,7 @@ public class UserDAO {
     }
 
     public void getUserInfo(String uid, UserCallback<User, Exception> callback) {
-        db.collection("users")
+        db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(uid)
                 .get()
                 .addOnSuccessListener(snapshot -> {
@@ -125,7 +126,7 @@ public class UserDAO {
     }
 
     public void setUsername(String username) {
-        db.collection("users").document(getUid()).update("username", username);
+        db.collection(FirestoreConstants.COLLECTION_USERS).document(getUid()).update(FirestoreConstants.Users.FIELD_USERNAME, username);
     }
 
     public void getEmail(UserCallback<String, Exception> callback) {
@@ -137,8 +138,8 @@ public class UserDAO {
     }
 
     public void setDefaultAnonymousPreference(boolean isAnonymous) {
-        db.collection("users")
+        db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
-                .update("anonymousByDefault", isAnonymous);
+                .update(FirestoreConstants.Users.FIELD_PREF_ANONYMOUS, isAnonymous);
     }
 }
