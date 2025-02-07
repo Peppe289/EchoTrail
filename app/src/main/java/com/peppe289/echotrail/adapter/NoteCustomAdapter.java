@@ -13,17 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.card.MaterialCardView;
 import com.peppe289.echotrail.R;
-import com.peppe289.echotrail.model.NoteItem;
+import com.peppe289.echotrail.model.Note;
 
 import java.util.List;
 
-public class NoteCustomAdapter extends ArrayAdapter<NoteItem> {
+public class NoteCustomAdapter extends ArrayAdapter<Note> {
     private final LayoutInflater inflater;
-    private final List<NoteItem> items;
+    private final List<Note> items;
     @Nullable
     private final CardClickCallback callback;
 
-    public NoteCustomAdapter(@NonNull Context context, int resourceId, @NonNull List<NoteItem> objects, @Nullable CardClickCallback callback) {
+    public NoteCustomAdapter(@NonNull Context context, int resourceId, @NonNull List<Note> objects, @Nullable CardClickCallback callback) {
         super(context, resourceId, objects);
         inflater = LayoutInflater.from(context);
         this.items = objects;
@@ -31,7 +31,7 @@ public class NoteCustomAdapter extends ArrayAdapter<NoteItem> {
     }
 
     @Override
-    public void add(@Nullable NoteItem object) {
+    public void add(@Nullable Note object) {
         super.add(object);
         // add here isn't necessary because from default the add function add item to the list
         //items.add(object);
@@ -50,7 +50,7 @@ public class NoteCustomAdapter extends ArrayAdapter<NoteItem> {
         }
 
         // Bind the data
-        NoteItem item = getItem(position);
+        Note item = getItem(position);
         if (item != null) {
             viewHolder.title.setText(item.getAuthor());
             viewHolder.description.setText(item.getDescription());
@@ -102,12 +102,12 @@ public class NoteCustomAdapter extends ArrayAdapter<NoteItem> {
         }
     }
 
-    public List<NoteItem> getItems() {
+    public List<Note> getItems() {
         return items;
     }
 
     @Override
-    public void remove(@Nullable NoteItem object) {
+    public void remove(@Nullable Note object) {
         super.remove(object);
         items.remove(object);
     }

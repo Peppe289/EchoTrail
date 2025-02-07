@@ -17,7 +17,7 @@ import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
-import com.peppe289.echotrail.model.NoteItem;
+import com.peppe289.echotrail.model.Note;
 import com.peppe289.echotrail.adapter.NoteCustomAdapter;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
@@ -64,8 +64,8 @@ public class UserListFragment extends Fragment {
                         String formattedDate = formatDate(timestamp);
 
                         if (description != null && city != null) {
-                            NoteItem noteItem = new NoteItem("La tua nota", description, formattedDate, city, null, document.getId(), false);
-                            noteCustomAdapter.add(noteItem);
+                            Note note = new Note("La tua nota", description, formattedDate, city, null, document.getId(), false);
+                            noteCustomAdapter.add(note);
                         }
                     }
                 }
