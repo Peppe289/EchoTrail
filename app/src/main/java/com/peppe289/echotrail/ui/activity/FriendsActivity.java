@@ -17,7 +17,7 @@ import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
-import com.peppe289.echotrail.model.FriendItem;
+import com.peppe289.echotrail.model.Friend;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.adapter.FriendsCustomAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
@@ -55,11 +55,11 @@ public class FriendsActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            FriendItem friendItem = adapter.getItem(position);
-            if (friendItem != null) {
+            Friend friend = adapter.getItem(position);
+            if (friend != null) {
                 NavigationHelper.addActivity(this, AddNotesActivity.class, intent -> {
-                    intent.putExtra("friendId", friendItem.getUid());
-                    intent.putExtra("friendName", friendItem.getName());
+                    intent.putExtra("friendId", friend.getUid());
+                    intent.putExtra("friendName", friend.getName());
                 });
             }
         });
@@ -76,7 +76,7 @@ public class FriendsActivity extends AppCompatActivity {
                 FriendsController.acceptRequest(friendId, new ControllerCallback<Void, ErrorType>() {
                     @Override
                     public void onSuccess(Void result) {
-                        FriendItem fi = adapter.getItem(position);
+                        Friend fi = adapter.getItem(position);
                         fi.setOnPendingRequest(false);
                         fi.setFriend(true);
                         adapter.notifyDataSetChanged();
@@ -115,12 +115,12 @@ public class FriendsActivity extends AppCompatActivity {
     private void loadFriendsList() {
         loadingManager.showLoading();
 
-        FriendsController.loadFriends(new ControllerCallback<List<FriendItem>, ErrorType>() {
+        FriendsController.loadFriends(new ControllerCallback<List<Friend>, ErrorType>() {
             @Override
-            public void onSuccess(List<FriendItem> friends) {
+            public void onSuccess(List<Friend> friends) {
                 adapter.clear();
                 runOnUiThread(() -> {
-                    for (FriendItem fr : friends) {
+                    for (Friend fr : friends) {
                         adapter.add(fr);
                         if (fr.isFriend())
                             adapter.remove(fr.getUid(), true);

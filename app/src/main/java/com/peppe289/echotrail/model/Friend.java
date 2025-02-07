@@ -2,16 +2,16 @@ package com.peppe289.echotrail.model;
 
 import org.jetbrains.annotations.NotNull;
 
-public class FriendItem {
+public class Friend {
     private String name;
     private boolean onPendingRequest;
     private boolean isFriend;
     private String uid;
 
-    public FriendItem() {
+    public Friend() {
     }
 
-    public FriendItem(String name, boolean onPendingRequest, boolean isFriend, String uid) {
+    public Friend(String name, boolean onPendingRequest, boolean isFriend, String uid) {
         this.name = name;
         this.onPendingRequest = onPendingRequest;
         this.isFriend = isFriend;

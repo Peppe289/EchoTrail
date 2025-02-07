@@ -21,7 +21,7 @@ import com.peppe289.echotrail.controller.callback.LocationCallback;
 import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
-import com.peppe289.echotrail.model.FriendItem;
+import com.peppe289.echotrail.model.Friend;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LocationHelper;
 
@@ -36,7 +36,7 @@ public class AddNotesActivity extends AppCompatActivity {
     private boolean canPush = true;
     private LocationHelper locationHelper;
     private SwitchMaterial switchAnonymous;
-    private FriendItem friendItem;
+    private Friend friend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +62,9 @@ public class AddNotesActivity extends AppCompatActivity {
         });
 
         if (getIntent().getExtras() != null) {
-            friendItem = new FriendItem();
-            friendItem.setName(getIntent().getExtras().getString("friendName"));
-            friendItem.setUid(getIntent().getExtras().getString("friendId"));
+            friend = new Friend();
+            friend.setName(getIntent().getExtras().getString("friendName"));
+            friend.setUid(getIntent().getExtras().getString("friendId"));
         }
 
         locationHelper = new LocationHelper(this);
@@ -118,8 +118,8 @@ public class AddNotesActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        if (friendItem != null) {
-            toolbar.setTitle("Per: " + friendItem.getName());
+        if (friend != null) {
+            toolbar.setTitle("Per: " + friend.getName());
         }
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -172,8 +172,8 @@ public class AddNotesActivity extends AppCompatActivity {
                         if (!switchAnonymous.isChecked())
                             data.put("username", username);
 
-                        if (friendItem != null) {
-                            data.put("send_to", friendItem.getUid());
+                        if (friend != null) {
+                            data.put("send_to", friend.getUid());
                         }
 
                         NotesController.saveNote(data, (errorType) -> {

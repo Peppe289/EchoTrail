@@ -10,16 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.google.android.material.button.MaterialButton;
 import com.peppe289.echotrail.R;
-import com.peppe289.echotrail.model.FriendItem;
+import com.peppe289.echotrail.model.Friend;
 
 import java.util.List;
 
-public class FriendsCustomAdapter extends ArrayAdapter<FriendItem> {
+public class FriendsCustomAdapter extends ArrayAdapter<Friend> {
     private final LayoutInflater inflater;
     private OnFriendCallback callback;
-    private final List<FriendItem> friendItemsList;
+    private final List<Friend> friendItemsList;
 
-    public FriendsCustomAdapter(@NonNull Context context, int resource, @NonNull List<FriendItem> objects) {
+    public FriendsCustomAdapter(@NonNull Context context, int resource, @NonNull List<Friend> objects) {
         super(context, resource, objects);
         inflater = LayoutInflater.from(context);
         friendItemsList = objects;
@@ -39,7 +39,7 @@ public class FriendsCustomAdapter extends ArrayAdapter<FriendItem> {
      *                  In the most of the case is false for my logic.
      */
     public void remove(String id, boolean isPending) {
-        for (FriendItem item : friendItemsList) {
+        for (Friend item : friendItemsList) {
             if (item.getUid().equals(id) && item.isOnPendingRequest() == isPending) {
                 friendItemsList.remove(item);
                 notifyDataSetChanged();
@@ -61,7 +61,7 @@ public class FriendsCustomAdapter extends ArrayAdapter<FriendItem> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        FriendItem item = getItem(position);
+        Friend item = getItem(position);
         if (item != null) {
             holder.userName.setText(item.getName());
             if (item.isOnPendingRequest()) {

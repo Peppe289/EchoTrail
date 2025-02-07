@@ -5,7 +5,7 @@ import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.dao.user.FriendsDAO;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.FriendNotFoundException;
-import com.peppe289.echotrail.model.FriendItem;
+import com.peppe289.echotrail.model.Friend;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.FriendsCallback;
@@ -29,11 +29,11 @@ public class FriendsController {
         FriendsController.friendsDAO = friendsDAO;
     }
 
-    public static void loadFriends(ControllerCallback<List<FriendItem>, ErrorType> callback) {
+    public static void loadFriends(ControllerCallback<List<Friend>, ErrorType> callback) {
         friendsDAO.searchPendingRequests(new FriendsCallback<List<String>, Exception> () {
             @Override
             public void onSuccess(List<String> pendingFriends) {
-                List<FriendItem> friendItems = new ArrayList<>();
+                List<Friend> friendItems = new ArrayList<>();
 
                 if (pendingFriends != null) {
                     for (String id : pendingFriends) {
@@ -41,7 +41,7 @@ public class FriendsController {
                         userDAO.getUserInfo(finalId, new UserCallback<User, Exception>() {
                             @Override
                             public void onSuccess(User userData) {
-                                friendItems.add(new FriendItem(userData.getUsername(), true, false, finalId));
+                                friendItems.add(new Friend(userData.getUsername(), true, false, finalId));
                                 callback.onSuccess(friendItems);
                             }
 
@@ -63,7 +63,7 @@ public class FriendsController {
                                 userDAO.getUserInfo(finalId, new UserCallback<User, Exception>() {
                                     @Override
                                     public void onSuccess(User userData) {
-                                        friendItems.add(new FriendItem(userData.getUsername(), false, true, finalId));
+                                        friendItems.add(new Friend(userData.getUsername(), false, true, finalId));
                                         callback.onSuccess(friendItems);
                                     }
 
