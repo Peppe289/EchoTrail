@@ -7,6 +7,7 @@ import com.peppe289.echotrail.controller.callback.NotesCallback;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.NoteCollectionException;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
+import com.peppe289.echotrail.utils.FirestoreConstants;
 
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class NotesDAO {
      * @param callback a callback instance to notify when the save operation is complete
      */
     public void saveNote(Map<String, Object> noteData, NotesCallback<String, Exception> callback) {
-        db.collection("notes")
+        db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .add(noteData)
                 .addOnSuccessListener(documentReference -> {
                     String noteId = documentReference.getId();
@@ -82,7 +83,7 @@ public class NotesDAO {
      * @param callback a callback instance to handle the retrieved notes
      */
     public void getNotes(List<String> notesID, NotesCallback<QuerySnapshot, Exception> callback) {
-        db.collection("notes")
+        db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
@@ -98,7 +99,7 @@ public class NotesDAO {
      * @param callback a callback instance to handle the retrieved notes
      */
     public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback) {
-        db.collection("notes")
+        db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
     }
@@ -111,7 +112,7 @@ public class NotesDAO {
      */
     public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback, boolean listen) {
         if (listen)
-            db.collection("notes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            db.collection(FirestoreConstants.COLLECTION_NOTES).addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
                     if (error != null) {
