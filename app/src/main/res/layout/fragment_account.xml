@@ -116,14 +116,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="99999" />
+                                android:text="" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:text="Note Pubblicate" />
+                                android:text="@string/published_notes" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -140,14 +140,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="99999" />
+                                android:text="" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:text="Note Lette" />
+                                android:text="@string/notes_read" />
                         </LinearLayout>
                     </LinearLayout>
 
