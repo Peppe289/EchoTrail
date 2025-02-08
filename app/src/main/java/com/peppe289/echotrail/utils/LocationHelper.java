@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,8 +21,10 @@ import com.peppe289.echotrail.controller.callback.LocationCallback;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * A utility class for handling location-related functionalities in Android.
@@ -66,8 +69,35 @@ public class LocationHelper {
      */
     public static String getCityName(Context context, double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        CountDownLatch latch = new CountDownLatch(1);
         try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            List<Address> addresses = new ArrayList<>();
+            // for android 13+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // idk why but seems this is needed
+                List<Address> finalAddresses = addresses;
+                geocoder.getFromLocation(latitude, longitude, 1, new Geocoder.GeocodeListener() {
+                    @Override
+                    public void onGeocode(@NonNull List<Address> data) {
+                        try {
+                            finalAddresses.add(data.get(0));
+                        } finally {
+                            latch.countDown();
+                        }
+                    }
+                });
+
+                try {
+                    // wait for counter.
+                    latch.await();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            } else {
+                // only for android 12 and 12L
+                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            }
+
             if (addresses != null && !addresses.isEmpty()) {
                 return addresses.get(0).getLocality();
             }
