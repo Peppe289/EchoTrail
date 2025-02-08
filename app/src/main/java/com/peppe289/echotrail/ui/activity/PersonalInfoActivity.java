@@ -17,6 +17,7 @@ import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPersonalInfoBinding;
+import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.adapter.UserLinksAdapter;
 
@@ -106,7 +107,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
             @Override
             public void onError(ErrorType error) {
-                // TODO: handle error.
+                handleError(error);
             }
         });
     }
@@ -121,7 +122,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
             @Override
             public void onError(ErrorType error) {
-                // TODO: handle error.
+                handleError(error);
             }
         });
     }
@@ -185,6 +186,10 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
     public interface OnAccountEditedListener {
         void onAccountEdited();
+    }
+
+    private void handleError(ErrorType error) {
+        DefaultErrorHandler.getInstance(null).showError(error);
     }
 
     public static class AccountEditNotifier {
