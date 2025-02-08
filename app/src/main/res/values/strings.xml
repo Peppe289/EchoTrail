@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">EchoTrail</string>
 
+    <!-- Login/Registration -->
+    <string name="login_desc">Accedi in ET!</string>
+    <string name="registration_desc">Registrati in ET!</string>
+
+    <!-- Settings -->
+    <string name="my_notes">Le mie note</string>
+    <string name="notifications">Notifiche</string>
+    <string name="manage_your_data">Gestisci i tuoi dati</string>
+    <string name="anonymously_by_default">Anonimo di deafult</string>
+    <string name="anonymously_preferences_description">Abilitare di default l\'impostazione per pubblicare in anonimo le note.</string>
+
+    <!-- Profile -->
+    <string name="copy_id">Copia ID</string>
+    <string name="published_notes">Note Pubblicate</string>
+    <string name="notes_read">Note Lette</string>
+
     <!-- Error message -->
     <string name="error_user_not_logged_in">Utente non loggato</string>
     <string name="error_location_permission">Permesso GPS negato</string>
@@ -23,45 +39,34 @@
     <string name="error_get_user_read_notes">Errore nel recupero delle note lette</string>
     <string name="error_get_user_notes">Errore nel recupero delle note</string>
     <string name="error_position_not_found">Posizione non trovata</string>
-    <!-- General -->
 
+    <!-- General -->
     <string name="note">Note</string>
-    <string name="impostazioni">Impostazioni</string>
-    <string name="mappa">Mappa</string>
-    <string name="accedi">Accedi</string>
-    <string name="registrati">Registrati</string>
+    <string name="settings">Impostazioni</string>
+    <string name="map">Mappa</string>
+    <string name="login">Accedi</string>
+    <string name="registration">Registrati</string>
     <string name="account">Account</string>
     <string name="logout">Logout</string>
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="username">Username</string>
     <string name="right_arrow">right_arrow</string>
-    <string name="le_mie_note">Le mie note</string>
-    <string name="notifiche">Notifiche</string>
-    <string name="gestisci_i_tuoi_dati">Gestisci i tuoi dati</string>
-    <string name="aggiungi_una_nuova_nota">Aggiungi una nuova nota</string>
-    <string name="lascia_il_tuo_ricordo_qui">Lascia il tuo ricordo qui!</string>
-    <string name="salva">Salva</string>
-    <string name="le_note_trovate">le note trovate</string>
-    <string name="cerca_sulla_mappa">Cerca sulla mappa</string>
-    <string name="aggiorna_la_posizione_corrente">Aggiorna la posizione corrente</string>
-    <string name="pubblica_in_anonimo">Pubblica in anonimo</string>
-    <string name="anonimo_di_deafult">Anonimo di deafult</string>
-    <string name="descrizione_anonimo_preferences">Abilitare di default l\'impostazione per pubblicare in anonimo le note.</string>
-    <string name="aggiungi_link">Aggiungi un nuovo link al tuo profilo</string>
-    <string name="non_ci_sono_note">Non ci sono note</string>
+    <string name="add_new_note">Aggiungi una nuova nota</string>
+    <string name="give_your_memory">Lascia il tuo ricordo qui!</string>
+    <string name="save">Salva</string>
+    <string name="notes_found">le note trovate</string>
+    <string name="search_on_map">Cerca sulla mappa</string>
+    <string name="update_current_position">Aggiorna la posizione corrente</string>
+    <string name="publish_anonymously">Pubblica in anonimo</string>
+    <string name="add_link">Aggiungi un nuovo link al tuo profilo</string>
+    <string name="empty_notes_list">Non ci sono note</string>
     <string name="marker">Marker</string>
-    <string name="fai_viaggiare_il_tuo_echo">Fai viaggiare il tuo echo</string>
     <string name="slogan">Fai viaggiare i tuoi pensieri</string>
-    <string name="accedi_in_et">Accedi in ET!</string>
-    <string name="registrati_in_et">Registrati in ET!</string>
-    <string name="note_pubblicate">Note Pubblicate</string>
-    <string name="copia_id">Copia ID</string>
-    <string name="note_lette">Note Lette</string>
-    <string name="nota_pubblica">Nota pubblica</string>
-    <string name="nota_privata">Nota privata</string>
-    <string name="cerca">Cerca</string>
-    <string name="conferma">Conferma</string>
-    <string name="invia_richiesta">Invia Richiesta</string>
-    <string name="dedicata">Dedicata</string>
+    <string name="public_note">Nota pubblica</string>
+    <string name="private_note">Nota privata</string>
+    <string name="find">Cerca</string>
+    <string name="confirm">Conferma</string>
+    <string name="send_request">Invia Richiesta</string>
+    <string name="dedicated">Dedicata</string>
 </resources>

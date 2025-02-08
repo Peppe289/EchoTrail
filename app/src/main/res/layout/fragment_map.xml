@@ -32,7 +32,7 @@
                 android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/cerca_sulla_mappa"/>
+                android:hint="@string/search_on_map"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.search.SearchView
@@ -65,7 +65,7 @@
                 android:layout_marginBottom="20dp"
                 android:visibility="gone"
                 android:id="@+id/publicNoteBtn"
-                android:text="@string/nota_pubblica"/>
+                android:text="@string/public_note"/>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
                 android:layout_marginBottom="50dp"
                 android:visibility="gone"
                 android:id="@+id/privateNoteBtn"
-                android:text="@string/nota_privata" />
+                android:text="@string/private_note" />
 
     </LinearLayout>
 
@@ -87,7 +87,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        android:contentDescription="@string/aggiungi_una_nuova_nota"
+        android:contentDescription="@string/add_new_note"
         android:src="@drawable/add_24pm">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
@@ -97,7 +97,7 @@
         android:layout_height="55dp"
         android:layout_gravity="bottom|start"
         android:layout_margin="30dp"
-        android:contentDescription="@string/aggiorna_la_posizione_corrente"
+        android:contentDescription="@string/update_current_position"
         android:src="@drawable/refresh_position_24px">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 

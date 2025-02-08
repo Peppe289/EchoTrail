@@ -7,7 +7,7 @@
     <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:contentDescription="@string/aggiungi_link"
+        android:contentDescription="@string/add_link"
         android:rotation="-45"
         android:scaleType="centerCrop"
         android:src="@drawable/link_24px" />

@@ -8,7 +8,7 @@
     <item
         android:id="@+id/mapMenu"
         android:icon="@drawable/baseline_map_24"
-        android:title="@string/mappa" />
+        android:title="@string/map" />
     <item
         android:id="@+id/settingsMenu"
         android:icon="@drawable/account_circle_24px"

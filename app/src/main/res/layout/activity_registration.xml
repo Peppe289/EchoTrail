@@ -32,7 +32,7 @@
             android:layout_margin="25dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/registrati_in_et"
+            android:text="@string/registration_desc"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +115,7 @@
                     style="@style/AppTheme.Alternative.Button1"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:text="@string/registrati"
+                    android:text="@string/registration"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>

@@ -42,7 +42,7 @@
                 android:layout_width="wrap_content"
                 app:icon="@drawable/person_add_24px"
                 android:layout_height="wrap_content"
-                android:text="@string/invia_richiesta"
+                android:text="@string/send_request"
                 style="@style/AppTheme.Alternative.Button1"/>
 
         <LinearLayout
@@ -78,7 +78,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/note_pubblicate"/>
+                        android:text="@string/published_notes"/>
             </LinearLayout>
 
             <LinearLayout
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/note_lette"/>
+                        android:text="@string/notes_read"/>
             </LinearLayout>
         </LinearLayout>
 

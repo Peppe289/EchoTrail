@@ -44,7 +44,7 @@
 
                 <TextView
                         android:id="@+id/is_dedicata"
-                        android:text="@string/dedicata"
+                        android:text="@string/dedicated"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="11sp"

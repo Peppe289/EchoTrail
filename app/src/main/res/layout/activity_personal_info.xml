@@ -77,7 +77,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:background="@drawable/circle_border"
-                        android:contentDescription="@string/aggiungi_link"
+                        android:contentDescription="@string/add_link"
                         android:scaleType="centerCrop"
                         android:src="@drawable/add_24pm"/>
 
@@ -87,7 +87,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
-                        android:text="@string/aggiungi_link"/>
+                        android:text="@string/add_link"/>
             </LinearLayout>
         </LinearLayout>
 

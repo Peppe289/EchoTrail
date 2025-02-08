@@ -8,7 +8,7 @@
         android:id="@+id/notes_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/le_note_trovate" />
+        android:contentDescription="@string/notes_found" />
 
     <include layout="@layout/loading_overlay" />
 
@@ -22,5 +22,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/non_ci_sono_note"/>
+        android:text="@string/empty_notes_list"/>
 </FrameLayout>

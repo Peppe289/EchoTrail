@@ -18,7 +18,7 @@
     <!-- this is only visible if this item is a pending friends request -->
     <com.google.android.material.button.MaterialButton
             android:id="@+id/accept_button"
-            android:text="@string/conferma"
+            android:text="@string/confirm"
             android:layout_width="wrap_content"
             style="@style/AppTheme.Alternative.Button1"
             android:layout_margin="0dp"
