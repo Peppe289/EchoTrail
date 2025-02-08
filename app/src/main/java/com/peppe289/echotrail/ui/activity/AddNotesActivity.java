@@ -7,6 +7,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -184,12 +185,7 @@ public class AddNotesActivity extends AppCompatActivity {
                                         NotesController.saveNote(data, (errorType) -> {
                                             // like mutex to avoid multiple click on save button.
                                             canPush = true;
-                                            if (errorType == null) {
-                                                Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
-                                                finish();
-                                            } else {
-                                                Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
-                                            }
+                                            handleSaveResult(errorType);
                                         });
                                     }
 
@@ -213,4 +209,14 @@ public class AddNotesActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void handleSaveResult(@Nullable ErrorType errorType) {
+        if (errorType == null) {
+            Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
