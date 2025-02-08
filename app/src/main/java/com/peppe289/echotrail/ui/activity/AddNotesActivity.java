@@ -25,6 +25,7 @@ import com.peppe289.echotrail.model.Friend;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LocationHelper;
 
+import com.peppe289.echotrail.utils.callback.HelperCallback;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.HashMap;
@@ -162,43 +163,53 @@ public class AddNotesActivity extends AppCompatActivity {
             public void onSuccess(GeoPoint location) {
                 data.put("latitude", location.getLatitude());
                 data.put("longitude", location.getLongitude());
-                data.put("city", LocationHelper.getCityName(AddNotesActivity.this, location.getLatitude(),
-                        location.getLongitude()));
 
-                UserController.getUsername(new ControllerCallback<String, ErrorType>() {
-                    @Override
-                    public void onSuccess(String username) {
-                        // save username only if the user is not anonymous
-                        if (!switchAnonymous.isChecked())
-                            data.put("username", username);
 
-                        if (friend != null) {
-                            data.put("send_to", friend.getUid());
-                        }
+                LocationHelper.getCityName(AddNotesActivity.this, location.getLatitude(),
+                        location.getLongitude(), new HelperCallback<String, ErrorType>() {
+                            @Override
+                            public void onSuccess(String locationString) {
+                                UserController.getUsername(new ControllerCallback<String, ErrorType>() {
+                                    @Override
+                                    public void onSuccess(String username) {
+                                        data.put("city", locationString);
+                                        // save username only if the user is not anonymous
+                                        if (!switchAnonymous.isChecked())
+                                            data.put("username", username);
 
-                        NotesController.saveNote(data, (errorType) -> {
-                            // like mutex to avoid multiple click on save button.
-                            canPush = true;
-                            if (errorType == null) {
-                                Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
-                                finish();
-                            } else {
-                                Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                                        if (friend != null) {
+                                            data.put("send_to", friend.getUid());
+                                        }
+
+                                        NotesController.saveNote(data, (errorType) -> {
+                                            // like mutex to avoid multiple click on save button.
+                                            canPush = true;
+                                            if (errorType == null) {
+                                                Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+                                                finish();
+                                            } else {
+                                                Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(ErrorType error) {
+                                        // TODO: handle error
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(ErrorType error) {
+                                // TODO: handle error
                             }
                         });
-                    }
-
-                    @Override
-                    public void onError(ErrorType error) {
-                        // TODO: handle error
-                    }
-                });
-
             }
 
             @Override
             public void onError(ErrorType error) {
-
+                // TODO: handle error
             }
         });
     }

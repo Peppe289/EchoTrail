@@ -18,6 +18,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 
 import com.peppe289.echotrail.controller.callback.LocationCallback;
+import com.peppe289.echotrail.utils.callback.HelperCallback;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
@@ -65,46 +66,39 @@ public class LocationHelper {
      * @param context   the application context for accessing system services
      * @param latitude  the latitude of the location
      * @param longitude the longitude of the location
-     * @return the city name corresponding to the provided coordinates, or {@code null} if unavailable
+     * @param callback  the callback to handle the city name or error
      */
-    public static String getCityName(Context context, double latitude, double longitude) {
+    public static void getCityName(Context context, double latitude, double longitude, HelperCallback<String, ErrorType> callback) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-        CountDownLatch latch = new CountDownLatch(1);
-        try {
-            List<Address> addresses = new ArrayList<>();
-            // for android 13+
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // idk why but seems this is needed
-                List<Address> finalAddresses = addresses;
-                geocoder.getFromLocation(latitude, longitude, 1, new Geocoder.GeocodeListener() {
-                    @Override
-                    public void onGeocode(@NonNull List<Address> data) {
-                        try {
-                            finalAddresses.add(data.get(0));
-                        } finally {
-                            latch.countDown();
-                        }
-                    }
-                });
 
-                try {
-                    // wait for counter.
-                    latch.await();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+        List<Address> addresses = null;
+        // for android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // idk why but seems this is needed
+            geocoder.getFromLocation(latitude, longitude, 1, new Geocoder.GeocodeListener() {
+                @Override
+                public void onGeocode(@NonNull List<Address> addresses) {
+                    try {
+                        callback.onSuccess(addresses.get(0).getLocality());
+                    } catch (Exception e) {
+                        callback.onSuccess("");
+                    }
                 }
-            } else {
-                // only for android 12 and 12L
+            });
+        } else {
+            // only for android 12 and 12L
+            try {
                 addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            } catch (IOException e) {
+                callback.onError(ErrorType.POSITION_NOT_FOUND_ERROR);
             }
 
             if (addresses != null && !addresses.isEmpty()) {
-                return addresses.get(0).getLocality();
+                callback.onSuccess(addresses.get(0).getLocality());
+            } else {
+                callback.onSuccess("");
             }
-        } catch (IOException e) {
-            Log.e("LocationHelper", "Error getting city name: " + e.getMessage());
         }
-        return null;
     }
 
     /**

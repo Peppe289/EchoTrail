@@ -23,6 +23,7 @@ public enum ErrorType {
     GET_USER_READ_NOTES_ERROR(1017, R.string.error_get_user_read_notes),
     USER_NOT_LOGGED_IN_ERROR(1018, R.string.error_user_not_logged_in),
     GET_USER_NOTES_ERROR(1019, R.string.error_get_user_notes),
+    POSITION_NOT_FOUND_ERROR(1020, R.string.error_position_not_found),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;
