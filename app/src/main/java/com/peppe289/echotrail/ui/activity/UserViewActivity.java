@@ -24,6 +24,7 @@ import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
 import com.peppe289.echotrail.model.User;
+import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.adapter.UserLinksAdapter;
@@ -131,7 +132,7 @@ public class UserViewActivity extends AppCompatActivity {
 
                         @Override
                         public void onError(ErrorType error) {
-                            // TODO: handle error
+                            handleError(error);
                         }
                     });
                 }
@@ -161,9 +162,13 @@ public class UserViewActivity extends AppCompatActivity {
 
             @Override
             public void onError(ErrorType error) {
-                /// TODO: handle error
+                handleError(error);
             }
         });
+    }
+
+    private void handleError(ErrorType error) {
+        DefaultErrorHandler.getInstance(null).showError(error);
     }
 
     private void setTextViewIfNotNull(TextView textView, Object value) {
