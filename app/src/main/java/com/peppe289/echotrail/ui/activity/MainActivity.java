@@ -20,6 +20,7 @@ import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.PreferencesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
+import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.NavigationHelper;
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         UserController.init();
         NotesController.init();
         FriendsController.init();
+        DefaultErrorHandler.getInstance(getApplicationContext());
         PreferencesController.init(getApplicationContext());
         FirebaseApp.initializeApp(getApplicationContext());
 
