@@ -186,7 +186,7 @@ public class UserController {
 
             @Override
             public void onError(Exception error) {
-                // TODO: do nothing for now. maybe we should handle this case
+                callback.onError(ErrorType.UNKNOWN_ERROR);
             }
         });
     }
@@ -205,7 +205,7 @@ public class UserController {
 
             @Override
             public void onError(Exception error) {
-                // TODO: add handler error
+                callback.onError(ErrorType.UNKNOWN_ERROR);
             }
         });
     }
@@ -228,8 +228,9 @@ public class UserController {
 
             @Override
             public void onError(Exception error) {
-                // TODO: handle error
                 // if error, return the default value from share preferences (see below)
+                // but notify always the error
+                callback.onError(ErrorType.UNKNOWN_ERROR);
             }
         });
     }
@@ -321,7 +322,7 @@ public class UserController {
 
                     @Override
                     public void onError(ErrorType error) {
-                        // TODO: handle error
+                        callback.onError(error);
                     }
                 });
 
@@ -331,7 +332,7 @@ public class UserController {
 
             @Override
             public void onError(ErrorType error) {
-                // TODO: handle error
+                callback.onError(error);
             }
         });
     }
@@ -371,7 +372,7 @@ public class UserController {
 
             @Override
             public void onError(Exception error) {
-                ///  TODO: complete handle error
+                callback.onError(ErrorType.UNKNOWN_ERROR);
             }
         });
     }
