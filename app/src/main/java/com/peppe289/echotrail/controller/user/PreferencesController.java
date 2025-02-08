@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import androidx.annotation.Nullable;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.utils.LanguageUtils;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * The {@code PreferencesHelper} class provides utility methods for managing user preferences
@@ -24,9 +26,37 @@ import java.util.HashMap;
  */
 public class PreferencesController {
     private static SharedPreferences userPreferences;
+    private static SharedPreferences settingsPreferences;
 
     public static void init(Context context) {
         userPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+        settingsPreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+    }
+
+    /**
+     * Retrieves the current language settings from shared preferences.
+     * If isn't set yet, it returns the default language of the device.
+     *
+     * @return string representing the current language settings like "it" or "en"
+     */
+    public static String getLanguages() {
+        String lang = settingsPreferences.getString("languages", null);
+
+        if (lang == null) {
+            lang = Locale.getDefault().getLanguage();
+            setLanguages(lang);
+        }
+
+        return lang;
+    }
+
+    /**
+     * Sets the languages in shared preferences.
+     *
+     * @param languages languages to be stored like "it" or "en"
+     */
+    public static void setLanguages(String languages) {
+        settingsPreferences.edit().putString("languages", languages).apply();
     }
 
     /**
