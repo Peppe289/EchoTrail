@@ -23,6 +23,7 @@ import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
 import com.peppe289.echotrail.model.Friend;
+import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LocationHelper;
 
@@ -191,23 +192,27 @@ public class AddNotesActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onError(ErrorType error) {
-                                        // TODO: handle error
+                                        handleError(error);
                                     }
                                 });
                             }
 
                             @Override
                             public void onError(ErrorType error) {
-                                // TODO: handle error
+                                handleError(error);
                             }
                         });
             }
 
             @Override
             public void onError(ErrorType error) {
-                // TODO: handle error
+                handleError(error);
             }
         });
+    }
+
+    private void handleError(ErrorType error) {
+        DefaultErrorHandler.getInstance(null).showError(error);
     }
 
     private void handleSaveResult(@Nullable ErrorType errorType) {
