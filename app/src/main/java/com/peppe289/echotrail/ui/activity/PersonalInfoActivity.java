@@ -138,7 +138,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> {
             if (!Objects.requireNonNull(usernameEditText.getText()).toString().equals(currentUsername)) {
-                showCustomDialog("Restare nella schermata?", "Stai per uscire dalla pagina ed hai modifiche non salvate. ignorare?",
+                showCustomDialog(getString(R.string.request_keep_page), getString(R.string.request_keep_page_desc),
                         () -> getOnBackPressedDispatcher().onBackPressed());
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
@@ -151,15 +151,15 @@ public class PersonalInfoActivity extends AppCompatActivity {
         TextInputEditText inputEditText = customView.findViewById(R.id.link_edit_text);
 
         new MaterialAlertDialogBuilder(this)
-                .setTitle("Iscerisci il link")
+                .setTitle(getString(R.string.put_link))
                 .setView(customView)
-                .setPositiveButton("Aggiungi", (dialogInterface, i) -> {
+                .setPositiveButton(getString(R.string.add), (dialogInterface, i) -> {
                     String inputText = inputEditText.getText() != null ? inputEditText
                             .getText().toString().replaceAll("[\\n\\r]", "") : "";
 
                     callBackDialog.onPositiveClick(inputText);
                 })
-                .setNegativeButton("Annulla", (dialogInterface, i) -> dialogInterface.dismiss())
+                .setNegativeButton(getString(R.string.abort), (dialogInterface, i) -> dialogInterface.dismiss())
                 .show();
     }
 

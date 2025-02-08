@@ -16,6 +16,11 @@
     <string name="copy_id">Copia ID</string>
     <string name="published_notes">Note Pubblicate</string>
     <string name="notes_read">Note Lette</string>
+    <string name="request_sent">Richiesta inviata!</string>
+    <string name="friend">Amico</string>
+    <string name="request_keep_page">Restare nella schermata?</string>
+    <string name="request_keep_page_desc">Stai per uscire dalla pagina ed hai modifiche non salvate. ignorare?</string>
+    <string name="put_link">Iscerisci il link</string>
 
     <!-- Error message -->
     <string name="error_user_not_logged_in">Utente non loggato</string>
@@ -69,4 +74,8 @@
     <string name="confirm">Conferma</string>
     <string name="send_request">Invia Richiesta</string>
     <string name="dedicated">Dedicata</string>
+    <string name="note_shared">Nota Condivisa!</string>
+    <string name="is_for">"Per: "</string>
+    <string name="add">Aggiungi</string>
+    <string name="abort">Annulla</string>
 </resources>

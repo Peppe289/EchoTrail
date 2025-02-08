@@ -122,7 +122,7 @@ public class AddNotesActivity extends AppCompatActivity {
         }
 
         if (friend != null) {
-            toolbar.setTitle("Per: " + friend.getName());
+            toolbar.setTitle(getString(R.string.is_for) + friend.getName());
         }
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -217,7 +217,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
     private void handleSaveResult(@Nullable ErrorType errorType) {
         if (errorType == null) {
-            Toast.makeText(AddNotesActivity.this, "Nota Condivisa!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddNotesActivity.this, Toast.LENGTH_SHORT, R.string.note_shared).show();
             finish();
         } else {
             Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();

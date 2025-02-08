@@ -90,7 +90,7 @@ public class UserViewActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void result) {
                         sendFriendRequestButton.setIconResource(R.drawable.check_24px);
-                        sendFriendRequestButton.setText("Richiesta inviata!");
+                        sendFriendRequestButton.setText(R.string.request_sent);
                     }
 
                     @Override
@@ -145,7 +145,7 @@ public class UserViewActivity extends AppCompatActivity {
                                 if (fr.equals(UID)) {
                                     // disable the button if the user is already a friend
                                     sendFriendRequestButton.setIconResource(R.drawable.check_24px);
-                                    sendFriendRequestButton.setText("Amico");
+                                    sendFriendRequestButton.setText(R.string.friend);
                                     sendFriendRequestButton.setEnabled(false);
                                 }
                             }
