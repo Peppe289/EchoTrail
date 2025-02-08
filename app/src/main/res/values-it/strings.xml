@@ -11,6 +11,8 @@
     <string name="manage_your_data">Gestisci i tuoi dati</string>
     <string name="anonymously_by_default">Anonimo di deafult</string>
     <string name="anonymously_preferences_description">Abilitare di default l\'impostazione per pubblicare in anonimo le note.</string>
+    <string name="language">Lingua</string>
+    <string name="english">Italiano</string>
 
     <!-- Profile -->
     <string name="copy_id">Copia ID</string>

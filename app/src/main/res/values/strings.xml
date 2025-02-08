@@ -1,14 +1,18 @@
 <resources>
     <string name="app_name">EchoTrail</string>
+
     <!-- Login/Registration -->
     <string name="login_desc">Log in to ET!</string>
     <string name="registration_desc">Register for ET!</string>
+
     <!-- Settings -->
     <string name="my_notes">My Notes</string>
     <string name="notifications">Notifications</string>
     <string name="manage_your_data">Manage Your Data</string>
     <string name="anonymously_by_default">Anonymously by default</string>
     <string name="anonymously_preferences_description">Enable the default setting to post anonymously.</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
 
     <!-- Profile -->
     <string name="copy_id">Copy ID</string>
