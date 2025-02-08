@@ -1,0 +1,81 @@
+<resources>
+    <string name="app_name">EchoTrail</string>
+
+    <!-- Login/Registration -->
+    <string name="login_desc">Accedi in ET!</string>
+    <string name="registration_desc">Registrati in ET!</string>
+
+    <!-- Settings -->
+    <string name="my_notes">Le mie note</string>
+    <string name="notifications">Notifiche</string>
+    <string name="manage_your_data">Gestisci i tuoi dati</string>
+    <string name="anonymously_by_default">Anonimo di deafult</string>
+    <string name="anonymously_preferences_description">Abilitare di default l\'impostazione per pubblicare in anonimo le note.</string>
+
+    <!-- Profile -->
+    <string name="copy_id">Copia ID</string>
+    <string name="published_notes">Note Pubblicate</string>
+    <string name="notes_read">Note Lette</string>
+    <string name="request_sent">Richiesta inviata!</string>
+    <string name="friend">Amico</string>
+    <string name="request_keep_page">Restare nella schermata?</string>
+    <string name="request_keep_page_desc">Stai per uscire dalla pagina ed hai modifiche non salvate. ignorare?</string>
+    <string name="put_link">Iscerisci il link</string>
+
+    <!-- Error message -->
+    <string name="error_user_not_logged_in">Utente non loggato</string>
+    <string name="error_location_permission">Permesso GPS negato</string>
+    <string name="error_mock_location">Rimuovi la posizione fittizia</string>
+    <string name="error_unknown">Errore sconosciuto</string>
+    <string name="error_cannot_open_link">Impossibile aprire il link</string>
+    <string name="error_send_friend_request">Errore nell\'invio della richiesta</string>
+    <string name="error_accept_friend_request">Errore nell\'accettazione della richiesta</string>
+    <string name="error_reject_friend_request">Errore nel rifiutare la richiesta</string>
+    <string name="error_remove_friend">Errore nel rimuovere l\'amico</string>
+    <string name="error_friend_not_found">Amico non trovato</string>
+    <string name="error_get_pending_requests">Errore nel recupero delle richieste</string>
+    <string name="error_get_friends">Errore nel recupero degli amici</string>
+    <string name="error_invalid_data">Dati non validi</string>
+    <string name="error_invalid_username">Username non valido</string>
+    <string name="error_invalid_email">Email non valida</string>
+    <string name="error_invalid_password">La password deve avere almeno 6 caratteri</string>
+    <string name="error_invalid_credentials">Password o email errati</string>
+    <string name="error_save_note_failed">Errore nel salvataggio della nota</string>
+    <string name="error_get_user_read_notes">Errore nel recupero delle note lette</string>
+    <string name="error_get_user_notes">Errore nel recupero delle note</string>
+    <string name="error_position_not_found">Posizione non trovata</string>
+
+    <!-- General -->
+    <string name="note">Note</string>
+    <string name="settings">Impostazioni</string>
+    <string name="map">Mappa</string>
+    <string name="login">Accedi</string>
+    <string name="registration">Registrati</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="right_arrow">right_arrow</string>
+    <string name="add_new_note">Aggiungi una nuova nota</string>
+    <string name="give_your_memory">Lascia il tuo ricordo qui!</string>
+    <string name="save">Salva</string>
+    <string name="notes_found">le note trovate</string>
+    <string name="search_on_map">Cerca sulla mappa</string>
+    <string name="update_current_position">Aggiorna la posizione corrente</string>
+    <string name="publish_anonymously">Pubblica in anonimo</string>
+    <string name="add_link">Aggiungi un nuovo link al tuo profilo</string>
+    <string name="empty_notes_list">Non ci sono note</string>
+    <string name="marker">Marker</string>
+    <string name="slogan">Fai viaggiare i tuoi pensieri</string>
+    <string name="public_note">Nota pubblica</string>
+    <string name="private_note">Nota privata</string>
+    <string name="find">Cerca</string>
+    <string name="confirm">Conferma</string>
+    <string name="send_request">Invia Richiesta</string>
+    <string name="dedicated">Dedicata</string>
+    <string name="note_shared">Nota Condivisa!</string>
+    <string name="is_for">"Per: "</string>
+    <string name="add">Aggiungi</string>
+    <string name="abort">Annulla</string>
+</resources>
