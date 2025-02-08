@@ -23,6 +23,7 @@ import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.model.User;
+import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.NavigationHelper;
@@ -128,7 +129,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
 
                 @Override
                 public void onError(ErrorType error) {
-                    // TODO: handle error
+                    handleError(error);
                 }
             });
 
@@ -144,10 +145,14 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
 
                 @Override
                 public void onError(ErrorType error) {
-                    // TODO: handle error
+                    handleError(error);
                 }
             });
         });
+    }
+
+    private void handleError(ErrorType error) {
+        DefaultErrorHandler.getInstance(null).showError(error);
     }
 
     @Override
