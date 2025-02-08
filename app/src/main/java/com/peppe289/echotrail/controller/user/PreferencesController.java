@@ -64,14 +64,14 @@ public class PreferencesController {
 
                     @Override
                     public void onError(ErrorType error) {
-                        // TODO: handler error
+                        callback.onError(error);
                     }
                 });
             }
 
             @Override
             public void onError(ErrorType error) {
-                // TODO: handler error
+                callback.onError(error);
             }
         });
     }
