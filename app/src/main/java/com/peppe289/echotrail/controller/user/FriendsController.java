@@ -47,7 +47,7 @@ public class FriendsController {
 
                             @Override
                             public void onError(Exception error) {
-                                // TODO: handle error.
+                                callback.onError(ErrorType.GET_PENDING_REQUESTS_ERROR);
                             }
                         });
                     }
@@ -188,7 +188,7 @@ public class FriendsController {
 
             @Override
             public void onError(ErrorType error) {
-                ///  TODO: handle error
+                callback.onError(error);
             }
         });
     }
