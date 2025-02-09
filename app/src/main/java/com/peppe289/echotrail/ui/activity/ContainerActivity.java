@@ -46,8 +46,12 @@ public class ContainerActivity extends AppCompatActivity {
         // Check if the fragment is already in the container.
         if (savedInstanceState == null) {
             String fragmentName = getIntent().getExtras().getString(FRAGMENT_KEY);
+            Bundle args = getIntent().getExtras().getBundle(ARGS_KEY);
             try {
                 fragment = (Fragment) Class.forName(fragmentName).getDeclaredConstructor().newInstance();
+                if (args != null) {
+                    fragment.setArguments(args);
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
