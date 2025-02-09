@@ -13,6 +13,9 @@
     <string name="anonymously_preferences_description">Enable the default setting to post anonymously.</string>
     <string name="language">Language</string>
     <string name="english">English</string>
+    <string name="italian">Italian</string>
+    <string name="default_language">English</string>
+    <string name="change_language_success">Language changed successfully! Restart application.</string>
 
     <!-- Profile -->
     <string name="copy_id">Copy ID</string>

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.peppe289.echotrail.R;
+import com.peppe289.echotrail.controller.user.PreferencesController;
 
 import javax.security.auth.callback.Callback;
 import java.util.List;
@@ -31,6 +32,28 @@ public class LanguageAdapter extends ArrayAdapter<Locale> {
         this.setCallback = callback;
     }
 
+    public int getLangString(String id) {
+        switch (id) {
+            case "en":
+                return R.string.english;
+            case "it":
+                return R.string.italian;
+            default:
+                return R.string.english;
+        }
+    }
+
+    public void setSelectedPosition() {
+        String lang = PreferencesController.getLanguages();
+        for (int i = 0; i < getCount(); i++) {
+            String itemLang = getItem(i).getLanguage();
+            if (itemLang.equals(lang)) {
+                selectedPosition = i;
+                break;
+            }
+        }
+    }
+
     @Override
     public @NonNull View getView(int position, View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
@@ -42,6 +65,8 @@ public class LanguageAdapter extends ArrayAdapter<Locale> {
             }
         };
 
+        setSelectedPosition();
+
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.language_item, parent, false);
             viewHolder = new ViewHolder(convertView);
@@ -52,7 +77,7 @@ public class LanguageAdapter extends ArrayAdapter<Locale> {
 
         Locale item = getItem(position);
         if (item != null) {
-            viewHolder.lang.setText(item.getDisplayLanguage());
+            viewHolder.lang.setText(getLangString(item.getLanguage()));
             viewHolder.radioButton.setChecked(position == selectedPosition);
             viewHolder.radioButton.setOnClickListener(callback);
             viewHolder.layout.setOnClickListener(callback);
