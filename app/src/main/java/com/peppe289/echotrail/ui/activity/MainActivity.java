@@ -2,6 +2,7 @@ package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -22,8 +23,11 @@ import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
 import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.utils.LanguageUtils;
 import com.peppe289.echotrail.utils.NavigationHelper;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         com.peppe289.echotrail.databinding.ActivityMainBinding binding =
                 ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Set the language of the app
+        String lang = PreferencesController.getLanguages();
+        LanguageUtils.setLocale(getApplicationContext(), new Locale(lang));
 
         // if the user is already logged (from android sdk) skipp this first page.
         if (UserController.isLoggedIn()) {
