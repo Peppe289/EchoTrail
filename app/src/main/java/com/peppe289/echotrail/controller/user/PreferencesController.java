@@ -35,19 +35,12 @@ public class PreferencesController {
 
     /**
      * Retrieves the current language settings from shared preferences.
-     * If isn't set yet, it returns the default language of the device.
      *
      * @return string representing the current language settings like "it" or "en"
      */
     public static String getLanguages() {
-        String lang = settingsPreferences.getString("languages", null);
-
-        if (lang == null) {
-            lang = Locale.getDefault().getLanguage();
-            setLanguages(lang);
-        }
-
-        return lang;
+        return settingsPreferences
+                .getString("languages", Locale.getDefault().getLanguage());
     }
 
     /**
