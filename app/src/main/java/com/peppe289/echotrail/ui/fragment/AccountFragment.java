@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.peppe289.echotrail.ui.activity.MainActivity;
-import com.peppe289.echotrail.ui.activity.NotesListActivity;
 import com.peppe289.echotrail.ui.activity.PersonalInfoActivity;
 import com.peppe289.echotrail.ui.activity.PreferencesActivity;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
@@ -87,7 +86,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
             binding.userIcon.setAlpha(1 - percentage);
         });
 
-        binding.mynotes.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), NotesListActivity.class, null));
+        binding.mynotes.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), UserListFragment.class, null));
         binding.mypreferences.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), PreferencesActivity.class, null));
         binding.personalData.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), PersonalInfoActivity.class, null));
 

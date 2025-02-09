@@ -55,6 +55,11 @@ public class AvailableNotesFragment extends Fragment {
 
         listView.setAdapter(noteCustomAdapter);
 
+        if (getArguments() != null) {
+            List<String> noteIDs = getArguments().getStringArrayList("notes");
+            loadFromActivity(noteIDs);
+        }
+
         return view;
     }
 

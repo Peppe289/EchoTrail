@@ -24,7 +24,6 @@
         <activity android:name=".ui.activity.UserViewActivity" />
         <activity android:name=".ui.activity.PersonalInfoActivity" />
         <activity android:name=".ui.activity.PreferencesActivity" />
-        <activity android:name=".ui.activity.NotesListActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.activity.AddNotesActivity" android:windowSoftInputMode="stateVisible" />
         <activity android:name=".ui.activity.DispatcherActivity" android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ui.activity.RegistrationActivity" android:windowSoftInputMode="adjustPan" />

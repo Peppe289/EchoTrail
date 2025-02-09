@@ -26,7 +26,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.ui.activity.AddNotesActivity;
 import com.peppe289.echotrail.ui.activity.FriendsActivity;
-import com.peppe289.echotrail.ui.activity.NotesListActivity;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.LocationCallback;
@@ -344,7 +343,9 @@ public class MapFragment extends Fragment {
             NotesController.updateReadNotesList(noteID);
         }
 
-        NavigationHelper.addActivity(requireActivity(), NotesListActivity.class, intent -> intent.putStringArrayListExtra("notes", new ArrayList<>(noteIDs)));
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("notes", new ArrayList<>(noteIDs));
+        NavigationHelper.startActivityForFragment(requireActivity(), AvailableNotesFragment.class, bundle);
     }
 
     // Handle search query
