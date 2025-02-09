@@ -1,5 +1,6 @@
 package com.peppe289.echotrail.ui.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,8 +27,6 @@ import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LanguageUtils;
 import com.peppe289.echotrail.utils.NavigationHelper;
 
-import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
     private TextInputLayout passwordLayout;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        PreferencesController.init(base);
+        super.attachBaseContext(LanguageUtils.setAppLanguage(base));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -47,16 +52,11 @@ public class MainActivity extends AppCompatActivity {
         NotesController.init();
         FriendsController.init();
         DefaultErrorHandler.getInstance(getApplicationContext());
-        PreferencesController.init(getApplicationContext());
         FirebaseApp.initializeApp(getApplicationContext());
 
         com.peppe289.echotrail.databinding.ActivityMainBinding binding =
                 ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        // Set the language of the app
-        String lang = PreferencesController.getLanguages();
-        LanguageUtils.setLocale(getApplicationContext(), new Locale(lang));
 
         // if the user is already logged (from android sdk) skipp this first page.
         if (UserController.isLoggedIn()) {
