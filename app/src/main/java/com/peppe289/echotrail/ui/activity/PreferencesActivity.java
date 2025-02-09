@@ -2,6 +2,8 @@ package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
 
+import android.util.Log;
+import android.widget.LinearLayout;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +17,10 @@ import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityPreferencesBinding;
+import com.peppe289.echotrail.ui.fragment.LanguagesFragment;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.LoadingManager;
+import com.peppe289.echotrail.utils.NavigationHelper;
 
 public class PreferencesActivity extends AppCompatActivity {
 
@@ -58,6 +62,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
     private void setUpToggle() {
         SwitchMaterial anonymousSwitch = binding.switchAnonymousToggle;
+        LinearLayout languages = binding.languagesLayout;
         // set default value in view
         UserController.getDefaultAnonymousPreference(
                 new ControllerCallback<Boolean, ErrorType>() {
@@ -75,5 +80,9 @@ public class PreferencesActivity extends AppCompatActivity {
         // add action listener
         anonymousSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
                 UserController.setDefaultAnonymousPreference(isChecked));
+
+        languages.setOnClickListener(v -> {
+            NavigationHelper.startActivityForFragment(PreferencesActivity.this, LanguagesFragment.class, null);
+        });
     }
 }
