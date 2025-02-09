@@ -2,6 +2,9 @@ package com.peppe289.echotrail.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import androidx.fragment.app.Fragment;
+import com.peppe289.echotrail.ui.activity.ContainerActivity;
 
 /**
  * The {@code MoveActivity} utility class provides reusable methods to manage activity navigation.
@@ -10,6 +13,24 @@ import android.content.Intent;
  */
 @SuppressWarnings("unused")
 public class NavigationHelper {
+
+    /**
+     * Add a new fragment in new empty activity. This help the modularity of the app
+     * and make the app more scalable.
+     *
+     * @param context   The context of the current activity.
+     * @param fragment  The fragment to add to the activity.
+     * @param args      The arguments to pass to the fragment.
+     */
+    public static void startActivityForFragment(Context context, Class<? extends Fragment> fragment, Bundle args) {
+        Intent intent = new Intent(context, ContainerActivity.class);
+        String str = fragment.getName();
+        intent.putExtra(ContainerActivity.FRAGMENT_KEY, fragment.getName());
+        if (args != null) {
+            intent.putExtra(ContainerActivity.ARGS_KEY, args);
+        }
+        context.startActivity(intent);
+    }
 
     /**
      * Starts a new activity without modifying the current activity stack.

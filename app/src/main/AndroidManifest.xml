@@ -19,6 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.activity.ContainerActivity" />
         <activity android:name=".ui.activity.FriendsActivity" />
         <activity android:name=".ui.activity.UserViewActivity" />
         <activity android:name=".ui.activity.PersonalInfoActivity" />
