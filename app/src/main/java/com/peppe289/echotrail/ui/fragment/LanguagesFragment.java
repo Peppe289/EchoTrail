@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.adapter.LanguageAdapter;
@@ -25,6 +26,7 @@ public class LanguagesFragment extends Fragment {
         LanguageAdapter adapter = new LanguageAdapter(requireContext(), R.layout.language_item, locales);
 
         adapter.setCallback(locale -> {
+            Toast.makeText(requireContext(), getString(R.string.change_language_success), Toast.LENGTH_SHORT).show();
             LanguageUtils.setAppLanguage(requireContext(), locale.getLanguage());
             requireActivity().recreate();
         });
