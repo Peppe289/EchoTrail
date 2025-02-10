@@ -173,11 +173,11 @@ public class UserController {
             UserController.removeSession(UniqueIDHelper.getUniqueID(context), new ControllerCallback<Void, ErrorType>() {
                 @Override
                 public void onSuccess(Void result) {
-                    userDAO.signOut();
                     PreferencesController.clearUserHeaders();
                     PreferencesController.clearAnonymousPreferences();
                     // go to login page.
                     NavigationHelper.rebaseActivity(context, MainActivity.class, null);
+                    userDAO.signOut();
                 }
 
                 @Override
@@ -304,8 +304,6 @@ public class UserController {
                     callback.onError(ErrorType.UNKNOWN_ERROR);
                 }
             });
-        } else {
-            throw new UserStateException("User is not signed in.");
         }
     }
 

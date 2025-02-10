@@ -163,6 +163,9 @@ public class UserDAO {
     }
 
     public void checkValidSession(String deviceID, UserCallback<QuerySnapshot, Exception> callback) {
+        if (!UserController.isLoggedIn())
+            return;
+
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .collection("session")
@@ -195,6 +198,10 @@ public class UserDAO {
     }
 
     public void getUserInfo(String uid, UserCallback<User, Exception> callback) {
+
+        if (!isSignedIn())
+            return;
+
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(uid)
                 .get()

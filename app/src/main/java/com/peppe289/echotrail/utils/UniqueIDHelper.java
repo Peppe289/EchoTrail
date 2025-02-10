@@ -26,10 +26,26 @@ public class UniqueIDHelper {
     }
 
     public static void addSessionAtLogin(Context context) {
+        String androidID = UniqueIDHelper.getUniqueID(context);
         UserController.addSession(context, new ControllerCallback<Void, ErrorType>() {
             @Override
             public void onSuccess(Void result) {
+                UserController.checkValidSession(androidID, new ControllerCallback<Boolean, ErrorType>() {
+                    @Override
+                    public void onSuccess(Boolean result) {
+                        // Don't put lunch activity here because can make delay.
+                    }
 
+                    @Override
+                    public void onError(ErrorType error) {
+                        // if preferences are invalid with a server database, some stuff when wrong, so invalidate this login.
+                        try {
+                            // when done if necessary, back to the login page without cause an error.
+                            UserController.logout(context);
+                        } catch (RuntimeException ignore) {
+                        }
+                    }
+                });
             }
 
             @Override

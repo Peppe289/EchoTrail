@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         if (UserController.isLoggedIn() &&
                 UniqueIDHelper.getUUID(getApplicationContext()) != null) {
             // this allow to access offline.
-            NavigationHelper.rebaseActivity(MainActivity.this, DispatcherActivity.class, null);
             UserController.checkValidSession(UniqueIDHelper.getUUID(getApplicationContext()), new ControllerCallback<Boolean, ErrorType>() {
                 @Override
                 public void onSuccess(Boolean result) {
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+            NavigationHelper.rebaseActivity(MainActivity.this, DispatcherActivity.class, null);
         }
 
         EdgeToEdge.enable(this);
