@@ -18,6 +18,8 @@
     <string name="change_language_success">Language changed successfully! Restart application.</string>
     <string name="sessions_manager">Sessions Manager</string>
     <string name="position">Position</string>
+    <string name="confirm_elimination">Confirm delete</string>
+    <string name="confirm_elimination_desc">Are you sure to delete?</string>
 
     <!-- Profile -->
     <string name="copy_id">Copy ID</string>

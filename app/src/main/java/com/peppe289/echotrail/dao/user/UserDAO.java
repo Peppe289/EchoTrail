@@ -145,6 +145,21 @@ public class UserDAO {
                 .addOnFailureListener(e -> callback.onError(new UserCollectionException()));
     }
 
+    public void removeSession(String deviceID, UserCallback<Void, Exception> callback) {
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(getUid())
+                .collection("session")
+                .document(deviceID)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(null);
+                    Log.d("UserDAO", "Sessione rimossa con successo!");
+                })
+                .addOnFailureListener(e -> {
+                    callback.onError(new UserCollectionException());
+                });
+    }
+
     public void getSession(String deviceID, UserCallback<Void, Exception> callback) {
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())

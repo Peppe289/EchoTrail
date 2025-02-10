@@ -1,5 +1,6 @@
 package com.peppe289.echotrail.ui.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.adapter.SessionsAdapter;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
@@ -39,7 +41,32 @@ public class FragmentSession extends Fragment {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Session session = adapter.getItem(position);
             if (session != null) {
-                // TODO: implement method to remove session
+                showConfirmationDialog(session);
+            }
+        });
+    }
+
+    private void showConfirmationDialog(Session session) {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.confirm_elimination))
+                .setMessage(getString(R.string.confirm_elimination_desc))
+                .setPositiveButton(getString(R.string.confirm), (dialog, which) -> removeSession(session))
+                .setNegativeButton(getString(R.string.abort), (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void removeSession(Session session) {
+        UserController.removeSession(session.getId(), new ControllerCallback<Void, ErrorType>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                adapter.remove(session);
+                adapter.notifyDataSetChanged();
+                Toast.makeText(requireContext(), "Sessione rimossa con successo!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(ErrorType errorType) {
+                Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
         });
     }

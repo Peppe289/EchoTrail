@@ -18,6 +18,8 @@
     <string name="change_language_success">Lingua cambiata con successo! Riavvia l\'applicazione.</string>
     <string name="sessions_manager">Gestisci le sessioni</string>
     <string name="position">Posizione</string>
+    <string name="confirm_elimination">Conferma eliminazione</string>
+    <string name="confirm_elimination_desc">Sei sicuro di voler eliminare?</string>
 
     <!-- Profile -->
     <string name="copy_id">Copia ID</string>

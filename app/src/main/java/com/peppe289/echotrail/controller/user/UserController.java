@@ -351,6 +351,22 @@ public class UserController {
         });
     }
 
+    public static void removeSession(String session, ControllerCallback<Void, ErrorType> callback) {
+        userDAO.removeSession(session, new UserCallback<Void, Exception>() {
+            @Override
+            public void onSuccess(Void result) {
+                callback.onSuccess(null);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                // TODO: create right error code.
+                callback.onError(ErrorType.UNKNOWN_ERROR);
+            }
+        });
+
+    }
+
     public static void getSession(String devUID, ControllerCallback<Boolean, ErrorType> callback) {
         userDAO.getSession(devUID, new UserCallback<Void, Exception>() {
             @Override
