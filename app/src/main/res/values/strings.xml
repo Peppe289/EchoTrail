@@ -54,6 +54,7 @@
     <string name="error_get_user_notes">Error getting user notes</string>
     <string name="error_position_not_found">Position not found</string>
     <string name="error_change_password">Errore nel cambio della password</string>
+    <string name="error_add_session">Error saving session</string>
 
     <!-- General -->
     <string name="link">link</string>

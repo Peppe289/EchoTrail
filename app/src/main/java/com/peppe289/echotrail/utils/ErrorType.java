@@ -25,6 +25,7 @@ public enum ErrorType {
     GET_USER_NOTES_ERROR(1019, R.string.error_get_user_notes),
     POSITION_NOT_FOUND_ERROR(1020, R.string.error_position_not_found),
     CHANGE_PASSWORD_ERROR(1021, R.string.error_change_password),
+    ADD_SESSION_ERROR(1022, R.string.error_add_session),
     UNKNOWN_ERROR(9999, R.string.error_unknown);
 
     private final int code;
