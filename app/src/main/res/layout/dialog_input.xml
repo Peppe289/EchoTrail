@@ -10,7 +10,6 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Link"
         app:boxCornerRadiusBottomEnd="18dp"
         app:boxCornerRadiusBottomStart="18dp"
         app:boxCornerRadiusTopEnd="18dp"

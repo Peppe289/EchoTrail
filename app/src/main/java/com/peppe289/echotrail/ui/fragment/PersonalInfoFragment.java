@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -24,6 +26,7 @@ import java.util.Objects;
 
 public class PersonalInfoFragment extends Fragment {
 
+    private TextView changePassword;
     private FragmentPersonalInfoBinding binding;
     private com.google.android.material.textfield.TextInputEditText usernameEditText;
     private String currentUsername;
@@ -56,13 +59,14 @@ public class PersonalInfoFragment extends Fragment {
         });
 
         cancelButton.setOnClickListener(v -> requireActivity().finish());
-        addLinkLayout.setOnClickListener(v -> shouwCustomInput((str) -> {
+        addLinkLayout.setOnClickListener(v -> shouwCustomInput(R.string.put_link, R.string.link, (str) -> {
             userLinksAdapter.add(str);
             UserController.updateUserLinks(str);
         }));
     }
 
     private void initialization() {
+        changePassword = binding.changePassword;
         usernameEditText = binding.usernameEditText;
         saveButton = binding.saveButton;
         cancelButton = binding.cancelButton;
@@ -79,6 +83,22 @@ public class PersonalInfoFragment extends Fragment {
                                 UserController.removeUserLink(link);
                             }
                         }, "Annulla", "Elimina"));
+
+        changePassword.setOnClickListener(v ->
+                shouwCustomInput(R.string.write_old_password, R.string.password,
+                        (oldPassword) -> shouwCustomInput(R.string.write_new_password, R.string.password,
+                                (newPassword) ->
+                                        UserController.changePassword(oldPassword, newPassword, new ControllerCallback<Void, ErrorType>() {
+                                            @Override
+                                            public void onSuccess(Void result) {
+                                                Toast.makeText(requireContext(), getString(R.string.success_change_password), Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            @Override
+                                            public void onError(ErrorType error) {
+                                                Toast.makeText(requireContext(), error.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }))));
 
         UserController.getUserLinks(new ControllerCallback<List<String>, ErrorType>() {
             @Override
@@ -112,12 +132,13 @@ public class PersonalInfoFragment extends Fragment {
         });
     }
 
-    private void shouwCustomInput(CallBackInput callBackDialog) {
+    private void shouwCustomInput(int stringsID, int hint, CallBackInput callBackDialog) {
         View customView = getLayoutInflater().inflate(R.layout.dialog_input, null);
         TextInputEditText inputEditText = customView.findViewById(R.id.link_edit_text);
+        inputEditText.setHint(getString(hint));
 
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.put_link))
+                .setTitle(getString(stringsID))
                 .setView(customView)
                 .setPositiveButton(getString(R.string.add), (dialogInterface, i) -> {
                     String inputText = inputEditText.getText() != null ? inputEditText

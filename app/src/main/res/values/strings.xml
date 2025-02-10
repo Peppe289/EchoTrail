@@ -26,6 +26,10 @@
     <string name="request_keep_page">Stay on the page?</string>
     <string name="request_keep_page_desc">You are about to exit the page and have unsaved changes. Ignore?</string>
     <string name="put_link">Put Link</string>
+    <string name="change_password">Change password</string>
+    <string name="write_old_password">Put old password</string>
+    <string name="write_new_password">Put new password</string>
+    <string name="success_change_password">Password cambiata con successo</string>
 
     <!-- Error message -->
     <string name="error_user_not_logged_in">User not logged in</string>
@@ -49,8 +53,10 @@
     <string name="error_get_user_read_notes">Error getting read notes</string>
     <string name="error_get_user_notes">Error getting user notes</string>
     <string name="error_position_not_found">Position not found</string>
+    <string name="error_change_password">Errore nel cambio della password</string>
 
     <!-- General -->
+    <string name="link">link</string>
     <string name="note">Note</string>
     <string name="settings">Settings</string>
     <string name="map">Map</string>

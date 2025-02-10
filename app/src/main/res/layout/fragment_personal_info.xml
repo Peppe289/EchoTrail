@@ -37,6 +37,20 @@
                         android:layout_height="wrap_content"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                    android:id="@+id/change_password"
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textStyle="bold"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/change_password" />
+
             <!-- Email Input
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

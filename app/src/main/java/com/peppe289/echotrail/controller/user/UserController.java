@@ -1,6 +1,7 @@
 package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.UserCallback;
@@ -281,6 +282,30 @@ public class UserController {
         } else {
             throw new UserStateException("User is not signed in.");
         }
+    }
+
+    public static void changePassword(String oldPassword, String newPassword, ControllerCallback<Void, ErrorType> callback) {
+        UserController.getEmail(new ControllerCallback<String, ErrorType>() {
+            @Override
+            public void onSuccess(String result) {
+                userDAO.changePassword(EmailAuthProvider.getCredential(result, oldPassword) , newPassword, new UserCallback<Void, Exception>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        callback.onSuccess(null);
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+                        callback.onError(ErrorType.CHANGE_PASSWORD_ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(ErrorType error) {
+                callback.onError(error);
+            }
+        });
     }
 
     public static void updateUserLinks(String link) {

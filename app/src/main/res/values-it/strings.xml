@@ -26,6 +26,10 @@
     <string name="request_keep_page">Restare nella schermata?</string>
     <string name="request_keep_page_desc">Stai per uscire dalla pagina ed hai modifiche non salvate. ignorare?</string>
     <string name="put_link">Iscerisci il link</string>
+    <string name="change_password">Cambia password</string>
+    <string name="write_old_password">Inserisci la vecchia password</string>
+    <string name="write_new_password">Inserisci la nuova password</string>
+    <string name="success_change_password">Password cambiata con successo</string>
 
     <!-- Error message -->
     <string name="error_user_not_logged_in">Utente non loggato</string>
@@ -49,8 +53,10 @@
     <string name="error_get_user_read_notes">Errore nel recupero delle note lette</string>
     <string name="error_get_user_notes">Errore nel recupero delle note</string>
     <string name="error_position_not_found">Posizione non trovata</string>
+    <string name="error_change_password">Errore nel cambio della password</string>
 
     <!-- General -->
+    <string name="link">link</string>
     <string name="note">Note</string>
     <string name="settings">Impostazioni</string>
     <string name="map">Mappa</string>

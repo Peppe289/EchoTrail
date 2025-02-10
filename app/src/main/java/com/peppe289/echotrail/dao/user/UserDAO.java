@@ -1,6 +1,7 @@
 package com.peppe289.echotrail.dao.user;
 
 import android.icu.text.IDNA;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
@@ -14,6 +15,7 @@ import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.FirestoreConstants;
 
+import javax.security.auth.callback.Callback;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -99,6 +101,24 @@ public class UserDAO {
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .update(FirestoreConstants.Users.FIELD_LINKS, FieldValue.arrayRemove(link));
+    }
+
+    /**
+     * Update password.
+     *
+     * @param authCredential    authentication the user again before changing the password.
+     * @param newPassword       new password to set.
+     */
+    public void changePassword(AuthCredential authCredential, String newPassword, UserCallback<Void, Exception> callback) {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null)
+            user.reauthenticate(authCredential)
+                    .addOnSuccessListener(aVoid ->
+                            auth.getCurrentUser()
+                                    .updatePassword(newPassword)
+                                    .addOnSuccessListener(callback::onSuccess)
+                                    .addOnFailureListener(callback::onError))
+                    .addOnFailureListener(callback::onError);
     }
 
     public void signOut() {
