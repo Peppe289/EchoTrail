@@ -130,7 +130,7 @@ public class LocationHelper {
      * @param locationCallback the callback to handle location updates or errors
      */
     public void getCurrentLocation(Context context, Activity activity, @NonNull LocationCallback<GeoPoint, ErrorType> locationCallback) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             locationCallback.onError(ErrorType.POSITION_PERMISSION_ERROR);
             return;
         }

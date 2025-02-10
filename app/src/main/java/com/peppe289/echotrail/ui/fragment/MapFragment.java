@@ -236,14 +236,8 @@ public class MapFragment extends Fragment {
                         .RequestMultiplePermissions(), result -> {
                     Boolean fineLocationGranted = result.getOrDefault(
                             Manifest.permission.ACCESS_FINE_LOCATION, false);
-                    Boolean coarseLocationGranted = result.getOrDefault(
-                            Manifest.permission.ACCESS_COARSE_LOCATION, false);
                     if (fineLocationGranted != null && fineLocationGranted) {
                         setCurrentLocation();
-                    } else if (coarseLocationGranted != null && coarseLocationGranted) {
-                        BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance("Permesso di localizzazione",
-                                "Per utilizzare l'applicazione non è sufficiente utilizzare il permesso di localizzazione approssimativa.");
-                        bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());
                     } else {
                         Toast.makeText(requireContext(),
                                 ErrorType.POSITION_PERMISSION_ERROR.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
