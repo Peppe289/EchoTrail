@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onError(ErrorType error) {
                     // if preferences are invalid with a server database, some stuff when wrong, so invalidate this login.
                     try {
-                        UserController.logout();
+                        // when done if necessary, back to the login page without cause an error.
+                        UserController.logout(getApplicationContext());
                     } catch (RuntimeException ignore) {
                     }
                 }

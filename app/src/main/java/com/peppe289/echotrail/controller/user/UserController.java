@@ -15,8 +15,10 @@ import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.exceptions.UserStateException;
 import com.peppe289.echotrail.model.Session;
 import com.peppe289.echotrail.model.User;
+import com.peppe289.echotrail.ui.activity.MainActivity;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.IPGeolocation;
+import com.peppe289.echotrail.utils.NavigationHelper;
 import com.peppe289.echotrail.utils.UniqueIDHelper;
 import com.peppe289.echotrail.utils.callback.IPGeolocationCallback;
 
@@ -170,6 +172,17 @@ public class UserController {
         if (isLoggedIn()) {
             userDAO.signOut();
             PreferencesController.clearUserHeaders();
+        } else {
+            throw new UserStateException("User is not signed in.");
+        }
+    }
+
+    public static void logout(Context context) {
+        if (isLoggedIn()) {
+            userDAO.signOut();
+            PreferencesController.clearUserHeaders();
+            // go to login page.
+            NavigationHelper.rebaseActivity(context, MainActivity.class, null);
         } else {
             throw new UserStateException("User is not signed in.");
         }
