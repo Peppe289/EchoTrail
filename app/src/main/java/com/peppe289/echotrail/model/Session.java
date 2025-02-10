@@ -7,6 +7,14 @@ public class Session {
     public String position;
     public Timestamp time;
     public String version;
+    public String id;
+
+    /**
+     * This empty constructor is used by firestore
+     */
+    public Session() {
+
+    }
 
     public Session(String device, String position, Timestamp time, String version) {
         this.device = device;
@@ -45,5 +53,13 @@ public class Session {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 }

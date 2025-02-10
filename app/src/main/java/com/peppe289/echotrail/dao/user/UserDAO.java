@@ -136,6 +136,15 @@ public class UserDAO {
                 });
     }
 
+    public void getAllSessions(UserCallback<QuerySnapshot, Exception> callback) {
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(getUid())
+                .collection("session")
+                .get()
+                .addOnSuccessListener(callback::onSuccess)
+                .addOnFailureListener(e -> callback.onError(new UserCollectionException()));
+    }
+
     public void getSession(String deviceID, UserCallback<Void, Exception> callback) {
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())

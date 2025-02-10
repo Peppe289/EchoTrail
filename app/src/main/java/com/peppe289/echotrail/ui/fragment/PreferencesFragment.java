@@ -40,6 +40,7 @@ public class PreferencesFragment extends Fragment {
     private void setUpToggle() {
         SwitchMaterial anonymousSwitch = binding.switchAnonymousToggle;
         LinearLayout languages = binding.languagesLayout;
+        LinearLayout sessionManager = binding.sessionManager;
         // set default value in view
         UserController.getDefaultAnonymousPreference(
                 new ControllerCallback<Boolean, ErrorType>() {
@@ -60,5 +61,8 @@ public class PreferencesFragment extends Fragment {
 
         languages.setOnClickListener(v ->
                 NavigationHelper.startActivityForFragment(requireActivity(), LanguagesFragment.class, null));
+
+        sessionManager.setOnClickListener(v ->
+                NavigationHelper.startActivityForFragment(requireActivity(), FragmentSession.class, null));
     }
 }

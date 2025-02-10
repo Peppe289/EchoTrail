@@ -16,6 +16,8 @@
     <string name="italian">Italian</string>
     <string name="default_language">English</string>
     <string name="change_language_success">Language changed successfully! Restart application.</string>
+    <string name="sessions_manager">Sessions Manager</string>
+    <string name="position">Position</string>
 
     <!-- Profile -->
     <string name="copy_id">Copy ID</string>

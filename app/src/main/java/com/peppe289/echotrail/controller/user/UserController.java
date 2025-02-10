@@ -5,6 +5,7 @@ import android.os.Build;
 import android.provider.Settings;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.callback.UserCallback;
@@ -19,6 +20,7 @@ import com.peppe289.echotrail.utils.IPGeolocation;
 import com.peppe289.echotrail.utils.UniqueIDHelper;
 import com.peppe289.echotrail.utils.callback.IPGeolocationCallback;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -317,6 +319,34 @@ public class UserController {
             @Override
             public void onError(ErrorType error) {
                 // ignore. never happen
+            }
+        });
+    }
+
+
+    public static void getAllSessions(ControllerCallback<List<Session>, ErrorType> callback) {
+        userDAO.getAllSessions(new UserCallback<QuerySnapshot, Exception>() {
+            @Override
+            public void onSuccess(QuerySnapshot querySnapshot) {
+                List<Session> sessionList = new ArrayList<>();
+
+                for (DocumentSnapshot document : querySnapshot) {
+                    if (document.exists()) {
+                        Session session = document.toObject(Session.class);
+                        if (session != null) {
+                            session.setId(document.getId());
+                            sessionList.add(session);
+                        }
+                    }
+                }
+
+                callback.onSuccess(sessionList);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                // TODO: create right error code
+                callback.onError(ErrorType.UNKNOWN_ERROR);
             }
         });
     }

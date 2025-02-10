@@ -83,6 +83,35 @@
 
         <!-- start -->
         <LinearLayout
+                android:id="@+id/sessionManager"
+                android:paddingHorizontal="18dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:paddingVertical="12dp">
+
+            <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sessions_manager"
+                    android:textStyle="bold" />
+
+            <ImageView
+                    android:layout_marginStart="10dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/baseline_arrow_forward_ios_24"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp" />
+        </LinearLayout>
+        <!-- end -->
+
+        <!-- start -->
+        <LinearLayout
             android:paddingHorizontal="18dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
