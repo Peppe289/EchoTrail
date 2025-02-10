@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import androidx.fragment.app.Fragment;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -63,6 +62,6 @@ public class PreferencesFragment extends Fragment {
                 NavigationHelper.startActivityForFragment(requireActivity(), LanguagesFragment.class, null));
 
         sessionManager.setOnClickListener(v ->
-                NavigationHelper.startActivityForFragment(requireActivity(), FragmentSession.class, null));
+                NavigationHelper.startActivityForFragment(requireActivity(), SessionFragment.class, null));
     }
 }

@@ -1,6 +1,5 @@
 package com.peppe289.echotrail.ui.fragment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,7 @@ import com.peppe289.echotrail.utils.ErrorType;
 
 import java.util.List;
 
-public class FragmentSession extends Fragment {
+public class SessionFragment extends Fragment {
     private ListView listView;
     private FragmentSessionBinding binding;
     private SessionsAdapter adapter;
