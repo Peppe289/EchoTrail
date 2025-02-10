@@ -63,9 +63,6 @@ public class UserDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void signIn(String email, String password, UserCallback<Void, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(result ->
                         callback.onSuccess(null))
@@ -73,9 +70,6 @@ public class UserDAO {
     }
 
     public void signUp(String email, String password, String username, UserCallback<Void, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task ->
                         db.collection(FirestoreConstants.COLLECTION_USERS)
@@ -88,36 +82,24 @@ public class UserDAO {
     }
 
     public void updateNotesList(String noteId) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .update(FirestoreConstants.Users.FIELD_PUBLISHED_NOTES, FieldValue.arrayUnion(noteId));
     }
 
     public void updateReadNotesList(String noteId) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .update(FirestoreConstants.Users.FIELD_READED_NOTES, FieldValue.arrayUnion(noteId));
     }
 
     public void updateUserLinks(String link) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .update(FirestoreConstants.Users.FIELD_LINKS, FieldValue.arrayUnion(link));
     }
 
     public void removeUserLink(String link) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .update(FirestoreConstants.Users.FIELD_LINKS, FieldValue.arrayRemove(link));
@@ -130,9 +112,6 @@ public class UserDAO {
      * @param newPassword       new password to set.
      */
     public void changePassword(AuthCredential authCredential, String newPassword, UserCallback<Void, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         FirebaseUser user = auth.getCurrentUser();
         if (user != null)
             user.reauthenticate(authCredential)
@@ -145,9 +124,6 @@ public class UserDAO {
     }
 
     public void addSession(Session session, String deviceID, UserCallback<Void, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .collection("session")
@@ -161,9 +137,6 @@ public class UserDAO {
     }
 
     public void getAllSessions(UserCallback<QuerySnapshot, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .collection("session")
@@ -173,9 +146,6 @@ public class UserDAO {
     }
 
     public void removeSession(String deviceID, UserCallback<Void, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .collection("session")
@@ -191,9 +161,6 @@ public class UserDAO {
     }
 
     public void getSession(String deviceID, UserCallback<Void, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .collection("session")
@@ -214,9 +181,6 @@ public class UserDAO {
 
 
     public void signOut() {
-        if (!isSignedIn())
-            return;
-
         auth.signOut();
     }
 
@@ -225,17 +189,11 @@ public class UserDAO {
     }
 
     public String getUid() {
-        if (!isSignedIn())
-            return "";
-
         FirebaseUser firebaseUser = auth.getCurrentUser();
         return firebaseUser != null ? firebaseUser.getUid() : "";
     }
 
     public void getUserInfo(String uid, UserCallback<User, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(uid)
                 .get()
@@ -247,16 +205,10 @@ public class UserDAO {
     }
 
     public void setUsername(String username) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS).document(getUid()).update(FirestoreConstants.Users.FIELD_USERNAME, username);
     }
 
     public void getEmail(UserCallback<String, Exception> callback) {
-        if (!isSignedIn())
-            return;
-
         FirebaseUser user = auth.getCurrentUser();
         if (user != null)
             callback.onSuccess(user.getEmail());
@@ -265,9 +217,6 @@ public class UserDAO {
     }
 
     public void setDefaultAnonymousPreference(boolean isAnonymous) {
-        if (!isSignedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .update(FirestoreConstants.Users.FIELD_PREF_ANONYMOUS, isAnonymous);

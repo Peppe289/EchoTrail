@@ -5,7 +5,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.*;
 import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.FriendsCallback;
-import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.exceptions.FriendCollectionException;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.utils.FirestoreConstants;
@@ -44,9 +43,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void requestToBeFriends(String friendId, FriendsCallback<Void, Exception> callback) {
-        if (!UserController.isLoggedIn())
-            return;
-
         String currentUserId = userDAO.getUid();
         String friendshipId = currentUserId + "_" + friendId;
 
@@ -71,9 +67,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void acceptRequest(String friendID, FriendsCallback<Void, Exception> callback) {
-        if (!UserController.isLoggedIn())
-            return;
-
         WriteBatch batch = db.batch();
 
         DocumentReference requestRef = db.collection(FirestoreConstants.COLLECTION_FRIENDS).document(userDAO.getUid() + "_" + friendID);
@@ -94,9 +87,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void rejectRequest(String friendID, FriendsCallback<String, Exception> callback) {
-        if (!UserController.isLoggedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_FRIENDS)
                 .document(friendID + "_" + userDAO.getUid())
                 .delete()
@@ -111,9 +101,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void removeFriend(String pointerString, FriendsCallback<String, Exception> callback) {
-        if (!UserController.isLoggedIn())
-            return;
-
         String uid = userDAO.getUid();
 
         db.collection(FirestoreConstants.COLLECTION_USERS).document(uid)
@@ -123,9 +110,6 @@ public class FriendsDAO {
     }
 
     public void searchPendingRequests(FriendsCallback<List<String>, Exception> callback) {
-        if (!UserController.isLoggedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_FRIENDS)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -155,9 +139,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void synchronizeFriendsList(FriendsCallback<Void, Exception> callback) {
-        if (!UserController.isLoggedIn())
-            return;
-
         String myUid = userDAO.getUid();
         Set<String> ignoreList = new HashSet<>();
         List<Task<Void>> pendingTasks = new ArrayList<>();
@@ -305,9 +286,6 @@ public class FriendsDAO {
      * @param callback The callback to be invoked upon completion.
      */
     public void getUIDFriendsList(String userID, FriendsCallback<List<String>, Exception> callback) {
-        if (!UserController.isLoggedIn())
-            return;
-
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(userID)
                 .get()
