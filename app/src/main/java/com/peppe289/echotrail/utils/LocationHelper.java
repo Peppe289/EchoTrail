@@ -136,7 +136,9 @@ public class LocationHelper {
         }
 
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener(activity, location -> {
-            if (location != null) {
+            if (location != null && location.isMock()) {
+                locationCallback.onError(ErrorType.POSITION_MOCK_ERROR);
+            } else if (location != null) {
                 GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                 locationCallback.onSuccess(startPoint);
             } else {
