@@ -2,7 +2,6 @@ package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
 import android.os.Build;
-import android.provider.Settings;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -336,7 +335,6 @@ public class UserController {
         });
     }
 
-
     public static void getAllSessions(ControllerCallback<List<Session>, ErrorType> callback) {
         userDAO.getAllSessions(new UserCallback<QuerySnapshot, Exception>() {
             @Override
@@ -380,17 +378,38 @@ public class UserController {
 
     }
 
-    public static void getSession(String devUID, ControllerCallback<Boolean, ErrorType> callback) {
-        userDAO.getSession(devUID, new UserCallback<Void, Exception>() {
+    /**
+     * Make this function with observer in DAO. In this way we are able to reuse code.
+     * Indeed, this can make logout without more code, but only with login page code in {@link MainActivity}.
+     *
+     * @param devUID        The unique code of this login.
+     * @param callback      The callback function.
+     */
+    public static void checkValidSession(String devUID, ControllerCallback<Boolean, ErrorType> callback) {
+        UserCallback<QuerySnapshot, Exception> userCallback = new UserCallback<>() {
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(QuerySnapshot result) {
+                // nothing happen
                 callback.onSuccess(true);
             }
 
             @Override
             public void onError(Exception error) {
                 // TODO: replace with right method.
+                // this cause logout.
                 callback.onError(ErrorType.UNKNOWN_ERROR);
+            }
+        };
+
+        userDAO.sessionListener(new UserCallback<QuerySnapshot, Exception>() {
+            @Override
+            public void onSuccess(QuerySnapshot result) {
+                userDAO.checkValidSession(devUID, userCallback);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                userDAO.checkValidSession(devUID, userCallback);
             }
         });
     }

@@ -3,7 +3,6 @@ package com.peppe289.echotrail.ui.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 UniqueIDHelper.getUUID(getApplicationContext()) != null) {
             // this allow to access offline.
             NavigationHelper.rebaseActivity(MainActivity.this, DispatcherActivity.class, null);
-            UserController.getSession(UniqueIDHelper.getUUID(getApplicationContext()), new ControllerCallback<Boolean, ErrorType>() {
+            UserController.checkValidSession(UniqueIDHelper.getUUID(getApplicationContext()), new ControllerCallback<Boolean, ErrorType>() {
                 @Override
                 public void onSuccess(Boolean result) {
                     // Don't put lunch activity here because can make delay.

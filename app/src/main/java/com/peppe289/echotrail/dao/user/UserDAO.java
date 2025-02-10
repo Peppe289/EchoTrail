@@ -1,6 +1,5 @@
 package com.peppe289.echotrail.dao.user;
 
-import android.icu.text.IDNA;
 import android.util.Log;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -10,17 +9,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.UserCallback;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.model.Session;
 import com.peppe289.echotrail.model.User;
-import com.peppe289.echotrail.controller.callback.ControllerCallback;
-import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.utils.FirestoreConstants;
-
-import javax.security.auth.callback.Callback;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * The {@code UserDAO} class provides methods for user authentication and management using Firebase Authentication and Firestore.
@@ -160,7 +153,16 @@ public class UserDAO {
                 });
     }
 
-    public void getSession(String deviceID, UserCallback<Void, Exception> callback) {
+    public void sessionListener(UserCallback<QuerySnapshot, Exception> callback) {
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(getUid())
+                .collection("session")
+                .addSnapshotListener((value, error) -> {
+                    callback.onSuccess(value);
+                });
+    }
+
+    public void checkValidSession(String deviceID, UserCallback<QuerySnapshot, Exception> callback) {
         db.collection(FirestoreConstants.COLLECTION_USERS)
                 .document(getUid())
                 .collection("session")
@@ -178,7 +180,6 @@ public class UserDAO {
                     callback.onError(new UserCollectionException());
                 });
     }
-
 
     public void signOut() {
         auth.signOut();
