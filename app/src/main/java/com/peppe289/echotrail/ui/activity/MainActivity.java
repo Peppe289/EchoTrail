@@ -22,10 +22,7 @@ import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.PreferencesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityMainBinding;
-import com.peppe289.echotrail.utils.DefaultErrorHandler;
-import com.peppe289.echotrail.utils.ErrorType;
-import com.peppe289.echotrail.utils.LanguageUtils;
-import com.peppe289.echotrail.utils.NavigationHelper;
+import com.peppe289.echotrail.utils.*;
 
 import java.util.Objects;
 
@@ -47,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         UserController.init();
         NotesController.init();
         FriendsController.init();
@@ -59,8 +55,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         // if the user is already logged (from android sdk) skipp this first page.
-        if (UserController.isLoggedIn()) {
+        if (UserController.isLoggedIn() &&
+                UniqueIDHelper.getUUID(getApplicationContext()) != null) {
+            // this allow to access offline.
             NavigationHelper.rebaseActivity(MainActivity.this, DispatcherActivity.class, null);
+            UserController.getSession(UniqueIDHelper.getUUID(getApplicationContext()), new ControllerCallback<Boolean, ErrorType>() {
+                @Override
+                public void onSuccess(Boolean result) {
+                    // Don't put lunch activity here because can make delay.
+                }
+
+                @Override
+                public void onError(ErrorType error) {
+                    // if preferences are invalid with a server database, some stuff when wrong, so invalidate this login.
+                    try {
+                        UserController.logout();
+                    } catch (RuntimeException ignore) {
+                    }
+                }
+            });
         }
 
         EdgeToEdge.enable(this);
@@ -91,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             .toString(), new ControllerCallback<Void, ErrorType>() {
                         @Override
                         public void onSuccess(Void result) {
+                            UniqueIDHelper.addSessionAtLogin(getApplicationContext());
                             NavigationHelper.rebaseActivity(getApplication(), DispatcherActivity.class, null);
                         }
 

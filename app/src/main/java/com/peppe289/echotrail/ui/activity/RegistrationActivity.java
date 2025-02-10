@@ -19,6 +19,7 @@ import com.peppe289.echotrail.databinding.ActivityRegistrationBinding;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.ui.utils.FormValidator;
 import com.peppe289.echotrail.utils.NavigationHelper;
+import com.peppe289.echotrail.utils.UniqueIDHelper;
 
 import java.util.Objects;
 
@@ -128,6 +129,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private void handleRegistrationResponse(boolean success) {
         if (success) {
             // Redirect to the DispatcherActivity if registration is successful
+            UniqueIDHelper.addSessionAtLogin(getApplicationContext());
             NavigationHelper.rebaseActivity(this, DispatcherActivity.class, null);
         } else {
             // Show error message if registration fails
