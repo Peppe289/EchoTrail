@@ -61,7 +61,7 @@ public class AccountFragment extends Fragment {
         binding.notify.setOnClickListener(view -> Log.i("AccountFragment", "Notify settings button clicked"));
 
         binding.logoutBtn.setOnClickListener(view -> {
-            UserController.logout();
+            UserController.logout(requireContext());
             NavigationHelper.rebaseActivity(getActivity(), MainActivity.class, null);
             Log.i("AccountFragment", "User logged out");
         });

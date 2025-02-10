@@ -165,23 +165,27 @@ public class UserController {
      * Clears associated session data from shared preferences.
      * </p>
      *
+     * @param context The application context to access shared preferences.
      * @throws UserStateException if no user is currently logged in.
      */
-    public static void logout() {
-        if (isLoggedIn()) {
-            userDAO.signOut();
-            PreferencesController.clearUserHeaders();
-        } else {
-            throw new UserStateException("User is not signed in.");
-        }
-    }
-
     public static void logout(Context context) {
         if (isLoggedIn()) {
-            userDAO.signOut();
-            PreferencesController.clearUserHeaders();
-            // go to login page.
-            NavigationHelper.rebaseActivity(context, MainActivity.class, null);
+            UserController.removeSession(UniqueIDHelper.getUniqueID(context), new ControllerCallback<Void, ErrorType>() {
+                @Override
+                public void onSuccess(Void result) {
+                    userDAO.signOut();
+                    PreferencesController.clearUserHeaders();
+                    PreferencesController.clearAnonymousPreferences();
+                    // go to login page.
+                    NavigationHelper.rebaseActivity(context, MainActivity.class, null);
+                }
+
+                @Override
+                public void onError(ErrorType error) {
+                    // if we get some error, logout anyway
+                    userDAO.signOut();
+                }
+            });
         } else {
             throw new UserStateException("User is not signed in.");
         }
