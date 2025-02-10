@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.peppe289.echotrail.ui.activity.MainActivity;
-import com.peppe289.echotrail.ui.activity.PreferencesActivity;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
@@ -80,7 +79,7 @@ public class AccountFragment extends Fragment {
         });
 
         binding.mynotes.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), UserListFragment.class, null));
-        binding.mypreferences.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), PreferencesActivity.class, null));
+        binding.mypreferences.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), PreferencesFragment.class, null));
         binding.personalData.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), PersonalInfoFragment.class, null));
 
         binding.idTextView.setText(UserController.getUid());
