@@ -1,22 +1,19 @@
-package com.peppe289.echotrail.ui.activity;
+package com.peppe289.echotrail.ui.fragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import com.google.android.material.appbar.MaterialToolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
-import com.peppe289.echotrail.databinding.ActivityPersonalInfoBinding;
+import com.peppe289.echotrail.databinding.FragmentPersonalInfoBinding;
 import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.adapter.UserLinksAdapter;
@@ -25,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class PersonalInfoActivity extends AppCompatActivity {
+public class PersonalInfoFragment extends Fragment {
 
-    private ActivityPersonalInfoBinding binding;
+    private FragmentPersonalInfoBinding binding;
     private com.google.android.material.textfield.TextInputEditText usernameEditText;
     private String currentUsername;
     private com.google.android.material.button.MaterialButton saveButton;
@@ -38,23 +35,16 @@ public class PersonalInfoActivity extends AppCompatActivity {
     private LinearLayout addLinkLayout;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        binding = ActivityPersonalInfoBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        EdgeToEdge.enable(this);
-        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentPersonalInfoBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
 
         initialization();
         loadDefaultValue();
-        setUpToolBar();
         setUpButton();
+
+        return rootView;
     }
 
     private void setUpButton() {
@@ -62,14 +52,14 @@ public class PersonalInfoActivity extends AppCompatActivity {
             String newUsername = Objects.requireNonNull(usernameEditText.getText()).toString();
             if (!newUsername.equals(currentUsername)) {
                 UserController.setUsername(newUsername);
-                finish();
+                requireActivity().finish();
             }
             if (listener != null) {
                 listener.onAccountEdited();
             }
         });
 
-        cancelButton.setOnClickListener(v -> finish());
+        cancelButton.setOnClickListener(v -> requireActivity().finish());
         addLinkLayout.setOnClickListener(v -> shouwCustomInput((str) -> {
             userLinksAdapter.add(str);
             UserController.updateUserLinks(str);
@@ -81,9 +71,9 @@ public class PersonalInfoActivity extends AppCompatActivity {
         saveButton = binding.saveButton;
         cancelButton = binding.cancelButton;
         listener = AccountEditNotifier.getInstance().getListener();
-        addLinkLayout = findViewById(R.id.add_link);
-        linksView = findViewById(R.id.links_list);
-        userLinksAdapter = new UserLinksAdapter(this, R.layout.personal_link_row, new ArrayList<>());
+        addLinkLayout = binding.addLink;
+        linksView = binding.linksList;
+        userLinksAdapter = new UserLinksAdapter(requireContext(), R.layout.personal_link_row, new ArrayList<>());
         linksView.setAdapter(userLinksAdapter);
         linksView.setOnItemClickListener((parent, view, position, id) ->
                 showCustomDialog("Eliminare?", "Stai per eliminare questo link dal tuo account. Sei sicuro?",
@@ -127,30 +117,11 @@ public class PersonalInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpToolBar() {
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
-        toolbar.setNavigationOnClickListener(v -> {
-            if (!Objects.requireNonNull(usernameEditText.getText()).toString().equals(currentUsername)) {
-                showCustomDialog(getString(R.string.request_keep_page), getString(R.string.request_keep_page_desc),
-                        () -> getOnBackPressedDispatcher().onBackPressed());
-            } else {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
-        });
-    }
-
     private void shouwCustomInput(CallBackInput callBackDialog) {
         View customView = getLayoutInflater().inflate(R.layout.dialog_input, null);
         TextInputEditText inputEditText = customView.findViewById(R.id.link_edit_text);
 
-        new MaterialAlertDialogBuilder(this)
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.put_link))
                 .setView(customView)
                 .setPositiveButton(getString(R.string.add), (dialogInterface, i) -> {
@@ -168,7 +139,7 @@ public class PersonalInfoActivity extends AppCompatActivity {
     }
 
     private void showCustomDialog(String title, String message, CallBackDialog callBackDialog, String negativeText, String positiveText) {
-        new MaterialAlertDialogBuilder(this)
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(positiveText, (dialogInterface, i) -> callBackDialog.onPositiveClick())

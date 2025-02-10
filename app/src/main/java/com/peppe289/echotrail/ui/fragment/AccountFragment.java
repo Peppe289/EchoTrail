@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.peppe289.echotrail.ui.activity.MainActivity;
-import com.peppe289.echotrail.ui.activity.PersonalInfoActivity;
 import com.peppe289.echotrail.ui.activity.PreferencesActivity;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class AccountFragment extends Fragment implements PersonalInfoActivity.OnAccountEditedListener {
+public class AccountFragment extends Fragment implements PersonalInfoFragment.OnAccountEditedListener {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private FragmentAccountBinding binding;
     private MaterialTextView username;
@@ -77,7 +76,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
         readedNotes = binding.notesRead;
 
         AppBarLayout appBarLayout = binding.appBarLayout;
-        PersonalInfoActivity.AccountEditNotifier.getInstance().setListener(this);
+        PersonalInfoFragment.AccountEditNotifier.getInstance().setListener(this);
 
         appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
             float percentage = Math.abs(verticalOffset) / (float) appBarLayout1.getTotalScrollRange();
@@ -88,7 +87,7 @@ public class AccountFragment extends Fragment implements PersonalInfoActivity.On
 
         binding.mynotes.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), UserListFragment.class, null));
         binding.mypreferences.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), PreferencesActivity.class, null));
-        binding.personalData.setOnClickListener(view -> NavigationHelper.addActivity(requireActivity(), PersonalInfoActivity.class, null));
+        binding.personalData.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), PersonalInfoFragment.class, null));
 
         binding.idTextView.setText(UserController.getUid());
         binding.copyIdLayout.setOnClickListener(v -> {
