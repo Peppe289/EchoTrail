@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class AccountFragment extends Fragment implements PersonalInfoFragment.OnAccountEditedListener {
+public class AccountFragment extends Fragment {
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private FragmentAccountBinding binding;
     private MaterialTextView username;
@@ -45,11 +45,6 @@ public class AccountFragment extends Fragment implements PersonalInfoFragment.On
     private com.google.android.material.textview.MaterialTextView publishedNotes;
     private com.google.android.material.textview.MaterialTextView readedNotes;
     private LoadingManager loadingManager;
-
-    @Override
-    public void onAccountEdited() {
-        triggerFetchInfoImmediately();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -76,7 +71,6 @@ public class AccountFragment extends Fragment implements PersonalInfoFragment.On
         readedNotes = binding.notesRead;
 
         AppBarLayout appBarLayout = binding.appBarLayout;
-        PersonalInfoFragment.AccountEditNotifier.getInstance().setListener(this);
 
         appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
             float percentage = Math.abs(verticalOffset) / (float) appBarLayout1.getTotalScrollRange();
@@ -105,14 +99,6 @@ public class AccountFragment extends Fragment implements PersonalInfoFragment.On
 
     private void startFetchingUserInfo() {
         scheduledFuture = executorService.scheduleWithFixedDelay(this::fetchInfo, 0, 5, TimeUnit.SECONDS);
-    }
-
-    private void triggerFetchInfoImmediately() {
-        if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
-            scheduledFuture.cancel(false);
-        }
-        fetchInfo();
-        startFetchingUserInfo();
     }
 
     private void fetchInfo() {

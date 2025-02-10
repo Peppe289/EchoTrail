@@ -29,7 +29,6 @@ public class PersonalInfoFragment extends Fragment {
     private String currentUsername;
     private com.google.android.material.button.MaterialButton saveButton;
     private com.google.android.material.button.MaterialButton cancelButton;
-    private OnAccountEditedListener listener;
     private ListView linksView;
     private UserLinksAdapter userLinksAdapter;
     private LinearLayout addLinkLayout;
@@ -54,9 +53,6 @@ public class PersonalInfoFragment extends Fragment {
                 UserController.setUsername(newUsername);
                 requireActivity().finish();
             }
-            if (listener != null) {
-                listener.onAccountEdited();
-            }
         });
 
         cancelButton.setOnClickListener(v -> requireActivity().finish());
@@ -70,7 +66,6 @@ public class PersonalInfoFragment extends Fragment {
         usernameEditText = binding.usernameEditText;
         saveButton = binding.saveButton;
         cancelButton = binding.cancelButton;
-        listener = AccountEditNotifier.getInstance().getListener();
         addLinkLayout = binding.addLink;
         linksView = binding.linksList;
         userLinksAdapter = new UserLinksAdapter(requireContext(), R.layout.personal_link_row, new ArrayList<>());
@@ -134,10 +129,6 @@ public class PersonalInfoFragment extends Fragment {
                 .show();
     }
 
-    private void showCustomDialog(String title, String message, CallBackDialog callBackDialog) {
-        showCustomDialog(title, message, callBackDialog, "Annulla", "Ignora");
-    }
-
     private void showCustomDialog(String title, String message, CallBackDialog callBackDialog, String negativeText, String positiveText) {
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(title)
@@ -155,35 +146,7 @@ public class PersonalInfoFragment extends Fragment {
         void onPositiveClick(String inputText);
     }
 
-    public interface OnAccountEditedListener {
-        void onAccountEdited();
-    }
-
     private void handleError(ErrorType error) {
         DefaultErrorHandler.getInstance(null).showError(error);
     }
-
-    public static class AccountEditNotifier {
-        private static AccountEditNotifier instance;
-        private OnAccountEditedListener listener;
-
-        private AccountEditNotifier() {
-        }
-
-        public static AccountEditNotifier getInstance() {
-            if (instance == null) {
-                instance = new AccountEditNotifier();
-            }
-            return instance;
-        }
-
-        public OnAccountEditedListener getListener() {
-            return listener;
-        }
-
-        public void setListener(OnAccountEditedListener listener) {
-            this.listener = listener;
-        }
-    }
-
 }
