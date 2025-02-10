@@ -1,6 +1,9 @@
 package com.peppe289.echotrail.controller.user;
 
 import android.content.Context;
+import android.os.Build;
+import android.provider.Settings;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
@@ -9,8 +12,12 @@ import com.peppe289.echotrail.controller.notes.NotesController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.exceptions.UserStateException;
+import com.peppe289.echotrail.model.Session;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.utils.IPGeolocation;
+import com.peppe289.echotrail.utils.UniqueIDHelper;
+import com.peppe289.echotrail.utils.callback.IPGeolocationCallback;
 
 import java.util.HashMap;
 import java.util.List;
@@ -282,6 +289,51 @@ public class UserController {
         } else {
             throw new UserStateException("User is not signed in.");
         }
+    }
+
+    public static void addSession(Context context, ControllerCallback<Void, ErrorType> callback) {
+        String androidID = UniqueIDHelper.getUniqueID(context);
+        IPGeolocation.getCountryFromIP(new IPGeolocationCallback<String, ErrorType>() {
+            @Override
+            public void onSuccess(String result) {
+                Session session = new Session(
+                        Build.MANUFACTURER + " " + Build.MODEL,
+                        result,
+                        Timestamp.now(),
+                        Build.VERSION.RELEASE);
+                userDAO.addSession(session, androidID, new UserCallback<Void, Exception>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        callback.onSuccess(null);
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+                        callback.onError(ErrorType.ADD_SESSION_ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(ErrorType error) {
+                // ignore. never happen
+            }
+        });
+    }
+
+    public static void getSession(String devUID, ControllerCallback<Boolean, ErrorType> callback) {
+        userDAO.getSession(devUID, new UserCallback<Void, Exception>() {
+            @Override
+            public void onSuccess(Void result) {
+                callback.onSuccess(true);
+            }
+
+            @Override
+            public void onError(Exception error) {
+                // TODO: replace with right method.
+                callback.onError(ErrorType.UNKNOWN_ERROR);
+            }
+        });
     }
 
     public static void changePassword(String oldPassword, String newPassword, ControllerCallback<Void, ErrorType> callback) {

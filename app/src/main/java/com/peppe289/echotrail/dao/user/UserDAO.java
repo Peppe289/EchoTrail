@@ -1,6 +1,7 @@
 package com.peppe289.echotrail.dao.user;
 
 import android.icu.text.IDNA;
+import android.util.Log;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -10,6 +11,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.exceptions.UserCollectionException;
+import com.peppe289.echotrail.model.Session;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
@@ -120,6 +122,39 @@ public class UserDAO {
                                     .addOnFailureListener(callback::onError))
                     .addOnFailureListener(callback::onError);
     }
+
+    public void addSession(Session session, String deviceID, UserCallback<Void, Exception> callback) {
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(getUid())
+                .collection("session")
+                .document(deviceID)
+                .set(session)
+                .addOnSuccessListener(documentReference -> callback.onSuccess(null))
+                .addOnFailureListener(e -> {
+                    Log.d("UserDAO", "Error adding document", e);
+                    callback.onError(new UserCollectionException());
+                });
+    }
+
+    public void getSession(String deviceID, UserCallback<Void, Exception> callback) {
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(getUid())
+                .collection("session")
+                .document(deviceID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        callback.onSuccess(null);
+                    } else {
+                        callback.onError(new Exception("La sessione non esiste"));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("UserDAO", "Errore nel recupero della sessione", e);
+                    callback.onError(new UserCollectionException());
+                });
+    }
+
 
     public void signOut() {
         auth.signOut();
