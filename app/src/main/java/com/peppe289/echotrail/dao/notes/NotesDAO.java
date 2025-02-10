@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.firestore.*;
 import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.NotesCallback;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.dao.user.UserDAO;
 import com.peppe289.echotrail.exceptions.NoteCollectionException;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
@@ -62,6 +63,9 @@ public class NotesDAO {
      * @param callback a callback instance to notify when the save operation is complete
      */
     public void saveNote(Map<String, Object> noteData, NotesCallback<String, Exception> callback) {
+        if (!UserController.isLoggedIn())
+            return;
+
         db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .add(noteData)
                 .addOnSuccessListener(documentReference -> {
@@ -83,6 +87,9 @@ public class NotesDAO {
      * @param callback a callback instance to handle the retrieved notes
      */
     public void getNotes(List<String> notesID, NotesCallback<QuerySnapshot, Exception> callback) {
+        if (!UserController.isLoggedIn())
+            return;
+
         db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
@@ -99,6 +106,9 @@ public class NotesDAO {
      * @param callback a callback instance to handle the retrieved notes
      */
     public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback) {
+        if (!UserController.isLoggedIn())
+            return;
+
         db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
@@ -111,6 +121,9 @@ public class NotesDAO {
      * @param listen for change signature
      */
     public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback, boolean listen) {
+        if (!UserController.isLoggedIn())
+            return;
+
         if (listen)
             db.collection(FirestoreConstants.COLLECTION_NOTES).addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
