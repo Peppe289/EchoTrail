@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.peppe289.echotrail.R;
 
 import org.json.JSONException;
@@ -102,7 +104,8 @@ public class MapHelper {
             }
             if (marker == null) {
                 marker = new Marker(mapView);
-                marker.setTitle("La mia posizione");
+                marker.setInfoWindow(null);
+                marker.setIcon(context.getResources().getDrawable(R.drawable.ic_marker, null));
                 marker.setPosition(point);
                 mapView.getOverlays().add(marker);
             } else {
