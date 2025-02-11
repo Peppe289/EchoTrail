@@ -100,11 +100,19 @@ public class MapFragment extends Fragment {
         sUpdateGPS = esUpdateGPS.scheduleWithFixedDelay(() -> locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<>() {
             @Override
             public void onSuccess(GeoPoint location) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
                 mapHelper.setMapCenter(location, false);
             }
 
             @Override
             public void onError(ErrorType errorType) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
         }), 0, 5, TimeUnit.SECONDS);
@@ -117,8 +125,20 @@ public class MapFragment extends Fragment {
         if (sUpdateGPS != null && !sUpdateGPS.isCancelled()) {
             sUpdateGPS.cancel(true);
         }
+
+        searchView = null;
+        searchBar = null;
+        suggestionsList = null;
+        addNewNoteFloatingBtn = null;
+        updatePositionFloatingBtn = null;
+        publicNotesBtn = null;
+        privateNotesBtn = null;
+        adapter = null;
+
         esUpdateGPS.shutdown();
+        executorService.shutdown();
     }
+
 
     // Initialize UI components
     private void initializeUI(View view) {
@@ -263,6 +283,9 @@ public class MapFragment extends Fragment {
         NotesController.getAllNotes(new ControllerCallback<QuerySnapshot, ErrorType>() {
             @Override
             public void onSuccess(QuerySnapshot querySnapshot) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
 
                 if (querySnapshot == null || querySnapshot.isEmpty()) return;
                 for (DocumentSnapshot documentSnapshot : querySnapshot) {
@@ -296,6 +319,10 @@ public class MapFragment extends Fragment {
                         locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<GeoPoint, ErrorType>() {
                             @Override
                             public void onSuccess(GeoPoint currentLocation) {
+                                if (!isAdded() || getView() == null) {
+                                    return;
+                                }
+
                                 List<String> readyToSeeIDs = nearbyMarkers.stream()
                                         .filter(entry -> MapHelper.arePointsClose(currentLocation, entry.getKey(), MapHelper.MarkerDistance.CLOSE))
                                         .flatMap(entry -> entry.getValue().stream()) // Flatten IDs
@@ -313,6 +340,10 @@ public class MapFragment extends Fragment {
 
                             @Override
                             public void onError(ErrorType errorType) {
+                                if (!isAdded() || getView() == null) {
+                                    return;
+                                }
+
                                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -324,6 +355,10 @@ public class MapFragment extends Fragment {
 
             @Override
             public void onError(ErrorType errorType) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
         }, true);
@@ -351,13 +386,21 @@ public class MapFragment extends Fragment {
         scheduledFuture = executorService.schedule(() -> MapHelper.fetchSuggestions(query, new MapHelper.OnFetchSuggestions() {
             @Override
             public void onFetchSuggestions(String responseBody) throws JSONException {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
                 processSuggestionsResponse(responseBody);
             }
 
             @Override
             public void onErrorMessage(ErrorType errorType) {
-                requireActivity().runOnUiThread(() -> Toast.makeText(requireContext(),
-                        errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show());
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
+                Toast.makeText(requireContext(),
+                        errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
         }), 300, TimeUnit.MILLISECONDS);
     }
@@ -382,11 +425,19 @@ public class MapFragment extends Fragment {
         locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<>() {
             @Override
             public void onSuccess(GeoPoint location) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
                 mapHelper.setMapCenter(location);
             }
 
             @Override
             public void onError(ErrorType errorType) {
+                if (!isAdded() || getView() == null) {
+                    return;
+                }
+
                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                 mapHelper.setDefaultCenter(); // Set default position.
             }
