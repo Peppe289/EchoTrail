@@ -216,6 +216,23 @@ public class UserDAO {
         db.collection(FirestoreConstants.COLLECTION_USERS).document(getUid()).update(FirestoreConstants.Users.FIELD_USERNAME, username);
     }
 
+    /**
+     * This is used only for trigger callback function when a collection is updated.
+     *
+     * @param callback The callback to be invoked upon triggered.
+     */
+    public void genericUserListener(UserCallback<Void, Exception> callback) {
+        if (!isSignedIn())
+            return;
+
+        db.collection(FirestoreConstants.COLLECTION_USERS).addSnapshotListener((snapshot, e) -> {
+            if (!isSignedIn())
+                return;
+
+            callback.onSuccess(null);
+        });
+    }
+
     public void getEmail(UserCallback<String, Exception> callback) {
         FirebaseUser user = auth.getCurrentUser();
         if (user != null)

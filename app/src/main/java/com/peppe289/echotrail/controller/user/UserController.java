@@ -284,19 +284,18 @@ public class UserController {
      * Retrieves user headers (username and email) from shared preferences.
      * If not locally available, fetches data from the backend.
      *
-     * @param context  The application context to access shared preferences.
      * @param callback A callback to handle the retrieved headers.
      * @throws UserStateException if no user is logged in.
      */
-    public static void getUserHeadersFromPreferences(Context context, ControllerCallback<HashMap<String, String>, ErrorType> callback) {
+    public static void getUserHeadersFromPreferences(ControllerCallback<HashMap<String, String>, ErrorType> callback) {
         if (isLoggedIn()) {
             // make 2 time. the first help in use case like start up op application (retrieve from preferences if isn't empty)
             // the second help in case of change from database (update preferences) in async way
-            PreferencesController.checkOnPreferences(callback);
-            updateUserHeadersToPreferences(context, new ControllerCallback<HashMap<String, String>, ErrorType>() {
+            PreferencesController.loadFromPreferences(callback);
+            updateUserHeadersToPreferences(new ControllerCallback<HashMap<String, String>, ErrorType>() {
                 @Override
                 public void onSuccess(HashMap<String, String> result) {
-                    PreferencesController.checkOnPreferences(callback);
+                    PreferencesController.loadFromPreferences(callback);
                 }
 
                 @Override
@@ -450,46 +449,48 @@ public class UserController {
      * Synchronizes preferences with the latest server-side data.
      * </p>
      *
-     * @param context The application context to access shared preferences.
      * @throws UserStateException if no user is logged in.
      */
-    public static void updateUserHeadersToPreferences(Context context, ControllerCallback<HashMap<String, String>, ErrorType> callback) {
-        String username;
-
+    public static void updateUserHeadersToPreferences(ControllerCallback<HashMap<String, String>, ErrorType> callback) {
         if (!isLoggedIn()) {
             throw new UserStateException("User is not signed in.");
         }
 
-        username = PreferencesController.retrieveName();
-        getUsername(new ControllerCallback<String, ErrorType>() {
+        userDAO.genericUserListener(new UserCallback<Void, Exception>() {
             @Override
-            public void onSuccess(String usernameDB) {
-                if (!Objects.equals(usernameDB, username)) {
-                    PreferencesController.updateName(usernameDB);
-                }
-
-                String email = PreferencesController.retrieveEmail();
-                getEmail(new ControllerCallback<String, ErrorType>() {
+            public void onSuccess(Void result) {
+                userDAO.getEmail(new UserCallback<String, Exception>() {
                     @Override
-                    public void onSuccess(String result) {
-                        if (!Objects.equals(email, result)) {
-                            PreferencesController.updateEmail(result);
-                        }
+                    public void onSuccess(String email) {
+                        PreferencesController.updateEmail(email);
+                        userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
+                            @Override
+                            public void onSuccess(User result) {
+                                String username = result.getUsername();
+                                PreferencesController.updateName(username);
+                                callback.onSuccess(new HashMap<>(2) {{
+                                    put("username", username);
+                                    put("email", email);
+                                }});
+                            }
+
+                            @Override
+                            public void onError(Exception error) {
+                                callback.onError(ErrorType.UNKNOWN_ERROR);
+                            }
+                        });
                     }
 
                     @Override
-                    public void onError(ErrorType error) {
-                        callback.onError(error);
+                    public void onError(Exception error) {
+                        callback.onError(ErrorType.UNKNOWN_ERROR);
                     }
                 });
-
-                // Make sure the user is in shared preferences
-                PreferencesController.checkOnPreferences(callback);
             }
 
             @Override
-            public void onError(ErrorType error) {
-                callback.onError(error);
+            public void onError(Exception error) {
+                callback.onError(ErrorType.UNKNOWN_ERROR);
             }
         });
     }

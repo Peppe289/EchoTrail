@@ -36,11 +36,9 @@ import java.util.concurrent.TimeUnit;
  * create an instance of this fragment.
  */
 public class AccountFragment extends Fragment {
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private FragmentAccountBinding binding;
     private MaterialTextView username;
     private MaterialTextView email;
-    private ScheduledFuture<?> scheduledFuture;
     private com.google.android.material.textview.MaterialTextView publishedNotes;
     private com.google.android.material.textview.MaterialTextView readedNotes;
     private LoadingManager loadingManager;
@@ -90,60 +88,44 @@ public class AccountFragment extends Fragment {
             Toast.makeText(binding.getRoot().getContext(), "UID Copied", Toast.LENGTH_SHORT).show();
         });
 
-        startFetchingUserInfo();
         fetchInfo();
 
         return rootView;
     }
 
-    private void startFetchingUserInfo() {
-        scheduledFuture = executorService.scheduleWithFixedDelay(this::fetchInfo, 0, 5, TimeUnit.SECONDS);
-    }
-
     private void fetchInfo() {
-        requireActivity().runOnUiThread(() -> {
-            // load user headers (name and email) from the cache if possible.
-            UserController.getUserHeadersFromPreferences(requireContext(), new ControllerCallback<HashMap<String, String>, ErrorType>() {
-                @Override
-                public void onSuccess(HashMap<String, String> result) {
-                    username.setText(result.get("username"));
-                    email.setText(result.get("email"));
-                }
+        // load user headers (name and email) from the cache if possible.
+        UserController.getUserHeadersFromPreferences(new ControllerCallback<HashMap<String, String>, ErrorType>() {
+            @Override
+            public void onSuccess(HashMap<String, String> result) {
+                username.setText(result.get("username"));
+                email.setText(result.get("email"));
+            }
 
-                @Override
-                public void onError(ErrorType error) {
-                    handleError(error);
-                }
-            });
+            @Override
+            public void onError(ErrorType error) {
+                handleError(error);
+            }
+        });
 
-            UserController.getUserInfoByUID(UserController.getUid(), new ControllerCallback<User, ErrorType>() {
-                @Override
-                public void onSuccess(User userInfo) {
-                    if (userInfo != null) {
-                        publishedNotes.setText(String.valueOf(userInfo.getNotes().size()));
-                        readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
-                        loadingManager.hideLoading();
-                    }
+        UserController.getUserInfoByUID(UserController.getUid(), new ControllerCallback<User, ErrorType>() {
+            @Override
+            public void onSuccess(User userInfo) {
+                if (userInfo != null) {
+                    publishedNotes.setText(String.valueOf(userInfo.getNotes().size()));
+                    readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
+                    loadingManager.hideLoading();
                 }
+            }
 
-                @Override
-                public void onError(ErrorType error) {
-                    handleError(error);
-                }
-            });
+            @Override
+            public void onError(ErrorType error) {
+                handleError(error);
+            }
         });
     }
 
     private void handleError(ErrorType error) {
         DefaultErrorHandler.getInstance(null).showError(error);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (scheduledFuture != null && !scheduledFuture.isCancelled()) {
-            scheduledFuture.cancel(true);
-        }
-        executorService.shutdown();
     }
 }

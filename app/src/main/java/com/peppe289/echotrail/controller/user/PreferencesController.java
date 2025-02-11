@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import androidx.annotation.Nullable;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.ErrorType;
-import com.peppe289.echotrail.utils.LanguageUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -50,53 +49,6 @@ public class PreferencesController {
      */
     public static void setLanguages(String languages) {
         settingsPreferences.edit().putString("languages", languages).apply();
-    }
-
-    /**
-     * Loads the user headers (username and email) from Firebase and stores them in shared preferences.
-     * <p>
-     * The method performs the following steps:
-     * <ol>
-     *     <li>Asynchronously retrieves the username from Firebase.</li>
-     *     <li>Retrieves the email from Firebase after the username is fetched.</li>
-     *     <li>Saves both username and email in shared preferences.</li>
-     *     <li>Invokes the provided callback with the retrieved data as a map.</li>
-     * </ol>
-     *
-     * @param callback A callback to be invoked once the data is retrieved and stored.
-     *                 The callback receives a map containing the keys "username" and "email".
-     */
-    private static void loadUserHeaders(ControllerCallback<HashMap<String, String>, ErrorType> callback) {
-        UserController.getUsername(new ControllerCallback<String, ErrorType>() {
-            @Override
-            public void onSuccess(String name) {
-                UserController.getEmail(new ControllerCallback<String, ErrorType>() {
-                    @Override
-                    public void onSuccess(String result) {
-                        updateName(name);
-                        updateEmail(result);
-
-                        if (callback != null) {
-                            // Provide the retrieved data to the callback.
-                            callback.onSuccess(new HashMap<>(2) {{
-                                put("username", name);
-                                put("email", result);
-                            }});
-                        }
-                    }
-
-                    @Override
-                    public void onError(ErrorType error) {
-                        callback.onError(error);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(ErrorType error) {
-                callback.onError(error);
-            }
-        });
     }
 
     /**
@@ -152,14 +104,11 @@ public class PreferencesController {
      * @param callback A callback to be invoked once the data is available.
      *                 The callback receives a map containing the keys "username" and "email".
      */
-    public static void checkOnPreferences(ControllerCallback<HashMap<String, String>, ErrorType> callback) {
+    public static void loadFromPreferences(ControllerCallback<HashMap<String, String>, ErrorType> callback) {
         @Nullable String username = retrieveName();
         @Nullable String email = retrieveEmail();
 
-        if (username == null || email == null) {
-            // Load data from Firebase if not present in shared preferences.
-            loadUserHeaders(callback);
-        } else if (callback != null) {
+        if (callback != null) {
             // Invoke the callback with the data from shared preferences.
             callback.onSuccess(new HashMap<>(2) {{
                 put("username", username);

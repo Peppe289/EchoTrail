@@ -142,9 +142,6 @@ public class DispatcherActivity extends AppCompatActivity {
             // Wait in async state for the view to be created before selecting the item.
             binding.bottomNavigationView.post(() -> binding.bottomNavigationView.setSelectedItemId(selectedItemId));
         }
-
-        // Save or update user headers in shared preferences for future use.
-        UserController.updateUserHeadersToPreferences(binding.getRoot().getContext(), null);
     }
 
     /**
