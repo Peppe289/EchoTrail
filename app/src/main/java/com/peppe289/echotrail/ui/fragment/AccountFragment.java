@@ -108,7 +108,7 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        UserController.getUserInfoByUID(UserController.getUid(), new ControllerCallback<User, ErrorType>() {
+        UserController.listenerUserInfo(new ControllerCallback<User, ErrorType>() {
             @Override
             public void onSuccess(User userInfo) {
                 if (userInfo != null) {

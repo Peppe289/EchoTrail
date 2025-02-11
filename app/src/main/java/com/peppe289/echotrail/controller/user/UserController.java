@@ -521,6 +521,30 @@ public class UserController {
             callback.onError(ErrorType.USER_NOT_LOGGED_IN_ERROR);
     }
 
+    public static void listenerUserInfo(ControllerCallback<User, ErrorType> callback) {
+        userDAO.genericUserListener(new UserCallback<Void, Exception>() {
+            @Override
+            public void onSuccess(Void result) {
+                userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
+                    @Override
+                    public void onSuccess(User result) {
+                        callback.onSuccess(result);
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+                        callback.onError(ErrorType.UNKNOWN_ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception error) {
+
+            }
+        });
+    }
+
     public static void getUserInfoByUID(String uid, ControllerCallback<User, ErrorType> callback) {
         userDAO.getUserInfo(uid, new UserCallback<User, Exception>() {
             @Override
