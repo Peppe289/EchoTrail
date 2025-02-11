@@ -47,6 +47,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -278,7 +279,6 @@ public class MapFragment extends Fragment {
      * This method isn't called periodically, but it triggers the fetch of notes when the
      * firebase document is updated.
      */
-    @SuppressLint("NewApi")
     private void fetchNotes() {
         NotesController.getAllNotes(new ControllerCallback<QuerySnapshot, ErrorType>() {
             @Override
@@ -311,7 +311,7 @@ public class MapFragment extends Fragment {
                         // Preliminary filtering of nearby markers
                         List<Map.Entry<GeoPoint, List<String>>> nearbyMarkers = markerCounter.entrySet().stream()
                                 .filter(entry -> MapHelper.arePointsClose(entry.getKey(), clickedPoint, MapHelper.MarkerDistance.CLOSE))
-                                .toList();
+                                .collect(Collectors.toList());
 
                         // No relevant markers
                         if (nearbyMarkers.isEmpty()) return true;
@@ -327,7 +327,7 @@ public class MapFragment extends Fragment {
                                         .filter(entry -> MapHelper.arePointsClose(currentLocation, entry.getKey(), MapHelper.MarkerDistance.CLOSE))
                                         .flatMap(entry -> entry.getValue().stream()) // Flatten IDs
                                         .distinct() // Remove duplicates
-                                        .toList();
+                                        .collect(Collectors.toList());
 
                                 // Launch activity if there are notes to see
                                 if (!readyToSeeIDs.isEmpty()) {
@@ -399,8 +399,8 @@ public class MapFragment extends Fragment {
                     return;
                 }
 
-                Toast.makeText(requireContext(),
-                        errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+                requireActivity().runOnUiThread(() ->
+                        Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show());
             }
         }), 300, TimeUnit.MILLISECONDS);
     }
