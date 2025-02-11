@@ -217,10 +217,10 @@ public class AddNotesActivity extends AppCompatActivity {
 
     private void handleSaveResult(@Nullable ErrorType errorType) {
         if (errorType == null) {
-            Toast.makeText(AddNotesActivity.this, Toast.LENGTH_SHORT, R.string.note_shared).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.note_shared), Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Toast.makeText(AddNotesActivity.this, errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), errorType.getMessage(getApplicationContext()), Toast.LENGTH_SHORT).show();
         }
     }
 
