@@ -87,8 +87,10 @@ public class NotesDAO {
      * @param callback a callback instance to handle the retrieved notes
      */
     public void getNotes(List<String> notesID, NotesCallback<QuerySnapshot, Exception> callback) {
-        if (!UserController.isLoggedIn() || notesID == null || notesID.isEmpty())
+        if (!UserController.isLoggedIn() || notesID == null || notesID.isEmpty()) {
+            callback.onSuccess(null);
             return;
+        }
 
         db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .whereIn(FieldPath.documentId(), notesID)
