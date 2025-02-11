@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.model.Session;
+import com.peppe289.echotrail.utils.UniqueIDHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,9 +43,12 @@ public class SessionsAdapter extends ArrayAdapter<Session> {
         Session session = getItem(position);
         if (session != null) {
             viewHolder.coordinate.setText(getContext().getString(R.string.position) + ": " + session.getPosition());
-            viewHolder.device.setText(session.getDevice());
             viewHolder.android_version.setText("Android: " + session.getVersion());
             viewHolder.last_access_time.setText(formatDate(session.getTime()));
+            if (UniqueIDHelper.getUniqueID(getContext()).compareTo(session.getId()) == 0)
+                viewHolder.device.setText("(" + getContext().getString(R.string.current_session) + ") " + session.getDevice());
+            else
+                viewHolder.device.setText(session.getDevice());
         }
 
         return convertView;

@@ -20,6 +20,7 @@
     <string name="position">Position</string>
     <string name="confirm_elimination">Confirm delete</string>
     <string name="confirm_elimination_desc">Are you sure to delete?</string>
+    <string name="current_session">Current Session</string>
 
     <!-- Profile -->
     <string name="copy_id">Copy ID</string>
