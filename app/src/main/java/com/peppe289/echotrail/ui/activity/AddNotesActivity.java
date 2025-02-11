@@ -25,6 +25,7 @@ import com.peppe289.echotrail.databinding.ActivityAddNotesBinding;
 import com.peppe289.echotrail.model.Friend;
 import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.utils.LocationHelper;
 
 import com.peppe289.echotrail.utils.callback.HelperCallback;
@@ -38,6 +39,7 @@ public class AddNotesActivity extends AppCompatActivity {
     private ActivityAddNotesBinding binding;
     private boolean canPush = true;
     private LocationHelper locationHelper;
+    private LoadingManager loadingManager;
     private SwitchMaterial switchAnonymous;
     private Friend friend;
 
@@ -47,6 +49,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
         binding = ActivityAddNotesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        loadingManager = new LoadingManager(binding.getRoot());
 
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
@@ -154,6 +157,8 @@ public class AddNotesActivity extends AppCompatActivity {
             return;
         }
 
+        loadingManager.showLoading();
+
         String note = editText.getText().toString();
 
         Map<String, Object> data = new HashMap<>();
@@ -186,6 +191,7 @@ public class AddNotesActivity extends AppCompatActivity {
                                         NotesController.saveNote(data, (errorType) -> {
                                             // like mutex to avoid multiple click on save button.
                                             canPush = true;
+                                            loadingManager.hideLoading();
                                             handleSaveResult(errorType);
                                         });
                                     }
