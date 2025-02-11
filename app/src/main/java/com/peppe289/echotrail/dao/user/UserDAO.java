@@ -64,13 +64,19 @@ public class UserDAO {
 
     public void signUp(String email, String password, String username, UserCallback<Void, Exception> callback) {
         auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task ->
-                        db.collection(FirestoreConstants.COLLECTION_USERS)
-                                .document(getUid())
-                                .update(FirestoreConstants.Users.FIELD_USERNAME, username)
-                                .addOnCompleteListener(task1 ->
-                                        callback.onSuccess(null))
-                                .addOnFailureListener(callback::onError))
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        callback.onError(new UserCollectionException());
+                        return;
+                    }
+
+                    db.collection(FirestoreConstants.COLLECTION_USERS)
+                            .document(getUid())
+                            .update(FirestoreConstants.Users.FIELD_USERNAME, username)
+                            .addOnCompleteListener(task1 ->
+                                    callback.onSuccess(null))
+                            .addOnFailureListener(callback::onError);
+                })
                 .addOnFailureListener(callback::onError);
     }
 
