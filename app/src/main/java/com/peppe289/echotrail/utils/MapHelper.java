@@ -102,7 +102,7 @@ public class MapHelper {
         if (mapView != null) {
             if (setView) {
                 mapView.getController().animateTo(point);
-                mapView.getController().setZoom(15.0);
+                mapView.getController().setZoom(20.0);
             }
 
             if (circleOverlay == null) {
