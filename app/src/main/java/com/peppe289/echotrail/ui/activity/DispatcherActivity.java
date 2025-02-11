@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
  *     <li>Initializes and manages three primary fragments: {@link MapFragment}, {@link AccountFragment}, and {@link NotesFragment}.</li>
  *     <li>Configures the {@link BottomBar} utility for handling bottom navigation events.</li>
  *     <li>Applies edge-to-edge rendering for modern Android UI.</li>
- *     <li>Synchronizes user headers with local preferences using {@link UserController#updateUserHeadersToPreferences}.</li>
  * </ul>
  *
  * <h2>Example Usage:</h2>
