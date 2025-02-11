@@ -16,6 +16,7 @@ import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentSessionBinding;
 import com.peppe289.echotrail.model.Session;
 import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.utils.LoadingManager;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class SessionFragment extends Fragment {
     private ListView listView;
     private FragmentSessionBinding binding;
     private SessionsAdapter adapter;
+    private LoadingManager loadingIndicator;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class SessionFragment extends Fragment {
         binding = FragmentSessionBinding.inflate(getLayoutInflater());
         View v = binding.getRoot();
         listView = v.findViewById(R.id.session_list);
+        loadingIndicator = new LoadingManager(binding.getRoot());
+        loadingIndicator.showLoading();
         loadSession();
         initListener();
 
@@ -76,6 +80,7 @@ public class SessionFragment extends Fragment {
             public void onSuccess(List<Session> sessions) {
                 adapter = new SessionsAdapter(requireContext(), R.layout.session_item, sessions);
                 listView.setAdapter(adapter);
+                loadingIndicator.hideLoading();
             }
 
             @Override
