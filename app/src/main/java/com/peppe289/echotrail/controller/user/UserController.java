@@ -147,21 +147,17 @@ public class UserController {
     public static void register(String email, String password, String username, ControllerCallback<Void, ErrorType> callback) {
         validateCallback(callback);
 
-        if (!isLoggedIn()) {
-            userDAO.signUp(email, password, username, new UserCallback<Void, Exception>() {
-                @Override
-                public void onSuccess(Void result) {
-                    callback.onSuccess(null);
-                }
+        userDAO.signUp(email, password, username, new UserCallback<Void, Exception>() {
+            @Override
+            public void onSuccess(Void result) {
+                callback.onSuccess(null);
+            }
 
-                @Override
-                public void onError(Exception error) {
-                    callback.onError(ErrorType.UNKNOWN_ERROR);
-                }
-            });
-        } else {
-            throw new UserStateException("User is already signed in.");
-        }
+            @Override
+            public void onError(Exception error) {
+                callback.onError(ErrorType.UNKNOWN_ERROR);
+            }
+        });
     }
 
     /**

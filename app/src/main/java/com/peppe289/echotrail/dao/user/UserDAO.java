@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.peppe289.echotrail.annotations.TestOnly;
 import com.peppe289.echotrail.controller.callback.UserCallback;
 import com.peppe289.echotrail.controller.user.UserController;
@@ -14,6 +15,8 @@ import com.peppe289.echotrail.exceptions.UserCollectionException;
 import com.peppe289.echotrail.model.Session;
 import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.FirestoreConstants;
+
+import java.util.Collections;
 
 /**
  * The {@code UserDAO} class provides methods for user authentication and management using Firebase Authentication and Firestore.
@@ -72,9 +75,9 @@ public class UserDAO {
 
                     db.collection(FirestoreConstants.COLLECTION_USERS)
                             .document(getUid())
-                            .update(FirestoreConstants.Users.FIELD_USERNAME, username)
-                            .addOnCompleteListener(task1 ->
-                                    callback.onSuccess(null))
+                            .set(Collections.singletonMap(FirestoreConstants.Users.FIELD_USERNAME, username),
+                                    SetOptions.merge())
+                            .addOnCompleteListener(task1 -> callback.onSuccess(null))
                             .addOnFailureListener(callback::onError);
                 })
                 .addOnFailureListener(callback::onError);

@@ -112,8 +112,15 @@ public class AccountFragment extends Fragment {
             @Override
             public void onSuccess(User userInfo) {
                 if (userInfo != null) {
-                    publishedNotes.setText(String.valueOf(userInfo.getNotes().size()));
-                    readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
+                    if (userInfo.getNotes() != null)
+                        publishedNotes.setText(String.valueOf(userInfo.getNotes().size()));
+                    else
+                        publishedNotes.setText("0");
+
+                    if (userInfo.getReadedNotes() != null)
+                        readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
+                    else
+                        readedNotes.setText("0");
                     loadingManager.hideLoading();
                 }
             }
