@@ -56,11 +56,13 @@ import okhttp3.Response;
  * </p>
  */
 public class MapHelper {
+    private CircleOverlay circleOverlay;
     private final MapView mapView;
     private final HashMap<GeoPoint, List<String>> markerCounts;
     private Marker marker;
     private Context context;
     private static final OkHttpClient client = new OkHttpClient();
+    private static final int maxDistance = 100;
 
     /**
      * Constructs a new instance of the {@link MapHelper} class.
@@ -102,13 +104,23 @@ public class MapHelper {
                 mapView.getController().animateTo(point);
                 mapView.getController().setZoom(15.0);
             }
+
+            if (circleOverlay == null) {
+                circleOverlay = new CircleOverlay(point, maxDistance);
+            } else {
+                circleOverlay.setCenter(point);
+            }
+
             if (marker == null) {
                 marker = new Marker(mapView);
                 marker.setInfoWindow(null);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER);
                 marker.setIcon(context.getResources().getDrawable(R.drawable.ic_marker, null));
                 marker.setPosition(point);
                 mapView.getOverlays().add(marker);
+                mapView.getOverlays().add(circleOverlay);
             } else {
+                circleOverlay.setCenter(point);
                 marker.setPosition(point);
             }
         }
@@ -282,7 +294,7 @@ public class MapHelper {
      */
     public static boolean arePointsClose(GeoPoint p1, GeoPoint p2, MarkerDistance markerDistance) {
         double distance = p1.distanceToAsDouble(p2);
-        return markerDistance == MarkerDistance.TOO_CLOSE ? distance < 3 : distance < 100;
+        return markerDistance == MarkerDistance.TOO_CLOSE ? distance < 3 : distance < maxDistance;
     }
 
     /**
