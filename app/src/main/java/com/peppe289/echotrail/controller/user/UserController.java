@@ -24,7 +24,6 @@ import com.peppe289.echotrail.utils.callback.IPGeolocationCallback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The {@code UserController} class acts as an intermediary between the application logic
@@ -93,17 +92,32 @@ public class UserController {
         });
     }
 
-    public static void getReadedNotesList(ControllerCallback<QuerySnapshot, ErrorType> callback) {
-        userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
+    /**
+     * This uses listener to database
+     *
+     * @param callback trigger when the list is ready
+     */
+    public static void getReadNotesList(ControllerCallback<QuerySnapshot, ErrorType> callback) {
+        userDAO.genericUserListener(new UserCallback<Void, Exception>() {
             @Override
-            public void onSuccess(User user) {
-                NotesController.getNotes(user.getReadedNotes(), callback);
+            public void onSuccess(Void result) {
+                userDAO.getUserInfo(getUid(), new UserCallback<User, Exception>() {
+                    @Override
+                    public void onSuccess(User user) {
+                        NotesController.getNotes(user.getReadedNotes(), callback);
+                    }
+
+                    @Override
+                    public void onError(Exception error) {
+                        if (error instanceof UserCollectionException)
+                            callback.onError(ErrorType.GET_USER_READ_NOTES_ERROR);
+                    }
+                });
             }
 
             @Override
             public void onError(Exception error) {
-                if (error instanceof UserCollectionException)
-                    callback.onError(ErrorType.GET_USER_READ_NOTES_ERROR);
+                callback.onError(ErrorType.UNKNOWN_ERROR);
             }
         });
     }

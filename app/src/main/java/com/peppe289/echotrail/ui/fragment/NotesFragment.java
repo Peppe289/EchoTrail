@@ -22,21 +22,14 @@ import com.peppe289.echotrail.adapter.NoteCustomAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
 public class NotesFragment extends Fragment {
-
-    private final ScheduledExecutorService backgroundExecutor = Executors.newSingleThreadScheduledExecutor();
     private final List<String> loadedNoteIds = new ArrayList<>();
     private FragmentNotesBinding viewBinding;
-    private ScheduledFuture<?> periodicFetchTask;
     private NoteCustomAdapter notesAdapter;
     private LoadingManager loadingIndicator;
 
@@ -50,9 +43,8 @@ public class NotesFragment extends Fragment {
         // Inizializzazione del binding
         viewBinding = FragmentNotesBinding.inflate(inflater, container, false);
 
-        // Configurazione dell'interfaccia utente
         initializeUI();
-        schedulePeriodicNoteFetch();
+        fetchNotesFromDatabase();
 
         return viewBinding.getRoot();
     }
@@ -71,24 +63,13 @@ public class NotesFragment extends Fragment {
         loadingIndicator.showLoading();
     }
 
-    private void schedulePeriodicNoteFetch() {
-        // Pianifica il recupero dei dati ogni 5 secondi
-        periodicFetchTask = backgroundExecutor.scheduleWithFixedDelay(this::fetchNotesFromDatabase, 0, 5, TimeUnit.SECONDS);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        // Interrompe il task periodico e chiude l'executor
-        if (periodicFetchTask != null && !periodicFetchTask.isCancelled()) {
-            periodicFetchTask.cancel(true);
-        }
-        backgroundExecutor.shutdown();
     }
 
     private void fetchNotesFromDatabase() {
-        UserController.getReadedNotesList(new ControllerCallback<QuerySnapshot, ErrorType>() {
+        UserController.getReadNotesList(new ControllerCallback<QuerySnapshot, ErrorType>() {
             @Override
             public void onSuccess(QuerySnapshot querySnapshot) {
                 if (querySnapshot == null || querySnapshot.isEmpty()) {
