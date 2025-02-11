@@ -142,7 +142,7 @@ public class LocationHelper {
                 GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                 locationCallback.onSuccess(startPoint);
             } else {
-                throw new RuntimeException("Position not found");
+                locationCallback.onError(ErrorType.POSITION_NOT_FOUND_ERROR);
             }
         }).addOnFailureListener(e -> locationCallback.onError(ErrorType.UNKNOWN_ERROR));
     }
