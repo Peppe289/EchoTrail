@@ -14,11 +14,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
+import com.peppe289.echotrail.controller.user.PreferencesController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentPersonalInfoBinding;
+import com.peppe289.echotrail.ui.dialog.IconPickerDialog;
 import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.adapter.UserLinksAdapter;
+import com.peppe289.echotrail.utils.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +103,15 @@ public class PersonalInfoFragment extends Fragment {
                                             }
                                         }))));
 
+        binding.imageView.setOnClickListener(v -> {
+            IconPickerDialog iconPicker = new IconPickerDialog((imageIndex, colorIndex) -> {
+                ImageUtils.setImageWithBackground(binding.imageView, IconPickerDialog.iconList.get(imageIndex), IconPickerDialog.colorList.get(colorIndex));
+                PreferencesController.setImageIndex(imageIndex);
+                PreferencesController.setColorIndex(colorIndex);
+            });
+            iconPicker.show(getContext());
+        });
+
         UserController.getUserLinks(new ControllerCallback<List<String>, ErrorType>() {
             @Override
             public void onSuccess(List<String> result) {
@@ -130,6 +142,10 @@ public class PersonalInfoFragment extends Fragment {
                 handleError(error);
             }
         });
+
+        ImageUtils.setImageWithBackground(binding.imageView,
+                IconPickerDialog.iconList.get(PreferencesController.getImageIndex()),
+                IconPickerDialog.colorList.get(PreferencesController.getColorIndex()));
     }
 
     private void shouwCustomInput(int stringsID, int hint, CallBackInput callBackDialog) {
