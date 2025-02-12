@@ -439,7 +439,6 @@ public class MapFragment extends Fragment {
                 }
 
                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
-                mapHelper.setDefaultCenter(); // Set default position.
             }
         });
     }

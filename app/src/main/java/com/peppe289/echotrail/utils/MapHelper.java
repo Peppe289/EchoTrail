@@ -296,11 +296,4 @@ public class MapHelper {
         double distance = p1.distanceToAsDouble(p2);
         return markerDistance == MarkerDistance.TOO_CLOSE ? distance < 3 : distance < maxDistance;
     }
-
-    /**
-     * Sets the map's center to a default location (Rome, Italy).
-     */
-    public void setDefaultCenter() {
-        setMapCenter(new GeoPoint(41.8919, 12.5113));
-    }
 }
