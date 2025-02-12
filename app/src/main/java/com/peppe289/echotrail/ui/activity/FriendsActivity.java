@@ -3,6 +3,7 @@ package com.peppe289.echotrail.ui.activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -122,6 +123,13 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             public void onSuccess(List<Friend> friends) {
                 adapter.clear();
+
+                if (friends == null || friends.isEmpty()) {
+                    findViewById(R.id.empty_list).setVisibility(View.VISIBLE);
+                    loadingManager.hideLoading();
+                    return;
+                }
+
                 runOnUiThread(() -> {
                     AtomicInteger size = new AtomicInteger();
                     size.set(friends.size());
@@ -141,7 +149,7 @@ public class FriendsActivity extends AppCompatActivity {
 
                                 // hide loading bar when finish syncing all notes
                                 size.getAndSet(size.get() - 1);
-                                if (size.get() == 0) {
+                                if (size.get() <= 0) {
                                     loadingManager.hideLoading();
                                 }
                             }
@@ -154,7 +162,7 @@ public class FriendsActivity extends AppCompatActivity {
 
                                 // hide loading bar when finish syncing all notes
                                 size.getAndSet(size.get() - 1);
-                                if (size.get() == 0) {
+                                if (size.get() <= 0) {
                                     loadingManager.hideLoading();
                                 }
                             }

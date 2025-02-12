@@ -97,4 +97,9 @@
     <string name="abort">Annulla</string>
     <string name="walking_for">Camminare fa bene!</string>
     <string name="walking_for_read">Raggiungi il luogo per leggere la nota.</string>
+    <string name="friends_empty_list">
+        Invia prima qualche richiesta di amicizia e aspetta che venga accettata per poter inviare una nota privata.
+        Le richieste di amicizia le puoi inviare leggendo una nota (non anonima) aprendo il profilo di chi l\'ha inviata
+        e cliccando sul bottone "Invia Richiesta".
+    </string>
 </resources>

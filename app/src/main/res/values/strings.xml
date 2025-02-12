@@ -97,4 +97,9 @@
     <string name="abort">Cancel</string>
     <string name="walking_for">Walking is good!</string>
     <string name="walking_for_read">Travel to the location to read the note.</string>
+    <string name="friends_empty_list">
+        First, send some friend requests and wait for them to be accepted before you can send a private note.
+        You can send friend requests by reading a (non-anonymous) note, opening the profile of the sender,
+        and clicking the "Send Request" button.
+    </string>
 </resources>
