@@ -5,22 +5,22 @@ import android.util.AttributeSet;
 import androidx.annotation.Nullable;
 import com.peppe289.echotrail.adapter.NoteCustomAdapter;
 
-public class CardListView extends android.widget.ListView {
+public class CustomListView extends android.widget.ListView {
 
 
-    public CardListView(Context context) {
+    public CustomListView(Context context) {
         super(context);
     }
 
-    public CardListView(Context context, AttributeSet attrs) {
+    public CustomListView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CardListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public CardListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CustomListView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

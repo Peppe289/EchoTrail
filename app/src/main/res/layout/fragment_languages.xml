@@ -5,7 +5,7 @@
              android:layout_height="match_parent"
              tools:context=".ui.fragment.LanguagesFragment">
 
-    <view class="com.peppe289.echotrail.ui.custom.CardListView"
+    <view class="com.peppe289.echotrail.ui.custom.CustomListView"
             android:id="@+id/languages_list"
             android:layout_height="match_parent"
             android:layout_width="match_parent" />

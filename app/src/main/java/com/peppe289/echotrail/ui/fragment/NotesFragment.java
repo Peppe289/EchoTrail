@@ -16,7 +16,7 @@ import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentNotesBinding;
 import com.peppe289.echotrail.model.Note;
-import com.peppe289.echotrail.ui.custom.CardListView;
+import com.peppe289.echotrail.ui.custom.CustomListView;
 import com.peppe289.echotrail.utils.*;
 import com.peppe289.echotrail.adapter.NoteCustomAdapter;
 
@@ -56,7 +56,7 @@ public class NotesFragment extends Fragment {
                 id -> NavigationHelper.addActivity(requireActivity(), UserViewActivity.class,
                         intent -> intent.putExtra("UID", id)));
 
-        CardListView notesListView = viewBinding.notesList;
+        CustomListView notesListView = viewBinding.notesList;
         notesListView.setAdapter(notesAdapter);
 
         // Mostra l'indicatore di caricamento all'avvio
