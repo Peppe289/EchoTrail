@@ -24,8 +24,10 @@ import com.peppe289.echotrail.controller.user.FriendsController;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityUserViewBinding;
 import com.peppe289.echotrail.model.User;
+import com.peppe289.echotrail.ui.dialog.IconPickerDialog;
 import com.peppe289.echotrail.utils.DefaultErrorHandler;
 import com.peppe289.echotrail.utils.ErrorType;
+import com.peppe289.echotrail.utils.ImageUtils;
 import com.peppe289.echotrail.utils.LoadingManager;
 import com.peppe289.echotrail.adapter.UserLinksAdapter;
 
@@ -120,6 +122,17 @@ public class UserViewActivity extends AppCompatActivity {
                     setTextViewIfNotNull(binding.usernameTextView, userInfo.getUsername());
                     setTextViewIfNotNull(binding.notesRead, userInfo.getReadedNotes().size());
                     setTextViewIfNotNull(binding.notesPublished, userInfo.getNotes().size());
+
+                    if (userInfo.getImageIndex() != null && userInfo.getColorIndex() != null) {
+                        ImageUtils.setImageWithBackground(binding.imageView,
+                                IconPickerDialog.iconList.get(userInfo.getImageIndex()),
+                                IconPickerDialog.colorList.get(userInfo.getColorIndex()));
+                    } else {
+                        ImageUtils.setImageWithBackground(binding.imageView,
+                                IconPickerDialog.iconList.get(0),
+                                IconPickerDialog.colorList.get(0));
+                    }
+
                     UserController.getUserLinks(UID, new ControllerCallback<>() {
                         @Override
                         public void onSuccess(List<String> result) {

@@ -23,6 +23,13 @@
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
+        <ImageView
+                android:id="@+id/imageView"
+                android:scaleType="fitEnd"
+                android:layout_marginBottom="10dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+
         <LinearLayout
                 android:gravity="center"
                 android:orientation="vertical"
