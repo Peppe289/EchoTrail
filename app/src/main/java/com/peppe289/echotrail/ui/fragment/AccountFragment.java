@@ -3,6 +3,7 @@ package com.peppe289.echotrail.ui.fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,15 +16,15 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.peppe289.echotrail.R;
+import com.peppe289.echotrail.controller.user.PreferencesController;
 import com.peppe289.echotrail.ui.activity.MainActivity;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.FragmentAccountBinding;
 import com.peppe289.echotrail.model.User;
-import com.peppe289.echotrail.utils.DefaultErrorHandler;
-import com.peppe289.echotrail.utils.ErrorType;
-import com.peppe289.echotrail.utils.LoadingManager;
-import com.peppe289.echotrail.utils.NavigationHelper;
+import com.peppe289.echotrail.ui.dialog.IconPickerDialog;
+import com.peppe289.echotrail.utils.*;
 
 import java.util.HashMap;
 import java.util.concurrent.Executors;
@@ -80,6 +81,19 @@ public class AccountFragment extends Fragment {
         fetchInfo();
 
         return rootView;
+    }
+
+    /**
+     * Setting the user icon and color when the fragment is resumed to the foreground
+     * helps me (the sexy programmer) to update icon after change from account settings
+     * and also when the fragment is added.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        ImageUtils.setImageWithBackground(binding.imageView,
+                IconPickerDialog.iconList.get(PreferencesController.getImageIndex()),
+                IconPickerDialog.colorList.get(PreferencesController.getColorIndex()));
     }
 
     private void fetchInfo() {
