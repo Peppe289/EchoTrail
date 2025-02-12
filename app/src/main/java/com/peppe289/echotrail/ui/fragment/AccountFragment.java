@@ -124,6 +124,22 @@ public class AccountFragment extends Fragment {
                         readedNotes.setText(String.valueOf(userInfo.getReadedNotes().size()));
                     else
                         readedNotes.setText("0");
+
+                    Integer imageIndex = userInfo.getImageIndex();
+                    Integer colorIndex = userInfo.getColorIndex();
+
+                    ImageUtils.setImageWithBackground(binding.imageView,
+                            IconPickerDialog.iconList.get(imageIndex == null ? 0 : imageIndex),
+                            IconPickerDialog.colorList.get(colorIndex == null ? 0 : colorIndex));
+
+                    if (imageIndex != null) {
+                        PreferencesController.setImageIndex(imageIndex);
+                    }
+
+                    if (colorIndex != null) {
+                        PreferencesController.setColorIndex(colorIndex);
+                    }
+
                     loadingManager.hideLoading();
                 }
             }

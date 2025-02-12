@@ -108,6 +108,8 @@ public class PersonalInfoFragment extends Fragment {
                 ImageUtils.setImageWithBackground(binding.imageView, IconPickerDialog.iconList.get(imageIndex), IconPickerDialog.colorList.get(colorIndex));
                 PreferencesController.setImageIndex(imageIndex);
                 PreferencesController.setColorIndex(colorIndex);
+                UserController.setImageIndex(imageIndex);
+                UserController.setColorIndex(colorIndex);
             });
             iconPicker.show(getContext());
         });
