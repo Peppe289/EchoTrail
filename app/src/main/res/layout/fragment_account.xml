@@ -59,38 +59,6 @@
                         android:textSize="15sp"
                         android:text="@string/email" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/id_text_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@null"
-                            android:layout_marginTop="15dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/emailTextView"/>
-
-                    <LinearLayout
-                            android:id="@+id/copy_id_layout"
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/id_text_view">
-
-                        <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@null"
-                                android:src="@drawable/content_copy_24px"/>
-
-                        <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/copy_id"/>
-
-                    </LinearLayout>
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -100,7 +68,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/copy_id_layout">
+                        app:layout_constraintTop_toBottomOf="@+id/emailTextView">
 
                         <LinearLayout
                             android:layout_width="0dp"

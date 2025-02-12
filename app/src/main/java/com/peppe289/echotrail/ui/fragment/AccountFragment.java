@@ -80,14 +80,6 @@ public class AccountFragment extends Fragment {
         binding.mypreferences.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), PreferencesFragment.class, null));
         binding.personalData.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), PersonalInfoFragment.class, null));
 
-        binding.idTextView.setText(UserController.getUid());
-        binding.copyIdLayout.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("UID", binding.idTextView.getText().toString());
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(binding.getRoot().getContext(), "UID Copied", Toast.LENGTH_SHORT).show();
-        });
-
         fetchInfo();
 
         return rootView;
