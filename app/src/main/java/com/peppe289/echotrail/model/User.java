@@ -4,6 +4,8 @@ import java.util.List;
 
 public class User {
     private String username;
+    private Integer imageIndex;
+    private Integer colorIndex;
     private List<String> links;
     private List<String> notes;
     private List<String> readedNotes;
@@ -21,6 +23,22 @@ public class User {
         this.readedNotes = readedNotes;
         this.friends = friends;
         this.anonymousByDefault = anonymousByDefault;
+    }
+
+    public Integer getImageIndex() {
+        return imageIndex;
+    }
+
+    public void setImageIndex(Integer imageIndex) {
+        this.imageIndex = imageIndex;
+    }
+
+    public Integer getColorIndex() {
+        return colorIndex;
+    }
+
+    public void setColorIndex(Integer colorIndex) {
+        this.colorIndex = colorIndex;
     }
 
     public boolean isAnonymousByDefault() {
