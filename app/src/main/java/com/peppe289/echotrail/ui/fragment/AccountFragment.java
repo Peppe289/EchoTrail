@@ -55,9 +55,6 @@ public class AccountFragment extends Fragment {
         loadingManager = new LoadingManager(rootView);
         loadingManager.showLoading();
 
-        // TODO: implements the button function (should be open notify settings)
-        binding.notify.setOnClickListener(view -> Log.i("AccountFragment", "Notify settings button clicked"));
-
         binding.logoutBtn.setOnClickListener(view -> {
             UserController.logout(requireContext());
             NavigationHelper.rebaseActivity(getActivity(), MainActivity.class, null);

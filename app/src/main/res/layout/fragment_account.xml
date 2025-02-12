@@ -182,27 +182,6 @@
 
             <!-- start row -->
             <TableRow
-                android:id="@+id/notify"
-                style="@style/Widget.MyApp.Row"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true">
-
-                <TextView
-                    style="@style/Widget.MyApp.RowLeftItem"
-                    android:background="#00000000"
-                    android:text="@string/notifications" />
-
-                <ImageView
-                    style="@style/Widget.MyApp.RowRightItem"
-                    android:background="#00000000"
-                    android:contentDescription="@string/right_arrow"
-                    android:src="@drawable/baseline_arrow_forward_ios_24" />
-            </TableRow>
-            <!-- end row -->
-
-            <!-- start row -->
-            <TableRow
                 android:id="@+id/mypreferences"
                 style="@style/Widget.MyApp.Row"
                 android:background="?attr/selectableItemBackground"
