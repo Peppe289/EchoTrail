@@ -95,4 +95,6 @@
     <string name="is_for">"For: "</string>
     <string name="add">Add</string>
     <string name="abort">Cancel</string>
+    <string name="walking_for">Walking is good!</string>
+    <string name="walking_for_read">Travel to the location to read the note.</string>
 </resources>

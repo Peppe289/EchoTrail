@@ -333,8 +333,8 @@ public class MapFragment extends Fragment {
                                 if (!readyToSeeIDs.isEmpty()) {
                                     launchReadNotesActivity(readyToSeeIDs);
                                 } else {
-                                    BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance("Camminare fa bene!",
-                                            "Raggiungi il luogo per leggere la nota.");
+                                    BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance(getString(R.string.walking_for),
+                                            getString(R.string.walking_for_read));
                                     bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());}
                             }
 

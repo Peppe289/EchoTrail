@@ -95,4 +95,6 @@
     <string name="is_for">"Per: "</string>
     <string name="add">Aggiungi</string>
     <string name="abort">Annulla</string>
+    <string name="walking_for">Camminare fa bene!</string>
+    <string name="walking_for_read">Raggiungi il luogo per leggere la nota.</string>
 </resources>
