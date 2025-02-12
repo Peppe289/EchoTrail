@@ -18,7 +18,15 @@ import java.util.List;
 public class IconPickerDialog {
 
     public static final List<Integer> iconList = List.of(
-            R.drawable.image
+            R.drawable.user_pic_female_1,
+            R.drawable.user_pic_female_2,
+            R.drawable.user_pic_female_3,
+            R.drawable.user_pic_female_4,
+            R.drawable.user_pic_female_5,
+            R.drawable.user_pic_female_6,
+            R.drawable.user_pic_female_7,
+            R.drawable.user_pic_female_8,
+            R.drawable.user_pic_female_9
     );
     public static final List<Integer> colorList = Arrays.asList(
             Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA, Color.CYAN,
