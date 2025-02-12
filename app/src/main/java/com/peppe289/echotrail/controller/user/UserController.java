@@ -93,6 +93,24 @@ public class UserController {
     }
 
     /**
+     * This set only and don't care about the result.
+     * If work, ok, if not work ok,
+     *
+     * @param imageIndex the index of the image
+     */
+    public static void setImageIndex(int imageIndex) {
+        userDAO.setImageIndex(imageIndex);
+    }
+
+    /**
+     * Same as {@code setImageIndex} but for color
+     * @param colorIndex the index of the color
+     */
+    public static void setColorIndex(int colorIndex) {
+        userDAO.setColorIndex(colorIndex);
+    }
+
+    /**
      * This uses listener to database
      *
      * @param callback trigger when the list is ready
