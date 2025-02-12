@@ -109,41 +109,6 @@
                     android:layout_height="24dp" />
         </LinearLayout>
         <!-- end -->
-
-        <!-- start -->
-        <LinearLayout
-            android:paddingHorizontal="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingVertical="3dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingVertical="5dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="titolo impostazione"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Descrizione" />
-            </LinearLayout>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </LinearLayout>
-        <!-- end -->
     </LinearLayout>
     <include layout="@layout/loading_overlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>
