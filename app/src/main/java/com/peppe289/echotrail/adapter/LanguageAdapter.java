@@ -87,7 +87,7 @@ public class LanguageAdapter extends ArrayAdapter<Locale> {
     }
 
     public interface ChangedLanguage {
-        public void onChangedLanguage(Locale locale);
+        void onChangedLanguage(Locale locale);
     }
 
     static class ViewHolder {
