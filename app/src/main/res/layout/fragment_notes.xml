@@ -8,6 +8,9 @@
         android:id="@+id/notes_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:divider="@null"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
         android:contentDescription="@string/notes_found" />
 
     <include layout="@layout/loading_overlay" />
