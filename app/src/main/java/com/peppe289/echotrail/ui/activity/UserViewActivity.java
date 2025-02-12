@@ -133,21 +133,12 @@ public class UserViewActivity extends AppCompatActivity {
                                 IconPickerDialog.colorList.get(0));
                     }
 
-                    UserController.getUserLinks(UID, new ControllerCallback<>() {
-                        @Override
-                        public void onSuccess(List<String> result) {
-                            if (result != null) {
-                                for (String lk : result) {
-                                    adapter.add(lk);
-                                }
-                            }
+                    List<String> links = userInfo.getLinks();
+                    if (links != null) {
+                        for (String lk : links) {
+                            adapter.add(lk);
                         }
-
-                        @Override
-                        public void onError(ErrorType error) {
-                            handleError(error);
-                        }
-                    });
+                    }
                 }
 
                 FriendsController.getUIDFriendsList(new ControllerCallback<List<String>, ErrorType>() {
