@@ -6,6 +6,14 @@
               android:padding="20dp"
               android:gravity="center">
 
+
+    <ImageView
+            android:id="@+id/imageView"
+            android:scaleType="fitEnd"
+            android:layout_marginEnd="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
     <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -7,6 +7,8 @@ public class Friend {
     private boolean onPendingRequest;
     private boolean isFriend;
     private String uid;
+    private int imageIndex;
+    private int colorIndex;
 
     public Friend() {
     }
@@ -16,6 +18,22 @@ public class Friend {
         this.onPendingRequest = onPendingRequest;
         this.isFriend = isFriend;
         this.uid = uid;
+    }
+
+    public int getImageIndex() {
+        return imageIndex;
+    }
+
+    public void setImageIndex(int imageIndex) {
+        this.imageIndex = imageIndex;
+    }
+
+    public int getColorIndex() {
+        return colorIndex;
+    }
+
+    public void setColorIndex(int colorIndex) {
+        this.colorIndex = colorIndex;
     }
 
     public String getName() {

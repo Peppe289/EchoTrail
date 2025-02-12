@@ -16,8 +16,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.controller.user.FriendsController;
+import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.databinding.ActivityFriendsBinding;
 import com.peppe289.echotrail.model.Friend;
+import com.peppe289.echotrail.model.User;
 import com.peppe289.echotrail.utils.ErrorType;
 import com.peppe289.echotrail.adapter.FriendsCustomAdapter;
 import com.peppe289.echotrail.utils.LoadingManager;
@@ -25,6 +27,7 @@ import com.peppe289.echotrail.utils.NavigationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FriendsActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
@@ -120,14 +123,46 @@ public class FriendsActivity extends AppCompatActivity {
             public void onSuccess(List<Friend> friends) {
                 adapter.clear();
                 runOnUiThread(() -> {
+                    AtomicInteger size = new AtomicInteger();
+                    size.set(friends.size());
                     for (Friend fr : friends) {
+                        UserController.getUserInfoByUID(fr.getUid(), new ControllerCallback<User, ErrorType>() {
+                            @Override
+                            public void onSuccess(User result) {
+                                if (result != null && result.getColorIndex() != null && result.getImageIndex() != null) {
+                                    fr.setColorIndex(result.getColorIndex());
+                                    fr.setImageIndex(result.getImageIndex());
+                                } else {
+                                    fr.setColorIndex(0);
+                                    fr.setImageIndex(0);
+                                }
+
+                                adapter.notifyDataSetChanged();
+
+                                // hide loading bar when finish syncing all notes
+                                size.getAndSet(size.get() - 1);
+                                if (size.get() == 0) {
+                                    loadingManager.hideLoading();
+                                }
+                            }
+
+                            @Override
+                            public void onError(ErrorType error) {
+                                fr.setColorIndex(0);
+                                fr.setImageIndex(0);
+                                adapter.notifyDataSetChanged();
+
+                                // hide loading bar when finish syncing all notes
+                                size.getAndSet(size.get() - 1);
+                                if (size.get() == 0) {
+                                    loadingManager.hideLoading();
+                                }
+                            }
+                        });
                         adapter.add(fr);
                         if (fr.isFriend())
                             adapter.remove(fr.getUid(), true);
                     }
-
-                    loadingManager.hideLoading();
-                    adapter.notifyDataSetChanged();
                 });
             }
 

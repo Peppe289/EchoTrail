@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import com.google.android.material.button.MaterialButton;
 import com.peppe289.echotrail.R;
 import com.peppe289.echotrail.model.Friend;
+import com.peppe289.echotrail.ui.dialog.IconPickerDialog;
+import com.peppe289.echotrail.utils.ImageUtils;
 
 import java.util.List;
 
@@ -78,6 +80,9 @@ public class FriendsCustomAdapter extends ArrayAdapter<Friend> {
                     callback.onRemoveClick(item.getUid(), position, item.isFriend());
                 }
             });
+            ImageUtils.setImageWithBackground(holder.imageView,
+                    IconPickerDialog.iconList.get(item.getImageIndex()),
+                    IconPickerDialog.colorList.get(item.getColorIndex()));
         }
 
         return convertView;
@@ -91,11 +96,13 @@ public class FriendsCustomAdapter extends ArrayAdapter<Friend> {
 
     static class ViewHolder {
         private final TextView userName;
+        private final ImageView imageView;
         private final MaterialButton allowButton;
         private final ImageView remove;
 
         ViewHolder(View view) {
             userName = view.findViewById(R.id.friend_name);
+            imageView = view.findViewById(R.id.imageView);
             allowButton = view.findViewById(R.id.accept_button);
             remove = view.findViewById(R.id.remove_button);
         }
