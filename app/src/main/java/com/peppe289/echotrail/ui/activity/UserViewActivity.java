@@ -119,9 +119,9 @@ public class UserViewActivity extends AppCompatActivity {
             @Override
             public void onSuccess(User userInfo) {
                 if (userInfo != null) {
-                    setTextViewIfNotNull(binding.usernameTextView, userInfo.getUsername());
-                    setTextViewIfNotNull(binding.notesRead, userInfo.getReadedNotes().size());
-                    setTextViewIfNotNull(binding.notesPublished, userInfo.getNotes().size());
+                    binding.usernameTextView.setText(userInfo.getUsername());
+                    setTextViewIfNotNull(binding.notesRead, userInfo.getReadedNotes());
+                    setTextViewIfNotNull(binding.notesPublished, userInfo.getNotes());
 
                     if (userInfo.getImageIndex() != null && userInfo.getColorIndex() != null) {
                         ImageUtils.setImageWithBackground(binding.imageView,
@@ -184,9 +184,11 @@ public class UserViewActivity extends AppCompatActivity {
         DefaultErrorHandler.getInstance(null).showError(error);
     }
 
-    private void setTextViewIfNotNull(TextView textView, Object value) {
-        if (value != null) {
-            textView.setText(value.toString());
+    private void setTextViewIfNotNull(TextView textView, List<String> list) {
+        if (list != null) {
+            textView.setText(String.valueOf(list.size()));
+        } else {
+            textView.setText("0");
         }
     }
 }
