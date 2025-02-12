@@ -138,6 +138,30 @@ public class PreferencesController {
                 .apply();
     }
 
+    public static void setImageIndex(int imageIndex) {
+        userPreferences
+                .edit()
+                .putInt("imageIndex", imageIndex)
+                .apply();
+    }
+
+    public static void setColorIndex(int colorIndex) {
+        userPreferences
+                .edit()
+                .putInt("colorIndex", colorIndex)
+                .apply();
+    }
+
+    public static int getImageIndex() {
+        return userPreferences
+                .getInt("imageIndex", 0);
+    }
+
+    public static int getColorIndex() {
+        return userPreferences
+                .getInt("colorIndex", 0);
+    }
+
     public static boolean getAnonymousPreferences() {
         return userPreferences
                 .getBoolean("anonymousByDefault", false);
