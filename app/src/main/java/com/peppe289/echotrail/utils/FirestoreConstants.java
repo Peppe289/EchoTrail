@@ -44,6 +44,19 @@ public class FirestoreConstants {
      * Each document in this collection represents an individual user profile.
      */
     public static class Users {
+        /**
+         * The image index of the user
+         * <p>
+         * Use as index for the image in the {@link com.peppe289.echotrail.ui.dialog.IconPickerDialog} file
+         */
+        public static final String FIELD_IMAGE_INDEX = "imageIndex";
+
+        /**
+         * The color index of the user
+         * <p>
+         * Use as index for the color in the {@link com.peppe289.echotrail.ui.dialog.IconPickerDialog} file
+         */
+        public static final String FIELD_COLOR_INDEX = "colorIndex";
 
         /**
          * The username of the user.
