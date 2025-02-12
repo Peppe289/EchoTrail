@@ -11,9 +11,9 @@ import org.osmdroid.views.Projection;
 
 public class CircleOverlay extends Overlay {
     private GeoPoint center;
-    private double radiusMeters;
-    private Paint fillPaint;
-    private Paint strokePaint;
+    private final double radiusMeters;
+    private final Paint fillPaint;
+    private final Paint strokePaint;
 
     /**
      * @param center        Il centro del cerchio (di solito la posizione del marker)
