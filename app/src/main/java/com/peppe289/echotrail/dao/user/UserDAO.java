@@ -221,6 +221,18 @@ public class UserDAO {
                         callback.onError(new UserCollectionException()));
     }
 
+    public void setImageIndex(int imageIndex) {
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(getUid())
+                .update(FirestoreConstants.Users.FIELD_IMAGE_INDEX, imageIndex);
+    }
+
+    public void setColorIndex(int colorIndex) {
+        db.collection(FirestoreConstants.COLLECTION_USERS)
+                .document(getUid())
+                .update(FirestoreConstants.Users.FIELD_COLOR_INDEX, colorIndex);
+    }
+
     public void setUsername(String username) {
         db.collection(FirestoreConstants.COLLECTION_USERS).document(getUid()).update(FirestoreConstants.Users.FIELD_USERNAME, username);
     }
