@@ -440,6 +440,6 @@ public class MapFragment extends Fragment implements LocationListener {
     @Override
     public void onLocationChanged(@NonNull Location location) {
         GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
-        mapHelper.setMapCenter(point);
+        mapHelper.setMapCenter(point, false);
     }
 }
