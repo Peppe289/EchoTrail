@@ -2,6 +2,9 @@ package com.peppe289.echotrail.ui.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,18 +52,19 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static android.content.Context.LOCATION_SERVICE;
+
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements LocationListener {
 
     // Data and adapter
     private final List<SuggestionsAdapter.CityProprieties> suggestions = new ArrayList<>();
     // Handlers and helpers
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-    private final ScheduledExecutorService esUpdateGPS = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> scheduledFuture;
     // UI components
     private com.google.android.material.search.SearchView searchView;
@@ -72,10 +76,10 @@ public class MapFragment extends Fragment {
     private MapHelper mapHelper;
     private LocationHelper locationHelper;
     private ActivityResultLauncher<String[]> requestPermissionLauncher;
-    private ScheduledFuture<?> sUpdateGPS;
     private boolean isFABOpen = false;
     private ExtendedFloatingActionButton publicNotesBtn;
     private ExtendedFloatingActionButton privateNotesBtn;
+    private LocationManager locationManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,6 @@ public class MapFragment extends Fragment {
         initializeUI(view);
         initializeHelpers();
         requestLocationPermission();
-        startUpdateGPS();
 
         // Fetch notes from Firestore and automatically update the map
         fetchNotes();
@@ -97,35 +100,9 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-    private void startUpdateGPS() {
-        sUpdateGPS = esUpdateGPS.scheduleWithFixedDelay(() -> locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<>() {
-            @Override
-            public void onSuccess(GeoPoint location) {
-                if (!isAdded() || getView() == null) {
-                    return;
-                }
-
-                mapHelper.setMapCenter(location, false);
-            }
-
-            @Override
-            public void onError(ErrorType errorType) {
-                if (!isAdded() || getView() == null) {
-                    return;
-                }
-
-                Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
-            }
-        }), 0, 5, TimeUnit.SECONDS);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (sUpdateGPS != null && !sUpdateGPS.isCancelled()) {
-            sUpdateGPS.cancel(true);
-        }
 
         searchView = null;
         searchBar = null;
@@ -135,9 +112,6 @@ public class MapFragment extends Fragment {
         publicNotesBtn = null;
         privateNotesBtn = null;
         adapter = null;
-
-        esUpdateGPS.shutdown();
-        executorService.shutdown();
     }
 
 
@@ -252,6 +226,12 @@ public class MapFragment extends Fragment {
         locationHelper = new LocationHelper(requireContext());
     }
 
+    /**
+     * I can ignore {@code MissingPermission} this because I have {@link LocationHelper} class, and
+     * we should use {@code locationPermissionIsGranted} for check
+     * if we have a permission to pooling GPS position.
+     */
+    @SuppressLint("MissingPermission")
     private void requestLocationPermission() {
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts
                         .RequestMultiplePermissions(), result -> {
@@ -267,6 +247,10 @@ public class MapFragment extends Fragment {
         );
 
         locationHelper.requestLocationPermission(requestPermissionLauncher);
+
+        locationManager = (LocationManager) requireActivity().getSystemService(LOCATION_SERVICE);
+        if (locationHelper.locationPermissionIsGranted(requireActivity()))
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, this);
     }
 
     /**
@@ -451,5 +435,11 @@ public class MapFragment extends Fragment {
         updatePositionFloatingBtn.show();
         suggestionsList.setVisibility(View.GONE);
         mapHelper.setMapView(new GeoPoint(latitude, longitude));
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        GeoPoint point = new GeoPoint(location.getLatitude(), location.getLongitude());
+        mapHelper.setMapCenter(point);
     }
 }
