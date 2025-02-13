@@ -3,6 +3,8 @@ package com.peppe289.echotrail.ui.fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,7 @@ import com.peppe289.echotrail.ui.dialog.IconPickerDialog;
 import com.peppe289.echotrail.utils.*;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -78,9 +81,21 @@ public class AccountFragment extends Fragment {
         binding.mypreferences.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), PreferencesFragment.class, null));
         binding.personalData.setOnClickListener(view -> NavigationHelper.startActivityForFragment(requireActivity(), PersonalInfoFragment.class, null));
 
+        binding.version.setText(getAppVersion());
+
         fetchInfo();
 
         return rootView;
+    }
+
+    private String getAppVersion() {
+        try {
+            PackageInfo pInfo = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), 0);
+            String versionName = pInfo.versionName;
+            return "v" + versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "";
+        }
     }
 
     /**

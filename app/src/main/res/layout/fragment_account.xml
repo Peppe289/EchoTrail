@@ -217,6 +217,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20sp"
                 android:text="@string/logout" />
+
+            <TextView
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Made by Peppe289 with love!"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+            <TextView
+                    android:id="@+id/version"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
         </TableLayout>
 
     </androidx.core.widget.NestedScrollView>
