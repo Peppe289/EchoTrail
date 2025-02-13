@@ -102,4 +102,6 @@
         Le richieste di amicizia le puoi inviare leggendo una nota (non anonima) aprendo il profilo di chi l\'ha inviata
         e cliccando sul bottone "Invia Richiesta".
     </string>
+    <string name="select_color">Scegli un colore</string>
+    <string name="select_icon">Scegli un\'icona</string>
 </resources>

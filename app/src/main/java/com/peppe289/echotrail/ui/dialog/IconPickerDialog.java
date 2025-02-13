@@ -52,9 +52,9 @@ public class IconPickerDialog {
         RecyclerView recyclerView = dialogView.findViewById(R.id.recyclerViewIcons);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 3));
         AlertDialog dialog = new MaterialAlertDialogBuilder(context)
-                .setTitle("Scegli un'icona")
+                .setTitle(context.getString(R.string.select_icon))
                 .setView(dialogView)
-                .setNegativeButton("Annulla", (d, which) -> d.dismiss())
+                .setNegativeButton(context.getString(R.string.abort), (d, which) -> d.dismiss())
                 .create();
 
         IconAdapter adapter = new IconAdapter(context, iconList, (iconResId, position) -> {
@@ -72,9 +72,9 @@ public class IconPickerDialog {
         View colorView = inflater.inflate(R.layout.dialog_color_list, null);
 
         AlertDialog dialog2 = new MaterialAlertDialogBuilder(context)
-                .setTitle("Scegli un colore")
+                .setTitle(context.getString(R.string.select_color))
                 .setView(colorView)
-                .setNegativeButton("Annulla", (d, which) -> d.dismiss())
+                .setNegativeButton(context.getString(R.string.abort), (d, which) -> d.dismiss())
                 .create();
 
         RecyclerView recyclerView = colorView.findViewById(R.id.recyclerViewColors);

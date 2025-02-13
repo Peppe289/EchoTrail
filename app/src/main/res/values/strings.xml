@@ -102,4 +102,6 @@
         You can send friend requests by reading a (non-anonymous) note, opening the profile of the sender,
         and clicking the "Send Request" button.
     </string>
+    <string name="select_color">Select a color</string>
+    <string name="select_icon">Select a icon</string>
 </resources>
