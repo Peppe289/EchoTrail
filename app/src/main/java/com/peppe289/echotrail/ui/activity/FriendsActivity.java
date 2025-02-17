@@ -150,6 +150,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 // hide loading bar when finish syncing all notes
                                 size.getAndSet(size.get() - 1);
                                 if (size.get() <= 0) {
+                                    findViewById(R.id.empty_list).setVisibility(View.GONE);
                                     loadingManager.hideLoading();
                                 }
                             }
@@ -163,6 +164,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 // hide loading bar when finish syncing all notes
                                 size.getAndSet(size.get() - 1);
                                 if (size.get() <= 0) {
+                                    findViewById(R.id.empty_list).setVisibility(View.GONE);
                                     loadingManager.hideLoading();
                                 }
                             }
