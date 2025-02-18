@@ -7,10 +7,11 @@
 ## Key Features
 - **Leave written notes** at locations you visit.
 - **Explore an interactive map** to discover messages left by others.
-- **Receive notifications** when you are near a location with a note.
+- **Session Manager** to handle user authentication.
 - **Public and private modes**: Send messages visible to everyone or dedicated to a specific person.
-- **Offline mode**: Read downloaded notes without an internet connection.
-- **Badge system**: Reward active users with achievements.
+- **Real-time updates**: Notes are updated in real-time across all devices.
+- **User-friendly interface**: Material Design components for a seamless user experience.
+- **Multi-language support**: English and Italian languages are supported.
 
 ---
 
