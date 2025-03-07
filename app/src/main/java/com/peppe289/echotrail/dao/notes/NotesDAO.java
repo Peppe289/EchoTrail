@@ -73,13 +73,14 @@ public class NotesDAO {
                 .document("notes")
                 .collection("data")
                 .document();
-        DocumentReference countryRef = db.collection(FirestoreConstants.COLLECTION_NOTES)
-                .document(country);
-        Map<String, Object> countryData = new HashMap<>();
-        countryData.put("notesID", FieldValue.arrayUnion(noteRef.getId()));
+
+        DocumentReference redundantNoteRef = db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document(country)
+                .collection("data")
+                .document(noteRef.getId());
 
         batch.set(noteRef, noteData);
-        batch.set(countryRef, countryData, SetOptions.merge());
+        batch.set(redundantNoteRef, noteData);
 
         batch.commit()
                 .addOnSuccessListener(aVoid -> {
@@ -89,7 +90,6 @@ public class NotesDAO {
                     callback.onError(new NoteCollectionException());
                 });
     }
-
 
     /**
      * Retrieves a list of notes from the Firestore database by their unique IDs.
@@ -124,12 +124,12 @@ public class NotesDAO {
      *
      * @param callback a callback instance to handle the retrieved notes
      */
-    public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback) {
+    public void getAllNotes(String country, NotesCallback<QuerySnapshot, Exception> callback) {
         if (!UserController.isLoggedIn())
             return;
 
         db.collection(FirestoreConstants.COLLECTION_NOTES)
-                .document("notes")
+                .document(country)
                 .collection("data")
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
@@ -141,13 +141,13 @@ public class NotesDAO {
      * @param callback
      * @param listen for change signature
      */
-    public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback, boolean listen) {
+    public void getAllNotes(String country, NotesCallback<QuerySnapshot, Exception> callback, boolean listen) {
         if (!UserController.isLoggedIn())
             return;
 
         if (listen)
             db.collection(FirestoreConstants.COLLECTION_NOTES)
-                    .document("notes")
+                    .document(country)
                     .collection("data")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
@@ -164,6 +164,6 @@ public class NotesDAO {
                 }
             });
         else
-            getAllNotes(callback);
+            getAllNotes(country, callback);
     }
 }
