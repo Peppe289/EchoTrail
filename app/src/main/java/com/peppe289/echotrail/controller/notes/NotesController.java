@@ -139,12 +139,12 @@ public class NotesController {
      *
      * @param callback A callback invoked with the list of notes retrieved.
      */
-    public static void getAllNotes(ControllerCallback<QuerySnapshot, ErrorType> callback) {
-        getAllNotes(callback, false);
+    public static void getAllNotes(String country, ControllerCallback<QuerySnapshot, ErrorType> callback) {
+        getAllNotes(country, callback, false);
     }
 
-    public static void getAllNotes(ControllerCallback<QuerySnapshot, ErrorType> callback, boolean listen) {
-        notesDAO.getAllNotes(new NotesCallback<QuerySnapshot, Exception>() {
+    public static void getAllNotes(String country, ControllerCallback<QuerySnapshot, ErrorType> callback, boolean listen) {
+        notesDAO.getAllNotes(country, new NotesCallback<QuerySnapshot, Exception>() {
             @Override
             public void onSuccess(QuerySnapshot result) {
                 callback.onSuccess(result);
