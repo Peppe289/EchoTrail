@@ -1,5 +1,6 @@
 package com.peppe289.echotrail.ui.activity;
 
+import android.location.Address;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -173,13 +174,14 @@ public class AddNotesActivity extends AppCompatActivity {
 
 
                 LocationHelper.getCityName(AddNotesActivity.this, location.getLatitude(),
-                        location.getLongitude(), new HelperCallback<String, ErrorType>() {
+                        location.getLongitude(), new HelperCallback<Address, ErrorType>() {
                             @Override
-                            public void onSuccess(String locationString) {
+                            public void onSuccess(Address locationAddress) {
                                 UserController.getUsername(new ControllerCallback<String, ErrorType>() {
                                     @Override
                                     public void onSuccess(String username) {
-                                        data.put("city", locationString);
+                                        data.put("city", locationAddress.getLocality());
+                                        data.put("country", locationAddress.getCountryName());
                                         // save username only if the user is not anonymous
                                         if (!switchAnonymous.isChecked())
                                             data.put("username", username);

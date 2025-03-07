@@ -57,6 +57,14 @@ public class NotesController {
     public static void saveNote(Map<String, Object> data, SaveNoteCallback callback) {
         Map<String, Object> noteData = new HashMap<>();
 
+        Object countryObj = data.get("country");
+        if (countryObj == null) {
+            callback.onSavedNote(ErrorType.SAVE_NOTE_FAILED);
+            return;
+        }
+
+        String country = countryObj.toString();
+
         // Add mandatory fields
         noteData.put("userId", UserController.getUid());
         noteData.put("content", data.get("content"));
@@ -91,7 +99,7 @@ public class NotesController {
         noteData.put("city", data.get("city"));
 
         // Save the note through NotesDAO
-        notesDAO.saveNote(noteData, new NotesCallback<String, Exception>() {
+        notesDAO.saveNote(noteData, country, new NotesCallback<String, Exception>() {
             @Override
             public void onSuccess(String noteId) {
                 callback.onSavedNote(null);

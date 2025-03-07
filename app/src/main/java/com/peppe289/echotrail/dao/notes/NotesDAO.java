@@ -10,6 +10,7 @@ import com.peppe289.echotrail.exceptions.NoteCollectionException;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.FirestoreConstants;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,21 +63,33 @@ public class NotesDAO {
      * @param noteData a {@link Map} containing the note's data (e.g., title, content, metadata)
      * @param callback a callback instance to notify when the save operation is complete
      */
-    public void saveNote(Map<String, Object> noteData, NotesCallback<String, Exception> callback) {
+    public void saveNote(Map<String, Object> noteData, String country, NotesCallback<String, Exception> callback) {
         if (!UserController.isLoggedIn())
             return;
 
-        db.collection(FirestoreConstants.COLLECTION_NOTES)
+        WriteBatch batch = db.batch();
+
+        DocumentReference noteRef = db.collection(FirestoreConstants.COLLECTION_NOTES)
                 .document("notes")
                 .collection("data")
-                .add(noteData)
-                .addOnSuccessListener(documentReference -> {
-                    String noteId = documentReference.getId();
-                    callback.onSuccess(noteId);
+                .document();
+        DocumentReference countryRef = db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document(country);
+        Map<String, Object> countryData = new HashMap<>();
+        countryData.put("notesID", FieldValue.arrayUnion(noteRef.getId()));
+
+        batch.set(noteRef, noteData);
+        batch.set(countryRef, countryData, SetOptions.merge());
+
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(noteRef.getId());
                 })
-                .addOnFailureListener(e ->
-                        callback.onError(new NoteCollectionException()));
+                .addOnFailureListener(e -> {
+                    callback.onError(new NoteCollectionException());
+                });
     }
+
 
     /**
      * Retrieves a list of notes from the Firestore database by their unique IDs.

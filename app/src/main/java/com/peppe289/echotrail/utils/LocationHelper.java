@@ -72,7 +72,7 @@ public class LocationHelper {
      * @param longitude the longitude of the location
      * @param callback  the callback to handle the city name or error
      */
-    public static void getCityName(Context context, double latitude, double longitude, HelperCallback<String, ErrorType> callback) {
+    public static void getCityName(Context context, double latitude, double longitude, HelperCallback<Address, ErrorType> callback) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
         List<Address> addresses = null;
@@ -83,9 +83,9 @@ public class LocationHelper {
                 @Override
                 public void onGeocode(@NonNull List<Address> addresses) {
                     try {
-                        callback.onSuccess(addresses.get(0).getLocality());
+                        callback.onSuccess(addresses.get(0));
                     } catch (Exception e) {
-                        callback.onSuccess("");
+                        callback.onSuccess(null);
                     }
                 }
             });
@@ -98,9 +98,9 @@ public class LocationHelper {
             }
 
             if (addresses != null && !addresses.isEmpty()) {
-                callback.onSuccess(addresses.get(0).getLocality());
+                callback.onSuccess(addresses.get(0));
             } else {
-                callback.onSuccess("");
+                callback.onSuccess(null);
             }
         }
     }
