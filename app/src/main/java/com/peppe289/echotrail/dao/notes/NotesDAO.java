@@ -67,6 +67,8 @@ public class NotesDAO {
             return;
 
         db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document("notes")
+                .collection("data")
                 .add(noteData)
                 .addOnSuccessListener(documentReference -> {
                     String noteId = documentReference.getId();
@@ -93,6 +95,8 @@ public class NotesDAO {
         }
 
         db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document("notes")
+                .collection("data")
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
@@ -112,6 +116,8 @@ public class NotesDAO {
             return;
 
         db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document("notes")
+                .collection("data")
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
     }
@@ -127,7 +133,10 @@ public class NotesDAO {
             return;
 
         if (listen)
-            db.collection(FirestoreConstants.COLLECTION_NOTES).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            db.collection(FirestoreConstants.COLLECTION_NOTES)
+                    .document("notes")
+                    .collection("data")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
                     if (!UserController.isLoggedIn())
