@@ -2,6 +2,7 @@ package com.peppe289.echotrail.ui.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -37,6 +38,7 @@ import com.peppe289.echotrail.controller.user.UserController;
 import com.peppe289.echotrail.utils.*;
 
 import com.peppe289.echotrail.adapter.SuggestionsAdapter;
+import com.peppe289.echotrail.utils.callback.HelperCallback;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -264,62 +266,83 @@ public class MapFragment extends Fragment implements LocationListener {
      * firebase document is updated.
      */
     private void fetchNotes() {
-        NotesController.getAllNotes(new ControllerCallback<QuerySnapshot, ErrorType>() {
+        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<GeoPoint, ErrorType>() {
             @Override
-            public void onSuccess(QuerySnapshot querySnapshot) {
-                if (!isAdded() || getView() == null) {
-                    return;
-                }
-
-                if (querySnapshot == null || querySnapshot.isEmpty()) return;
-                for (DocumentSnapshot documentSnapshot : querySnapshot) {
-                    com.google.firebase.firestore.GeoPoint coordinates = documentSnapshot.getGeoPoint("coordinates");
-                    String userID = UserController.getUid();
-                    String noteUserID = documentSnapshot.getString("userId");
-
-                    // Skip if coordinates are null or note belongs to the current user
-                    if (coordinates == null || userID.equals(noteUserID)) continue;
-
-                    try {
-                        // this note isn't for me, skip...
-                        String isFor = documentSnapshot.getString("send_to");
-                        if (isFor != null && !isFor.equals(userID)) continue;
-                    } catch (Exception ignored) {
-                    }
-
-                    GeoPoint noteLocation = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
-
-                    mapHelper.addMarker(noteLocation, documentSnapshot.getId(), (markerCounter, point) -> {
-                        GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
-
-                        // Preliminary filtering of nearby markers
-                        List<Map.Entry<GeoPoint, List<String>>> nearbyMarkers = markerCounter.entrySet().stream()
-                                .filter(entry -> MapHelper.arePointsClose(entry.getKey(), clickedPoint, MapHelper.MarkerDistance.CLOSE))
-                                .collect(Collectors.toList());
-
-                        // No relevant markers
-                        if (nearbyMarkers.isEmpty()) return true;
-
-                        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<GeoPoint, ErrorType>() {
+            public void onSuccess(GeoPoint result) {
+                LocationHelper.getCityName(requireContext(), result.getLatitude(), result.getLongitude(), new HelperCallback<Address, ErrorType>() {
+                    @Override
+                    public void onSuccess(Address result) {
+                        NotesController.getAllNotes(result.getCountryName(), new ControllerCallback<QuerySnapshot, ErrorType>() {
                             @Override
-                            public void onSuccess(GeoPoint currentLocation) {
+                            public void onSuccess(QuerySnapshot querySnapshot) {
                                 if (!isAdded() || getView() == null) {
                                     return;
                                 }
 
-                                List<String> readyToSeeIDs = nearbyMarkers.stream()
-                                        .filter(entry -> MapHelper.arePointsClose(currentLocation, entry.getKey(), MapHelper.MarkerDistance.CLOSE))
-                                        .flatMap(entry -> entry.getValue().stream()) // Flatten IDs
-                                        .distinct() // Remove duplicates
-                                        .collect(Collectors.toList());
+                                if (querySnapshot == null || querySnapshot.isEmpty()) return;
+                                for (DocumentSnapshot documentSnapshot : querySnapshot) {
+                                    com.google.firebase.firestore.GeoPoint coordinates = documentSnapshot.getGeoPoint("coordinates");
+                                    String userID = UserController.getUid();
+                                    String noteUserID = documentSnapshot.getString("userId");
 
-                                // Launch activity if there are notes to see
-                                if (!readyToSeeIDs.isEmpty()) {
-                                    launchReadNotesActivity(readyToSeeIDs);
-                                } else {
-                                    BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance(getString(R.string.walking_for),
-                                            getString(R.string.walking_for_read));
-                                    bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());}
+                                    // Skip if coordinates are null or note belongs to the current user
+                                    if (coordinates == null || userID.equals(noteUserID)) continue;
+
+                                    try {
+                                        // this note isn't for me, skip...
+                                        String isFor = documentSnapshot.getString("send_to");
+                                        if (isFor != null && !isFor.equals(userID)) continue;
+                                    } catch (Exception ignored) {
+                                    }
+
+                                    GeoPoint noteLocation = new GeoPoint(coordinates.getLatitude(), coordinates.getLongitude());
+
+                                    mapHelper.addMarker(noteLocation, documentSnapshot.getId(), (markerCounter, point) -> {
+                                        GeoPoint clickedPoint = new GeoPoint(point.getLatitude(), point.getLongitude());
+
+                                        // Preliminary filtering of nearby markers
+                                        List<Map.Entry<GeoPoint, List<String>>> nearbyMarkers = markerCounter.entrySet().stream()
+                                                .filter(entry -> MapHelper.arePointsClose(entry.getKey(), clickedPoint, MapHelper.MarkerDistance.CLOSE))
+                                                .collect(Collectors.toList());
+
+                                        // No relevant markers
+                                        if (nearbyMarkers.isEmpty()) return true;
+
+                                        locationHelper.getCurrentLocation(requireContext(), requireActivity(), new LocationCallback<GeoPoint, ErrorType>() {
+                                            @Override
+                                            public void onSuccess(GeoPoint currentLocation) {
+                                                if (!isAdded() || getView() == null) {
+                                                    return;
+                                                }
+
+                                                List<String> readyToSeeIDs = nearbyMarkers.stream()
+                                                        .filter(entry -> MapHelper.arePointsClose(currentLocation, entry.getKey(), MapHelper.MarkerDistance.CLOSE))
+                                                        .flatMap(entry -> entry.getValue().stream()) // Flatten IDs
+                                                        .distinct() // Remove duplicates
+                                                        .collect(Collectors.toList());
+
+                                                // Launch activity if there are notes to see
+                                                if (!readyToSeeIDs.isEmpty()) {
+                                                    launchReadNotesActivity(readyToSeeIDs);
+                                                } else {
+                                                    BottomSheetFragment bottomSheetFragment = BottomSheetFragment.newInstance(getString(R.string.walking_for),
+                                                            getString(R.string.walking_for_read));
+                                                    bottomSheetFragment.show(requireActivity().getSupportFragmentManager(), bottomSheetFragment.getTag());}
+                                            }
+
+                                            @Override
+                                            public void onError(ErrorType errorType) {
+                                                if (!isAdded() || getView() == null) {
+                                                    return;
+                                                }
+
+                                                Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                        return true;
+                                    });
+                                }
                             }
 
                             @Override
@@ -330,22 +353,29 @@ public class MapFragment extends Fragment implements LocationListener {
 
                                 Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        }, true);
+                    }
 
-                        return true;
-                    });
-                }
+                    @Override
+                    public void onError(ErrorType error) {
+                        if (!isAdded() || getView() == null) {
+                            return;
+                        }
+
+                        Toast.makeText(requireContext(), error.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
-            public void onError(ErrorType errorType) {
+            public void onError(ErrorType error) {
                 if (!isAdded() || getView() == null) {
                     return;
                 }
 
-                Toast.makeText(requireContext(), errorType.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), error.getMessage(requireContext()), Toast.LENGTH_SHORT).show();
             }
-        }, true);
+        });
     }
 
     /**

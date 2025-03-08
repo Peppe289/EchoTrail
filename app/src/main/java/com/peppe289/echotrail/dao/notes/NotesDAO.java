@@ -10,6 +10,7 @@ import com.peppe289.echotrail.exceptions.NoteCollectionException;
 import com.peppe289.echotrail.controller.callback.ControllerCallback;
 import com.peppe289.echotrail.utils.FirestoreConstants;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,18 +63,32 @@ public class NotesDAO {
      * @param noteData a {@link Map} containing the note's data (e.g., title, content, metadata)
      * @param callback a callback instance to notify when the save operation is complete
      */
-    public void saveNote(Map<String, Object> noteData, NotesCallback<String, Exception> callback) {
+    public void saveNote(Map<String, Object> noteData, String country, NotesCallback<String, Exception> callback) {
         if (!UserController.isLoggedIn())
             return;
 
-        db.collection(FirestoreConstants.COLLECTION_NOTES)
-                .add(noteData)
-                .addOnSuccessListener(documentReference -> {
-                    String noteId = documentReference.getId();
-                    callback.onSuccess(noteId);
+        WriteBatch batch = db.batch();
+
+        DocumentReference noteRef = db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document("notes")
+                .collection("data")
+                .document();
+
+        DocumentReference redundantNoteRef = db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document(country)
+                .collection("data")
+                .document(noteRef.getId());
+
+        batch.set(noteRef, noteData);
+        batch.set(redundantNoteRef, noteData);
+
+        batch.commit()
+                .addOnSuccessListener(aVoid -> {
+                    callback.onSuccess(noteRef.getId());
                 })
-                .addOnFailureListener(e ->
-                        callback.onError(new NoteCollectionException()));
+                .addOnFailureListener(e -> {
+                    callback.onError(new NoteCollectionException());
+                });
     }
 
     /**
@@ -93,6 +108,8 @@ public class NotesDAO {
         }
 
         db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document("notes")
+                .collection("data")
                 .whereIn(FieldPath.documentId(), notesID)
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
@@ -107,11 +124,13 @@ public class NotesDAO {
      *
      * @param callback a callback instance to handle the retrieved notes
      */
-    public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback) {
+    public void getAllNotes(String country, NotesCallback<QuerySnapshot, Exception> callback) {
         if (!UserController.isLoggedIn())
             return;
 
         db.collection(FirestoreConstants.COLLECTION_NOTES)
+                .document(country)
+                .collection("data")
                 .get()
                 .addOnSuccessListener(callback::onSuccess);
     }
@@ -122,12 +141,15 @@ public class NotesDAO {
      * @param callback
      * @param listen for change signature
      */
-    public void getAllNotes(NotesCallback<QuerySnapshot, Exception> callback, boolean listen) {
+    public void getAllNotes(String country, NotesCallback<QuerySnapshot, Exception> callback, boolean listen) {
         if (!UserController.isLoggedIn())
             return;
 
         if (listen)
-            db.collection(FirestoreConstants.COLLECTION_NOTES).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            db.collection(FirestoreConstants.COLLECTION_NOTES)
+                    .document(country)
+                    .collection("data")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
                     if (!UserController.isLoggedIn())
@@ -142,6 +164,6 @@ public class NotesDAO {
                 }
             });
         else
-            getAllNotes(callback);
+            getAllNotes(country, callback);
     }
 }

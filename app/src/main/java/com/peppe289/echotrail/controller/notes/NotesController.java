@@ -57,6 +57,14 @@ public class NotesController {
     public static void saveNote(Map<String, Object> data, SaveNoteCallback callback) {
         Map<String, Object> noteData = new HashMap<>();
 
+        Object countryObj = data.get("country");
+        if (countryObj == null) {
+            callback.onSavedNote(ErrorType.SAVE_NOTE_FAILED);
+            return;
+        }
+
+        String country = countryObj.toString();
+
         // Add mandatory fields
         noteData.put("userId", UserController.getUid());
         noteData.put("content", data.get("content"));
@@ -91,7 +99,7 @@ public class NotesController {
         noteData.put("city", data.get("city"));
 
         // Save the note through NotesDAO
-        notesDAO.saveNote(noteData, new NotesCallback<String, Exception>() {
+        notesDAO.saveNote(noteData, country, new NotesCallback<String, Exception>() {
             @Override
             public void onSuccess(String noteId) {
                 callback.onSavedNote(null);
@@ -131,12 +139,12 @@ public class NotesController {
      *
      * @param callback A callback invoked with the list of notes retrieved.
      */
-    public static void getAllNotes(ControllerCallback<QuerySnapshot, ErrorType> callback) {
-        getAllNotes(callback, false);
+    public static void getAllNotes(String country, ControllerCallback<QuerySnapshot, ErrorType> callback) {
+        getAllNotes(country, callback, false);
     }
 
-    public static void getAllNotes(ControllerCallback<QuerySnapshot, ErrorType> callback, boolean listen) {
-        notesDAO.getAllNotes(new NotesCallback<QuerySnapshot, Exception>() {
+    public static void getAllNotes(String country, ControllerCallback<QuerySnapshot, ErrorType> callback, boolean listen) {
+        notesDAO.getAllNotes(country, new NotesCallback<QuerySnapshot, Exception>() {
             @Override
             public void onSuccess(QuerySnapshot result) {
                 callback.onSuccess(result);
