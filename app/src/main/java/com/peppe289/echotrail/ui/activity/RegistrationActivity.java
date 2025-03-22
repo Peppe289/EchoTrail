@@ -1,7 +1,10 @@
 package com.peppe289.echotrail.ui.activity;
 
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -60,6 +63,9 @@ public class RegistrationActivity extends AppCompatActivity {
             return insets;
         });
 
+        TextView linkPrivacyPolicy = findViewById(R.id.linkPrivacyPolicy);
+        linkPrivacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
+
         // Bind UI components with variables
         usernameEditText = findViewById(R.id.textInputEditTextUsername);
         emailEditText = findViewById(R.id.textInputEditTextEmail);
@@ -91,6 +97,12 @@ public class RegistrationActivity extends AppCompatActivity {
      * If validation fails, a toast is shown to the user.
      */
     protected void submitRegistration() {
+        CheckBox checkBox = findViewById(R.id.checkboxPrivacyPolicy);
+        if (!checkBox.isChecked()) {
+            showToast(ErrorType.TERMS_NOT_ACCEPTED.getMessage(getApplicationContext()));
+            return;
+        }
+
         if (validateInputs()) {
             progressBar.setVisibility(ProgressBar.VISIBLE);
             try {

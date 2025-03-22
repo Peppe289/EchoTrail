@@ -60,6 +60,7 @@
     <string name="error_position_not_found">Position not found</string>
     <string name="error_change_password">Error while change password</string>
     <string name="error_add_session">Error saving session</string>
+    <string name="error_terms_not_accepted">Accept the terms and services</string>
 
     <!-- General -->
     <string name="link">link</string>
@@ -104,4 +105,8 @@
     </string>
     <string name="select_color">Select a color</string>
     <string name="select_icon">Select a icon</string>
+    <string name="policy_privacy">
+        Accepting the terms of service you agree to the processing of personal data as described in the privacy policy.
+    </string>
+    <string name="see_the_privacy_policy">https://peppe289.github.io/echo_trail_policy_privacy.md</string>
 </resources>
